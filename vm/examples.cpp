@@ -111,5 +111,8 @@ int main(int argc, char** argv){
 	Slot* X43 = vm.unary_message(X42, "y");
 	vm.unary_message(X43, "print");
 	
+	Slot* X44 = vm.search_obj("lobby");
+	vm.rm_slot(X44, "y");
+		
 	return 0;
 }

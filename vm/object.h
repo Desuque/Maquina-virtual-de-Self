@@ -23,6 +23,7 @@ class Object{
 		Slot* rm_slot(string slot);
 		Slot* get_slot(string name);
 		void look_up(string name, p_slots& results);
+		Slot* as_slot(VM& vm);
 		virtual int as_int();
 		virtual string as_string();
 		virtual Slot* print(VM& vm);

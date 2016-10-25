@@ -83,4 +83,12 @@ Slot* Object::print(VM& vm){
 	return vm.create_string(class_name);
 }
 
+Slot* Object::as_slot(VM& vm){
+	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
+		if (!is_base_slot(it->second))
+			return (it->second);
+	}
+	return NULL;
+}
+
 Object::~Object(){}

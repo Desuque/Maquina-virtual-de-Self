@@ -142,9 +142,8 @@ Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 }
 
 Slot* VM::keyword_message(Slot* sl_recv, string obj_id, Slot* sl){
-	if (sl_recv -> get_name() == global_obj)
-		sl -> set_parent(true);
-	sl_recv -> add_slot(sl);
+	Slot* sl_lobby = sl -> get_value() -> as_slot(*this);
+	sl_recv -> add_slot(sl_lobby);
 	return sl_recv;
 }
 
