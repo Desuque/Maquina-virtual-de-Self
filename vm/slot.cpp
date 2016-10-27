@@ -25,6 +25,10 @@ Slot::Slot(string slot_name){
 	this -> value = NULL;
 }
 
+bool Slot::is_check(){
+	return false;
+}
+
 Object* Slot::get_value(){
 	return this -> value;
 }

@@ -1,6 +1,7 @@
 #include "virtual_machine.h"
 #include "slot.h"
 #include "not_found.h"
+#include "check_point.h"
 #include <iostream>
 
 static const char* global_obj = "lobby";
@@ -14,6 +15,33 @@ VM::VM(){
 	Slot* lobby = new Slot(global_obj);
 	lobby -> set_obj_value();
 	add_basic_slots(lobby, global_obj);
+}
+
+void VM::push_slot(Slot* sl){
+	tmp_slots.push(sl);
+}
+
+Slot* VM::pop_slot(){
+	Slot* top = tmp_slots.top();
+	tmp_slots.pop();
+	return top;
+}
+
+void VM::checkpoint(){
+	Slot* check = new CheckPoint("check");
+	tmp_slots.push(check);
+}
+
+void VM::revert(){
+	bool get_it = false;
+	while (!get_it){
+		Slot* sl = tmp_slots.top();
+		tmp_slots.pop();
+		if (sl -> is_check()){
+			get_it = true;
+			delete sl;
+		}
+	}
 }
 
 Slot* VM::search_obj(string name){

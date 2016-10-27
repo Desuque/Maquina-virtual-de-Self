@@ -3,6 +3,7 @@
 
 int main(int argc, char** argv){
 	VM vm;
+	vm.checkpoint();
 	
 	//lobby _AddSlots: (| y <- 8. |).
 	Slot* X0 = vm.search_obj("lobby");
@@ -10,7 +11,7 @@ int main(int argc, char** argv){
 	Slot* X2 = vm.create_int(8);
 	vm.add_slot(X1, "y", X2);
 	vm.keyword_message(X0, "_AddSlots:", X1);
-	
+
 	//y print.
 	Slot* X4 = vm.search_obj("y");
 	vm.unary_message(X4, "print");
@@ -113,6 +114,8 @@ int main(int argc, char** argv){
 	
 	Slot* X44 = vm.search_obj("lobby");
 	vm.rm_slot(X44, "y");
-		
+	
+	//X0 -> get_value() -> print_slots();
+	vm.revert();
 	return 0;
 }

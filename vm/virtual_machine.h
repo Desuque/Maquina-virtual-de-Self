@@ -3,18 +3,25 @@
 
 #include <vector>
 #include <string>
+#include <stack>
 #include "object.h"
 
 typedef std::vector<Slot*> p_slots;
 typedef std::vector<Object*> p_objects;
 typedef std::string string;
+typedef std::stack<Slot*> stack_slots;
 
 class VM{
 	private:
 		p_slots slots;
+		stack_slots tmp_slots;
 		
 	public:
 		VM();
+		void push_slot(Slot* sl);
+		Slot* pop_slot();
+		void revert();
+		void checkpoint();
 		Slot* search_obj(string name);
 		Slot* create_object();
 		Slot* create_int(int value);

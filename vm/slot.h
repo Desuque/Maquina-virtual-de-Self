@@ -34,6 +34,7 @@ class Slot: public Object{
 		bool is_parent();
 		bool is_code();
 		Slot* execute(VM& vm, p_objects& args);
+		virtual bool is_check();
 		~Slot();
 };
 
