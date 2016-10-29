@@ -15,6 +15,31 @@ VM::VM(){
 	Slot* lobby = new Slot(global_obj);
 	lobby -> set_obj_value();
 	add_basic_slots(lobby, global_obj);
+	lobby -> set_mark(true);
+}
+
+void VM::unmark_slots(){
+	int size = this -> slots.size();
+	for (int i = 1; i < size; i++)
+		slots[i] -> get_value() -> set_mark(false);
+}
+
+void VM::garbage_collector(){
+	for (p_slots::iterator it = slots.begin(); it != slots.end();){
+		if (!(*it) -> is_mark()){  
+			delete* it;  
+			it = slots.erase(it);
+		}else{
+			++it;
+		}
+	}
+}
+
+void VM::collect(){
+	Slot* lobby = search_obj("lobby");	
+	unmark_slots();
+	lobby -> get_value() -> mark_slots();
+	garbage_collector();
 }
 
 void VM::push_slot(Slot* sl){

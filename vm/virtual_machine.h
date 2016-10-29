@@ -22,6 +22,7 @@ class VM{
 		Slot* pop_slot();
 		void revert();
 		void checkpoint();
+		void collect();
 		Slot* search_obj(string name);
 		Slot* create_object();
 		Slot* create_int(int value);
@@ -40,6 +41,8 @@ class VM{
 		Slot* search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args);
 		Slot* execute_msg(Slot* msg, Slot* sl_invoker, p_objects& args);
 		Slot* search_msg(Slot* sl_recv, string msg);
+		void unmark_slots();
+		void garbage_collector();
 		void add_basic_slots(Slot* sl, string name);
 		void add_default_name_slot(Slot* sl, string name);
 		void add_default_self_slot(Slot* sl);

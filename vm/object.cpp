@@ -7,6 +7,20 @@ static const char* class_name = "object";
 static const char* name_slot = "_Name";
 static const char* self_slot = "_Self";
 
+Object::Object(){
+	this -> mark = false;
+}
+
+
+void Object::set_mark(bool val){
+	this -> mark = val;
+}
+
+
+bool Object::is_mark(){
+	return this -> mark;
+}
+
 void Object::add_slot(Slot* sl){
 	slots.insert({sl -> get_name(), sl});
 }
@@ -28,6 +42,13 @@ Slot* Object::rm_slot(string name){
 		}
 	}
 	return NULL;
+}
+
+void Object::mark_slots(){
+	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
+			(it->second) -> get_value() -> mark_slots();
+			(it->second) -> set_mark(true);
+	}
 }
 
 void Object::look_up(string name, p_slots& results){

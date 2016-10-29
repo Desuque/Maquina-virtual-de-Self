@@ -11,7 +11,7 @@ int main(int argc, char** argv){
 	Slot* X2 = vm.create_int(8);
 	vm.add_slot(X1, "y", X2);
 	vm.keyword_message(X0, "_AddSlots:", X1);
-
+	vm.collect();
 	//y print.
 	Slot* X4 = vm.search_obj("y");
 	vm.unary_message(X4, "print");
@@ -43,7 +43,7 @@ int main(int argc, char** argv){
 	Slot* X18 = vm.search_obj("y");
 	Slot* X19 = vm.binary_message(X17,"!=",X18);
 	vm.unary_message(X19, "print");
-	
+	vm.collect();
 	//lobby _AddSlots: (| str = 'hello'. |).
 	Slot* X20 = vm.search_obj("lobby");
 	Slot* X21 = vm.create_object();
@@ -71,7 +71,7 @@ int main(int argc, char** argv){
 	Slot* X29 = vm.search_obj("punto11");
 	Slot* X30 = vm.unary_message(X29, "y");
 	vm.unary_message(X30, "print");
-	
+	vm.collect();
 	//lobby _AddSlots: (| punto = (| square_norm = (| | ((x*x)+(y*y))).
 	//				 print = (| | print x.).
 	//				 y <- 7.	    
@@ -115,7 +115,8 @@ int main(int argc, char** argv){
 	Slot* X44 = vm.search_obj("lobby");
 	vm.rm_slot(X44, "y");
 	
-	//X0 -> get_value() -> print_slots();
 	vm.revert();
+	vm.collect();
+
 	return 0;
 }

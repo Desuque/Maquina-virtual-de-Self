@@ -17,12 +17,17 @@ typedef std::vector<Object*> p_objects;
 class Object{
 	protected:
 		m_slots slots;
-		
+		bool mark;
+
 	public:
+		Object();
 		void add_slot(Slot* sl);
 		Slot* rm_slot(string slot);
 		Slot* get_slot(string name);
 		void look_up(string name, p_slots& results);
+		void mark_slots();
+		void set_mark(bool val);
+		bool is_mark();
 		Slot* as_slot(VM& vm);
 		virtual int as_int();
 		virtual string as_string();
