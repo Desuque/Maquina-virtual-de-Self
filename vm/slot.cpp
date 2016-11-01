@@ -100,10 +100,6 @@ bool Slot::is_code(){
 	return this -> code;
 }
 
-void Slot::rm_value(){
-	delete this -> value;
-}
-
 Slot::~Slot(){
 	delete this -> value;
 }
