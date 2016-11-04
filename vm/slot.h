@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "object.h"
+#include "error_type.h"
 
 class Object;
 typedef std::string string;
@@ -24,6 +25,7 @@ class Slot: public Object{
 		void set_name(string name);
 		void set_parent(bool val);
 		void set_code(bool val);
+		void set_type(bool val);
 		void set_obj_value();
 		void set_int_value(int value);
 		void set_boolean_value(bool value);

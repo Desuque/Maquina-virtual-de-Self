@@ -9,6 +9,7 @@ int main(int argc, char** argv){
 	Slot* X0 = vm.search_obj("lobby");
 	Slot* X1 = vm.create_object();
 	Slot* X2 = vm.create_int(8);
+	vm.immutable_object(X2);
 	vm.add_slot(X1, "y", X2);
 	vm.keyword_message(X0, "_AddSlots:", X1);
 	vm.collect();
@@ -16,7 +17,7 @@ int main(int argc, char** argv){
 	Slot* X4 = vm.search_obj("y");
 	vm.unary_message(X4, "print");
 	
-	//lobby _AddSlots: (| punto1 = (| y <- 4. |). |).
+	//lobby _AddSlots: (| punto1 = (| y = 4. |). |).
 	Slot* X6 = vm.search_obj("lobby");
 	Slot* X7 = vm.create_object();
 	Slot* X8 = vm.create_object();
@@ -56,7 +57,7 @@ int main(int argc, char** argv){
 	vm.unary_message(X23, "print");
 	
 	
-	//lobby _AddSlots: (| punto11 = (| x<-5. padre* = punto1 |)).
+	//lobby _AddSlots: (| punto11 = (| x=5. padre* = punto1 |)).
 	Slot* X24 = vm.search_obj("lobby");
 	Slot* X25 = vm.create_object();
 	Slot* X26 = vm.search_obj("punto1");
@@ -84,6 +85,7 @@ int main(int argc, char** argv){
 	Slot* X34 = vm.create_string("((x*x)+(y*y))");
 	Slot* X35 = vm.create_string("print x.");
 	Slot* X3Y = vm.create_int(7);
+	vm.immutable_object(X3Y);
 	vm.add_code(X33, "print", X35);
 	vm.add_code(X33, "square_norm", X34);
 	vm.add_slot(X33, "y", X3Y);
@@ -112,7 +114,7 @@ int main(int argc, char** argv){
 	Slot* X43 = vm.unary_message(X42, "y");
 	vm.unary_message(X43, "print");
 	
-	Slot* X44 = vm.search_obj("lobby");
+	Slot* X44 = vm.search_obj("y");
 	vm.rm_slot(X44, "y");
 	
 	vm.revert();

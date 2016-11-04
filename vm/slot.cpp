@@ -34,18 +34,26 @@ Object* Slot::get_value(){
 }
 
 void Slot::set_obj_value(){
+	if (this -> type)
+		throw ErrorType(this -> name);
 	this -> value = new Object();
 }
 
 void Slot::set_int_value(int value){
+	if (this -> type)
+		throw ErrorType(this -> name);
 	this -> value = new Int(value);
 }
 
 void Slot::set_string_value(string value){
+	if (this -> type)
+		throw ErrorType(this -> name);
 	this -> value = new String(value);
 }
 
 void Slot::set_boolean_value(bool value){
+	if (this -> type)
+		throw ErrorType(this -> name);
 	this -> value = new Boolean(value);
 }
 
@@ -69,6 +77,8 @@ void Slot::set_name(string name){
 }
 
 void Slot::add_slot(Slot* slot){
+	if (this -> type)
+		throw ErrorType(this -> name);
 	this -> value -> add_slot(slot);
 }
 
@@ -86,6 +96,10 @@ void Slot::set_parent(bool val){
 
 void Slot::set_code(bool val){
 	this -> code = val;
+}
+
+void Slot::set_type(bool val){
+	this -> type = val;
 }
 
 string Slot::get_name(){

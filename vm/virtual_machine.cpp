@@ -18,6 +18,11 @@ VM::VM(){
 	lobby -> set_mark(true);
 }
 
+Slot* VM::immutable_object(Slot* sl){
+	sl -> set_type(true);
+	return sl;
+}
+
 void VM::unmark_slots(){
 	int size = this -> slots.size();
 	for (int i = 1; i < size; i++)

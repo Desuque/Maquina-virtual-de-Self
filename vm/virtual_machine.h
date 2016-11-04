@@ -23,6 +23,7 @@ class VM{
 		void revert();
 		void checkpoint();
 		void collect();
+		Slot* immutable_object(Slot* sl);
 		Slot* search_obj(string name);
 		Slot* create_object();
 		Slot* create_int(int value);
