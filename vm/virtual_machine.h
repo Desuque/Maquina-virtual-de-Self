@@ -19,11 +19,12 @@ class VM{
 	public:
 		VM();
 		void push_slot(Slot* sl);
-		Slot* pop_slot();
 		void revert();
 		void checkpoint();
 		void collect();
 		Slot* immutable_object(Slot* sl);
+		string get_slots(Slot* sl);
+		Slot* pop_slot();
 		Slot* search_obj(string name);
 		Slot* create_object();
 		Slot* create_int(int value);

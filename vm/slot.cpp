@@ -19,7 +19,8 @@ static const char* neq = "!=";
 
 Slot::Slot(string slot_name){
 	this -> name = slot_name;
-	this -> parent = false;
+	this -> parent.first = false;
+	this -> parent.second = "";
 	this -> type = false;
 	this -> code = false;
 	this -> value = NULL;
@@ -36,27 +37,27 @@ Object* Slot::get_value(){
 void Slot::set_obj_value(){
 	if (this -> type)
 		throw ErrorType(this -> name);
-	this -> value = new Object();
+ 	this -> value = new Object();
 }
-
+ 
 void Slot::set_int_value(int value){
 	if (this -> type)
 		throw ErrorType(this -> name);
-	this -> value = new Int(value);
+ 	this -> value = new Int(value);
 }
-
+ 
 void Slot::set_string_value(string value){
 	if (this -> type)
 		throw ErrorType(this -> name);
-	this -> value = new String(value);
+ 	this -> value = new String(value);
 }
-
+ 
 void Slot::set_boolean_value(bool value){
 	if (this -> type)
 		throw ErrorType(this -> name);
 	this -> value = new Boolean(value);
 }
-
+ 
 void Slot::set_int_method_value(string name){
 	if (name == sum)
 		this -> value = new Sum();
@@ -79,7 +80,7 @@ void Slot::set_name(string name){
 void Slot::add_slot(Slot* slot){
 	if (this -> type)
 		throw ErrorType(this -> name);
-	this -> value -> add_slot(slot);
+ 	this -> value -> add_slot(slot);
 }
 
 bool Slot::name_is(string name){
@@ -90,8 +91,9 @@ Slot* Slot::execute(VM& vm, p_objects& args){
 	return this -> value -> clone(vm);
 }
 
-void Slot::set_parent(bool val){
-	this -> parent = val;
+void Slot::set_parent(bool val, string name_parent){
+	this -> parent.first = val;
+	this ->parent.second = name_parent;
 }
 
 void Slot::set_code(bool val){
@@ -107,11 +109,15 @@ string Slot::get_name(){
 }
 
 bool Slot::is_parent(){
-	return this -> parent;
+	return this -> parent.first;
 }
 
 bool Slot::is_code(){
 	return this -> code;
+}
+
+bool Slot::is_immutable(){
+	return this -> type;
 }
 
 Slot::~Slot(){

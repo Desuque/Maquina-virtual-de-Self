@@ -11,6 +11,7 @@ class Boolean: public Object{
 		Boolean(bool value);
 		Slot* clone(VM& vm);
 		Slot* print(VM& vm);
+		string as_string();
 };
 
 #endif

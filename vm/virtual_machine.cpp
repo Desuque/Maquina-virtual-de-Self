@@ -47,6 +47,10 @@ void VM::collect(){
 	garbage_collector();
 }
 
+string VM::get_slots(Slot* sl){
+	return sl -> get_value() -> get_json_slots();
+}
+
 void VM::push_slot(Slot* sl){
 	tmp_slots.push(sl);
 }
@@ -93,7 +97,7 @@ Slot* VM::add_slot(Slot* sl_recv, string sl_recv_id, Slot* sl){
 Slot* VM::add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	Slot* sl_clone = sl  -> get_value() -> clone(*this);
 	sl_clone -> set_name(sl_recv_id);
-	sl_clone -> set_parent(true);
+	sl_clone -> set_parent(true, sl -> get_name());
 	sl_recv -> add_slot(sl_clone);
 	return sl_recv;
 }
@@ -200,7 +204,7 @@ Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 }
 
 Slot* VM::keyword_message(Slot* sl_recv, string obj_id, Slot* sl){
-	Slot* sl_lobby = sl -> get_value() -> as_slot(*this);
+	Slot* sl_lobby = sl -> get_value() -> as_slot();
 	sl_recv -> add_slot(sl_lobby);
 	return sl_recv;
 }
@@ -217,7 +221,7 @@ void VM::add_default_numeric_slots(Slot* sl_recv){
 void VM::add_default_self_slot(Slot* sl_recv){
 	Slot* sl = new Slot(self_slot);
 	sl -> set_obj_value();
-	sl -> set_parent(true);
+	sl -> set_parent(true, self_slot);
 	sl_recv -> add_slot(sl);
 	this -> slots.push_back(sl);
 }

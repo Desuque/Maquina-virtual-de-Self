@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 #include "object.h"
 #include "error_type.h"
 
@@ -13,7 +14,8 @@ class Slot: public Object{
   
 	private:
 		bool type;
-		bool parent;
+		//bool parent;
+		std::pair <bool,string> parent;
 		bool code;
 		string name;
 		Object* value;
@@ -23,7 +25,7 @@ class Slot: public Object{
 		string get_name();
 		Object* get_value();
 		void set_name(string name);
-		void set_parent(bool val);
+		void set_parent(bool val, string name_parent);
 		void set_code(bool val);
 		void set_type(bool val);
 		void set_obj_value();
@@ -35,6 +37,7 @@ class Slot: public Object{
 		bool name_is(string name);
 		bool is_parent();
 		bool is_code();
+		bool is_immutable();
 		Slot* execute(VM& vm, p_objects& args);
 		virtual bool is_check();
 		~Slot();

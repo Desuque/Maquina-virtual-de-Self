@@ -15,7 +15,12 @@ Slot* Int::print(VM& vm){
 	return vm.create_int(this -> value);
 }
 
+string Int::as_string(){
+	return std::to_string(this -> value);
+}
+
 Slot* Int::clone(VM& vm){
 	Slot* new_sl = vm.create_int(this -> value);
 	return new_sl;
 }
+

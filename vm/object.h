@@ -27,17 +27,16 @@ class Object{
 		void look_up(string name, p_slots& results);
 		void mark_slots();
 		void set_mark(bool val);
+		string get_json_slots();
 		bool is_mark();
-		Slot* as_slot(VM& vm);
+		bool is_base_slot(Slot* sl);
+		Slot* as_slot();
 		virtual int as_int();
 		virtual string as_string();
 		virtual Slot* print(VM& vm);
 		virtual Slot* clone(VM& vm);
 		virtual Slot* execute(VM& vm, p_objects& args);
 		virtual ~Object();
-	
-	private:
-		bool is_base_slot(Slot* sl);
 };
 
 #endif

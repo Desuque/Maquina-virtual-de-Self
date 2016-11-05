@@ -1,6 +1,7 @@
 #include "object.h"
 #include "slot.h"
 #include "virtual_machine.h"
+#include "json_writer.h"
 #include <iostream>
 
 static const char* class_name = "object";
@@ -72,6 +73,12 @@ int Object::as_int(){
 	return 0;
 }
 
+string Object::get_json_slots(){
+	JsonWriter json_writer;
+	string json = json_writer.write(slots);
+	return json;
+}
+
 Slot* Object::clone(VM& vm){
 	Slot* new_sl = vm.create_object(); 
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
@@ -104,7 +111,7 @@ Slot* Object::print(VM& vm){
 	return vm.create_string(class_name);
 }
 
-Slot* Object::as_slot(VM& vm){
+Slot* Object::as_slot(){
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
 		if (!is_base_slot(it->second))
 			return (it->second);

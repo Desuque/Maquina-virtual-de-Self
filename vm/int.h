@@ -11,6 +11,7 @@ class Int: public Object{
 		Int(int value);
 		Slot* clone(VM& vm);
 		Slot* print(VM& vm);
+		string as_string();
 		int as_int();
 };
 
