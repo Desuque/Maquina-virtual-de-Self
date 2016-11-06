@@ -23,6 +23,7 @@ class Slot: public Object{
 	public:
 		Slot(string slot_name);
 		string get_name();
+		string parent_name();
 		Object* get_value();
 		void set_name(string name);
 		void set_parent(bool val, string name_parent);

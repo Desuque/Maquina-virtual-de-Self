@@ -2,6 +2,7 @@
 #include "slot.h"
 #include "virtual_machine.h"
 #include "json_writer.h"
+#include "self_writer.h"
 #include <iostream>
 
 static const char* class_name = "object";
@@ -79,6 +80,11 @@ string Object::get_json_slots(){
 	return json;
 }
 
+void Object::get_self_slots(string& slots_self){
+	SelfWriter self_writer;
+	self_writer.write(slots, slots_self);
+}
+
 Slot* Object::clone(VM& vm){
 	Slot* new_sl = vm.create_object(); 
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
@@ -100,6 +106,12 @@ Slot* Object::clone(VM& vm){
 bool Object::is_base_slot(Slot* sl){
 	string name = sl -> get_name();
 	return ( (name == self_slot) || (name == name_slot) );
+}
+
+bool Object::is_num_slot(Slot* sl){
+	string name = sl -> get_name();
+	return ( (name == "+") || (name == "-") || (name == "*") || (name == "/") || 
+		 (name == "==") || (name == "!=") );
 }
 
 Slot* Object::execute(VM& vm, p_objects& args){

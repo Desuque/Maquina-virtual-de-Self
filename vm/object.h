@@ -30,12 +30,14 @@ class Object{
 		string get_json_slots();
 		bool is_mark();
 		bool is_base_slot(Slot* sl);
+		bool is_num_slot(Slot* sl);
 		Slot* as_slot();
 		virtual int as_int();
 		virtual string as_string();
 		virtual Slot* print(VM& vm);
 		virtual Slot* clone(VM& vm);
 		virtual Slot* execute(VM& vm, p_objects& args);
+		virtual void get_self_slots(string& slots_self);
 		virtual ~Object();
 };
 

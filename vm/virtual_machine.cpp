@@ -226,6 +226,13 @@ void VM::add_default_self_slot(Slot* sl_recv){
 	this -> slots.push_back(sl);
 }
 
+string VM::save(){
+	Slot* lobby = search_obj(global_obj);
+	string vm_slots = "lobby _AddSlots: "; 
+	lobby -> get_value() -> get_self_slots(vm_slots);
+	return vm_slots;
+}
+
 VM::~VM(){
 	int size = this -> slots.size();
 	for (int i = 0; i < size; i++)

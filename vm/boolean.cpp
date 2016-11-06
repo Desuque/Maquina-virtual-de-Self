@@ -20,3 +20,6 @@ Slot* Boolean::clone(VM& vm){
 	return new_sl;
 }
 
+void Boolean::get_self_slots(string& slots_self){
+	slots_self += as_string() + ".";
+}

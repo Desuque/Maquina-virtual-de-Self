@@ -1,4 +1,6 @@
 #include "server.h"
+#include <iostream>
+#include <fstream>
 
 Server::Server(){
 	this -> vm = new VM();
@@ -15,7 +17,12 @@ string Server::get_slots(string object){
 }
 
 string Server::save_vm(){
-	return "save";
+	std::ofstream file;
+	file.open ("vm.dat");
+	string data = vm -> save();
+	file << data << std::endl;
+	file.close();
+	return data;
 }
 
 string Server::execute(string context, string code){

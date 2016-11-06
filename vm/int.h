@@ -13,6 +13,7 @@ class Int: public Object{
 		Slot* print(VM& vm);
 		string as_string();
 		int as_int();
+		void get_self_slots(string& slots_self);
 };
 
 #endif

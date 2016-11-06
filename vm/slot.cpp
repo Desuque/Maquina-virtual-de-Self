@@ -108,6 +108,10 @@ string Slot::get_name(){
 	return this -> name;
 }
 
+string Slot::parent_name(){
+	return this -> parent.second;
+}
+
 bool Slot::is_parent(){
 	return this -> parent.first;
 }

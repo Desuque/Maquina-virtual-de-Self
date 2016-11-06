@@ -12,6 +12,7 @@ class Boolean: public Object{
 		Slot* clone(VM& vm);
 		Slot* print(VM& vm);
 		string as_string();
+		void get_self_slots(string& slots_self);
 };
 
 #endif

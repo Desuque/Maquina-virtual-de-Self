@@ -14,6 +14,7 @@ class String: public Object{
 		string as_string();
 		Slot* clone(VM& vm);
 		Slot* print(VM& vm);
+		void get_self_slots(string& slots_self);
 };
 
 #endif

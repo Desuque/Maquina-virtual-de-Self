@@ -14,11 +14,12 @@ class Server{
 		void recv_messages();
 		VM* get_vm();
 		string get_slots(string context);
+		string save_vm();
 		~Server();
 		
 	private:
 		string execute(string context, string code);
-		string save_vm();
+		
 };
 
 #endif

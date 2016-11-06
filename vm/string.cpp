@@ -19,3 +19,7 @@ Slot* String::clone(VM& vm){
 	Slot* new_sl = vm.create_string(this -> value); 
 	return new_sl;
 }
+
+void String::get_self_slots(string& slots_self){
+	slots_self += "'" + as_string() + "'.";
+}

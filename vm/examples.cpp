@@ -143,5 +143,6 @@ int main(int argc, char** argv){
 	}
 	
 	vm->collect();
+	server.save_vm();
 	return 0;
 }
