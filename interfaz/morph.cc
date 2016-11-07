@@ -1,4 +1,6 @@
 #include "morph.h"
+#include "slot.h"
+#include "referencia.h"
 #include <gtkmm.h>
 #include <pangomm/layout.h>
 
@@ -6,6 +8,7 @@ Morph::Morph(double posX, double posY){
 	this->posX = posX;
 	this->posY = posY;
 	this -> nombreObjeto = "que?";
+	this->referencia=nullptr;
 }
 
 Morph::Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView){
@@ -14,39 +17,65 @@ Morph::Morph(double posX, double posY, int width, int height,Gtk::TextView* m_Te
 	this->width = width;
 	this->height = height;
 	this -> nombreObjeto = "";
+	this->m_TextView=m_TextView;
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
+	this->referencia=nullptr;
 }
+
+Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int height){
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_LIGHT);
+	// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
+	auto layout = create_pango_layout(this->nombreObjeto);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->height = text_height;
+	this->posX = posX;
+	this->posY = posY;
+	this->width = width;
+	this->nombreObjeto = nombreObjeto;
+	refTextViewConsola = Gtk::TextBuffer::create();
+	refTextViewConsola->set_text("");
+	this->referencia=nullptr;
+	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
+}
+
+void Morph::agregarReferencia(Morph* referencia){
+	this->referencia = referencia;
+}
+
 
 Morph::Morph(){
 }
 
 void Morph::agregarSlot(std::string nombreSlot){
-	Morph* morph = new Morph(nombreSlot, this->posX,(this->posY)+(this->height));
-	morph -> width = this -> width;
+	//Morph* morph = new Morph(nombreSlot, this->posX, (this->posY)+(this->height), this->width, this->height);
+	Slot* slot = new Slot(nombreSlot, this->posX, (this->posY)+(this->height), this->width, this->height);
+	//this->height+=morph->height;
+	this->height+=slot->height;
+	
 	// ver que hacer con el alto del slot.
-	slots.push_back(morph);
+	slots.push_back(slot);
+	//slots.push_back(morph);
+}
+
+void Morph::agregarSlot(InterfaceSlot* interface_slot){
+
+	Slot* slot = new Slot(interface_slot->get_name(), this->posX, (this->posY)+(this->height), this->width, this->height);
+	this->height+=slot->height;
+	
+	std::cout << this ->height << std::endl;
+	std::cout << this -> width << std::endl;
+
+	slot->value = interface_slot->get_value();
+	slots.push_back(slot);
 }
 
 void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
-
-	Pango::FontDescription font;
-
-	font.set_family("Monospace");
-	font.set_weight(Pango::WEIGHT_BOLD);
-
-	// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
-	auto layout = create_pango_layout(this->nombreObjeto);
-
-	layout->set_font_description(font);
-
-	int text_width;
-	int text_height;
-
-	layout->get_pixel_size(text_width, text_height);
-
-	this->width = 2*text_width;
-	this->height = 2*text_height;
 
 	cr->set_line_width(2.5);
 	cr->set_source_rgb(0.0, 0.0, 0.0);
@@ -56,84 +85,66 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	cr-> stroke();
 
 	for (int i=0; i < slots.size(); ++i){
-		slots[i] -> draw_slot(cr);
+		//slots[i] -> draw_slot(cr);
+		slots[i] -> draw(cr);
 		//morph->width += text_width;
-		this->height += slots[i]->height;
+		//this->height += slots[i]->height;
 	}
+
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	auto layout = create_pango_layout(this->nombreObjeto);
+
+	int text_width;
+	int text_height;
+
+	layout->get_pixel_size(text_width, text_height);
 	
 	cr->move_to((this->posX)+(text_width/2), (this->posY)+(text_height/2));
 
 	layout->show_in_cairo_context(cr);
 }
 
-Morph* Morph::clikEnObtenerSlot(int posX,int posY){
-	for (int i=0; i < slots.size(); ++i){
-		// guardar cuando agregue poli
+Morph* Morph::clikEnObtenerSlot(int posX,int posY){     
+	for (int i=0; i < slots.size(); ++i){         // guardar cuando agregue poli         
 		if ((posX >= (slots[i]->posX) + (slots[i]->width) -10) && (posY >= (slots[i]->posY) + 2)
-	    	&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <= ((slots[i]->posY)+slots[i]->height-2)))
-		{		
-		//this->posX + this->width - 10, this->posY + 2, 8, text_height - 4
-		//if(*(slots[i]) == Morph(posX,posY)){
-     		//return slots[i]; 		
-     		// DECIDIR COMO HACER CON EL TEXT VIEW
-      		//slots[i]->agregarReferenciaA()
-      		Morph* morph = new Morph(slots[i]->nombreObjeto,slots[i]->posX + slots[i]->width + 20,slots[i]->posY+4,m_TextView);
-      		//morph->posX-8,morph->posY , 8, 8
-      		slots[i] -> morphsReferenciados.push_back(morph);		
-      		return morph;
-      	}
-	}
-	return nullptr;
+			&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <=
+			((slots[i]->posY)+slots[i]->height-2))) {   
+				Morph* morph = new Morph(slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView);             
+				//Morph* morph = new (slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView);             
+				
+				morph -> referencia = new Morph(morph->posX-8,morph->posY,8,8,m_TextView);                   
+				slots[i] -> referencia = morph->referencia;
+				morph -> referencia -> slotPadre = morph;
+				slots[i] -> referencia -> slotPadre = morph;
+				return morph;         
+			}     
+		}     
+	return nullptr; 
+}
+
+Slot* Morph::obtenerSlot(int posX,int posY){     
+	for (int i=0; i < slots.size(); ++i){         // guardar cuando agregue poli         
+		if ((posX >= (slots[i]->posX) + (slots[i]->width) -10) && (posY >= (slots[i]->posY) + 2)
+			&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <=
+			((slots[i]->posY)+slots[i]->height-2))) {   
+				return slots[i];     
+			}     
+		}     
+	return nullptr; 
 }
 
 Morph* Morph::clickEnReferenciaAMorph(int posX,int posY){
-		if ((posX >= this->posX-8) && (posY >= this->posY)
-	    		&& (posX <= ((this->posX))) && (posY <= ((this->posY)+8)))
+		/*if ((posX >= this->posX) && (posY >= this->posY)
+	    		&& (posX <= ((this->posX)+8)) && (posY <= ((this->posY)+8)))
 		{
 			std::cout << " referencia a morph" << std::endl;		
-      		Morph* morph = new Morph("",this->posX-8,this->posY,m_TextView);
-      		return morph;
-      	}
+      		//Morph* morph = new Morph("",this->posX-8,this->posY,m_TextView);
+      		referencia=nullptr;
+      		return referencia;
+      	}*/
 	return nullptr;
-}
-
-// iria en la clase Slot.
-void Morph::draw_slot(const Cairo::RefPtr<Cairo::Context>& cr){
-	Pango::FontDescription font;
-
-	font.set_family("Monospace");
-	font.set_weight(Pango::WEIGHT_LIGHT);
-
-	// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
-	auto layout = create_pango_layout(this->nombreObjeto);
-
-	layout->set_font_description(font);
-
-	int text_width,text_height;
-	layout->get_pixel_size(text_width, text_height);
-	
-	this->height = text_height;
-
-	cr -> rectangle(this->posX , this->posY, this->width, this->height);
-	cr->set_line_width(0.5);
-	//cr-> stroke_preserve();
-	cr -> rectangle(this->posX + this->width - 10, this->posY + 2, 8, this->height - 4);
-	cr-> stroke();
-		
-	for (int i=0; i < morphsReferenciados.size(); ++i){
-		Morph* morph = morphsReferenciados[i];
-		cr->move_to(this->posX + this->width - 6, this->posY + (this->height/2));
-		//cr -> line_to(morph->posX,morph->posY+4);
-		//cr->rectangle(morph->posX,morph->posY , 10, 10);
-		cr -> line_to(morph->posX-8,morph->posY+4);
-		cr->rectangle(morph->posX-8,morph->posY , 8, 8);
-	}
-	
-	cr-> stroke();
-
-	cr->move_to(this->posX, this->posY);
-
-	layout->show_in_cairo_context(cr);
 }
 
 void Morph::mostrarDescripcionMorph(){
@@ -146,25 +157,42 @@ void Morph::mostrarDescripcionMorph(){
 void Morph::actualizar_posicion(double x, double y){
 	
 	// para no dibujar fuera de la ventana
-	/*if (x > 400 + width || y + height > 800){
-		if (x > 400 + width){
-			this->posX = 400 + width;
-		}
-		if (x > 400 + width){
+	/*if (x + width > 400 || y + height > 800){
+		if (x + width > 400 ){
+			this->posX = 400;
+		} 
+		if (y + height > 800 ){
 			this -> posY = 800;
 		}
 		return;
 	}
 	if (x < 0 || y < 0){
+		if (x < 0){
+			this->posX = 0;
+		}
+		if (y < 0){
+			this -> posY = 0;
+		}
 		return;
 	}*/
 	for (int i=0; i < slots.size(); ++i){
+		std::cout << "actualizaar pos slot\n";
 		slots[i] -> posX = x;
-		slots[i] -> posY = y + (slots[i]->posY - this->posY) ;
+		slots[i] -> posY = y + (slots[i]->posY - this->posY);
+		/*if(slots[i] -> referencia){
+			std::cout << "actualizaar referencia\n";
+			slots[i] ->referencia->posX=x-8;
+			slots[i] ->referencia->posY=y;
+		}*/
+	}
+	if(referencia != nullptr){
+		referencia->posX=x-8;
+		referencia->posY=y;
 	}
 	this->posX = x;
-	this->posY = y;
-		
+	this->posY = y;		
 }
+
+
 
 Morph::~Morph(){}
