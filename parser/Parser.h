@@ -1,46 +1,37 @@
+
 #ifndef PARSER_H_
 #define PARSER_H_
 
-#include "Linker.h"
-#include <string>
-#include <vector>
-
 class Parser {
-private:
-	Linker linker;
 public:
 	Parser();
-	void ingresar_scripts(std::string codigo);
+	void parsear(std::string codigo);
 	virtual ~Parser();
-
 private:
-	bool parsear(std::string entrada);
-	bool expression(std::string expression);
-	bool unary_message(std::string unary_message);
-	bool receiver(std::string receiver);
-	bool name(std::string name);
-	bool expressionCP(std::string receiber);
-	bool expressionP(std::string receiber);
-	bool constant(std::string constant);
-	bool esString(std::string _string);
-	bool esNumber(std::string number);
-	bool object(std::string object);
-	bool slot_list(std::string s_list);
-	bool slot_name_extended(std::string s_name_extended);
-	bool keyword_message(std::string key_message);
-	bool lower_keyword(std::string lower_key);
+	bool script(std::stringstream* codigo, int* posicion);
+	bool expression(std::stringstream* codigo, int* posicion);
+	bool keyword_message(std::stringstream* codigo, int* posicion);
+	bool binary_message(std::stringstream* codigo, int* posicion);
+	bool unary_message(std::stringstream* codigo, int* posicion);
+	bool expressionCP(std::stringstream* codigo, int* posicion);
+	bool receiver(std::stringstream* codigo, int* posicion);
+	bool constant(std::stringstream* codigo, int* posicion);
+	bool expressionP(std::stringstream* codigo, int* posicion);
+	bool number(std::stringstream* codigo, int* posicion);
+	bool text(std::stringstream* codigo, int* posicion);
+	bool object(std::stringstream* codigo, int* posicion);
+	bool slot_list(std::stringstream* codigo, int* posicion);
+	bool slot_name_extended(std::stringstream* codigo, int* posicion);
+	bool nil(std::stringstream* codigo, int* posicion);
+	bool name(std::stringstream* codigo, int* posicion);
+	bool operador(std::stringstream* codigo, int* posicion);
+	bool lower_keyword(std::stringstream* codigo, int* posicion);
 
 
 
+	bool final(std::stringstream *codigo, int* posicion);
 
-	void modificarScript(std::string* script, std::string* otra_expression);
-
-
-
-
-	//Clase Utilidades o reemplazar con un regex, despues fijate
-	std::string cortarString(std::string cadena, int inicio, int fin);
 
 };
 
-#endif /* PARSER_H */
+#endif /* PARSER_H_ */
