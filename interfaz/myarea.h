@@ -2,7 +2,8 @@
 #define GTKMM_EXAMPLE_MYAREA_H
 #include <gtkmm.h>
 #include "morph.h"
-
+#include "common_proxyServer.h"
+#include "referencia.h"
 #include <gtkmm/drawingarea.h>
 
 class MyArea : public Gtk::DrawingArea
@@ -12,7 +13,7 @@ protected:
   Gtk::Menu m_Menu_Popup;
   Gtk::MenuItem MenuItemAgregarSlot;
 
-  Gtk::Label* lNombreObejto;
+  Gtk::Label* lNombreObjeto;
 	Gtk::Button* m_pButton;
   Gtk::Button* m_pButton2;
   Gtk::Button* m_pButton3;
@@ -22,16 +23,13 @@ protected:
 
   bool resetFlag;
   bool moveFlag;
-  bool targetFlag;
-  double scale =1;
   Morph* actual;
   std::vector<Morph*> morphs;
 
-  // Coordinates of the image point to place at the center of the window (focussed pixel)
-  double                      imgFocusX,imgFocusY;
-
   // Used to memorize last mouse coordinates
-  int                         lastXMouse, lastYMouse;
+  int offXMouse, offYMouse;
+
+  ProxyServer proxyServer;
 
 public:
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder, bool warning);

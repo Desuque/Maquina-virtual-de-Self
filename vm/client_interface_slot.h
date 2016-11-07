@@ -17,6 +17,8 @@ class InterfaceSlot{
 		InterfaceSlot();
 		InterfaceSlot(string name, string value, bool code, bool type);
 		void print_attr();
+		string get_name();
+		string get_value();
 };
 
 #endif

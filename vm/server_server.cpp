@@ -11,7 +11,7 @@ void Server::recv_messages(){
 
 string Server::get_slots(string object){
 	//Slot* obj = call parser to get object
-	Slot* obj = vm->search_obj("lobby");
+	Slot* obj = vm->search_obj(object);
 	string obj_str = vm->get_slots(obj); 
 	return obj_str;
 }

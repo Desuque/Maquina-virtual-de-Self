@@ -22,3 +22,11 @@ void InterfaceSlot::print_attr(){
 		  << " Type " << this -> type
 		  << " Code " << this -> code << std::endl;
 }
+
+std::string InterfaceSlot::get_name(){
+	return this->name;
+}
+
+std::string InterfaceSlot::get_value(){
+	return this->value;
+}

@@ -1,8 +1,12 @@
 #ifndef MORPH_H
 #define MORPH_H
-
+class Slot;
+class Referencia;
 #include <iostream>
 #include <gtkmm.h>
+#include "../vm/interface_slot.h"
+//#include "slot.h"
+//#include "referencia.h"
 
 class Morph : public Gtk::DrawingArea{
 	public:
@@ -10,8 +14,10 @@ class Morph : public Gtk::DrawingArea{
 		Gtk::TextView* m_TextView;
 		//Glib::RefPtr<Gtk::Builder> m_builder;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
-		Morph* referencia = nullptr;
-		std::vector<Morph*> slots;
+		Morph* referencia;
+		Morph* slotPadre;
+		//std::vector<Morph*> slots;
+		std::vector<Slot*> slots;
 		std::vector<Morph*> morphsReferenciados;
 		int posX;
 		int posY;
@@ -19,26 +25,11 @@ class Morph : public Gtk::DrawingArea{
 		int height;
 	public:
 		Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView);
-
+		
+		Morph(std::string nombreObjeto, double posX, double posY, int width, int height);
+		
 		Morph(std::string nombreObjeto, double posX, double posY) : 
-				nombreObjeto(nombreObjeto), posX(posX), posY(posY){
-					Pango::FontDescription font;
-					font.set_family("Monospace");
-					font.set_weight(Pango::WEIGHT_BOLD);
-					// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
-					auto layout = create_pango_layout(this->nombreObjeto);
-					layout->set_font_description(font);
-					int text_width;
-					int text_height;
-					layout->get_pixel_size(text_width, text_height);
-					this->width = 2*text_width;
-					this->height = 2*text_height;
-					refTextViewConsola = Gtk::TextBuffer::create();
-					refTextViewConsola->set_text("");
-		}
-
-		Morph(std::string nombreObjeto, double posX, double posY, 	Gtk::TextView* m_TextView) : 
-				nombreObjeto(nombreObjeto), posX(posX), posY(posY), m_TextView(m_TextView){
+			nombreObjeto(nombreObjeto), posX(posX), posY(posY), referencia(nullptr){
 			Pango::FontDescription font;
 			font.set_family("Monospace");
 			font.set_weight(Pango::WEIGHT_BOLD);
@@ -52,9 +43,26 @@ class Morph : public Gtk::DrawingArea{
 			this->height = 2*text_height;
 			refTextViewConsola = Gtk::TextBuffer::create();
 			refTextViewConsola->set_text("");
+		}
+
+		Morph(std::string nombreObjeto, double posX, double posY, 	Gtk::TextView* m_TextView) : 
+				nombreObjeto(nombreObjeto), posX(posX), posY(posY), m_TextView(m_TextView), referencia(nullptr) {
+			Pango::FontDescription font;
+			font.set_family("Monospace");
+			font.set_weight(Pango::WEIGHT_BOLD);
+			// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
+			auto layout = create_pango_layout(this->nombreObjeto);
+			layout->set_font_description(font);
+			int text_width;
+			int text_height;
+			layout->get_pixel_size(text_width, text_height);
+			this->width = 2*text_width;
+			this->height = 2*text_height;
+			refTextViewConsola = Gtk::TextBuffer::create();
+			refTextViewConsola->set_text("");
+			//referencia = new Morph(posX-8,posY,8,8,m_TextView);
   		}
   		Morph* get_it(){
-			std::cout << "Action 1 selected" << std::endl;
 			std::string objeto;
 			std::string mensaje;
 			if (!m_TextView) std::cout << "error" << std::endl;
@@ -64,12 +72,23 @@ class Morph : public Gtk::DrawingArea{
 			iss >> std::noskipws;
 			iss >> objeto  >> mensaje;  
 			std::cout << objeto << std::endl;
-			if (str == "") objeto = "que?!";
-			return new Morph(objeto,200,200,m_TextView);
+			//Morph* morph = nullptr;
+			if (str != ""){
+				//morph = new Morph("que?",200,200,m_TextView);
+				this->nombreObjeto=objeto;
+				
+			}/* else {
+				morph = new Morph(objeto,200,200,m_TextView);
+            }*/
+
+            // ENVIAR A SERVIDOR
+            std::cout << this->nombreObjeto << " " << str
+            		  << std::endl;
+			
+			return this;
   		}
 
   		void do_it(){
-			std::cout << "Action 1 selected" << std::endl;
 			std::string objeto;
 			std::string mensaje;
 			if (!m_TextView) std::cout << "error" << std::endl;
@@ -79,8 +98,20 @@ class Morph : public Gtk::DrawingArea{
 			iss >> std::noskipws;
 			iss >> objeto  >> mensaje;  
 			std::cout << objeto << std::endl;
+			// ENVIAR A SERVIDOR
+            std::cout << this->nombreObjeto << " " << str
+            		  << std::endl;
   		}
   		void agregarSlot(std::string nombreSlot);
+  		// decidir como hacer esto.
+  		void agregarSlot(InterfaceSlot* nombreSlot);
+  		bool esUnaReferencia(){
+  			// SOLUCIONAR
+  			return (height==8 && width==8);
+  		}
+
+  		Slot* obtenerSlot(int posX,int posY);
+
   		Morph* clikEnObtenerSlot(int posX,int posY);
   		Morph* clickEnReferenciaAMorph(int posX,int posY);
 		Morph(double posX, double posY);
@@ -94,10 +125,15 @@ class Morph : public Gtk::DrawingArea{
 	    	}
 	    	return false;
 	    }
+	    bool operator!=(const Morph& rhs) const { 
+	    	return !(*this==rhs);
+	    }
 
 		void draw(const Cairo::RefPtr<Cairo::Context>& cr);
 		void draw_slot(const Cairo::RefPtr<Cairo::Context>& cr);
-		~Morph();
+
+		void agregarReferencia(Morph* referencia);
+		virtual ~Morph();
 };
 
 #endif

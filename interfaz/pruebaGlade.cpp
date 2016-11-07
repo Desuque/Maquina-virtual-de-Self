@@ -17,9 +17,6 @@ int main(int argc, char *argv[])
 	
 	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
 
-    /*Gtk::Box* h_Box = nullptr;
-    refBuilder->get_widget("boxPrincipal", h_Box);*/
-
 	MyArea* myArea = nullptr;
 	refBuilder-> Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 
