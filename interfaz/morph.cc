@@ -23,6 +23,41 @@ Morph::Morph(double posX, double posY, int width, int height,Gtk::TextView* m_Te
 	this->referencia=nullptr;
 }
 
+Morph::Morph(std::string nombreObjeto, double posX, double posY) : 
+	nombreObjeto(nombreObjeto), posX(posX), posY(posY), referencia(nullptr){
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
+	auto layout = create_pango_layout(this->nombreObjeto);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->width = 2*text_width;
+	this->height = 2*text_height;
+	refTextViewConsola = Gtk::TextBuffer::create();
+	refTextViewConsola->set_text("");
+}
+
+Morph::Morph(std::string nombreObjeto, double posX, double posY, 	Gtk::TextView* m_TextView) : 
+		nombreObjeto(nombreObjeto), posX(posX), posY(posY), m_TextView(m_TextView), referencia(nullptr) {
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
+	auto layout = create_pango_layout(this->nombreObjeto);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->width = 2*text_width;
+	this->height = 2*text_height;
+	refTextViewConsola = Gtk::TextBuffer::create();
+	refTextViewConsola->set_text("");
+	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
+}
+
 Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int height){
 	Pango::FontDescription font;
 	font.set_family("Monospace");
@@ -44,21 +79,57 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int 
 	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
 }
 
-void Morph::agregarReferencia(Morph* referencia){
-	this->referencia = referencia;
-}
-
-
 Morph::Morph(){
 }
+
+Morph* Morph::get_it(){
+	std::string objeto;
+	std::string mensaje;
+	if (!m_TextView) std::cout << "error" << std::endl;
+	refTextViewConsola = m_TextView -> get_buffer();
+	std::string str = m_TextView->get_buffer()->get_text();
+	std::istringstream iss(str);
+	iss >> std::noskipws;
+	iss >> objeto  >> mensaje;  
+	std::cout << objeto << std::endl;
+	//Morph* morph = nullptr;
+	if (str != ""){
+		//morph = new Morph("que?",200,200,m_TextView);
+		this->nombreObjeto=objeto;
+		
+	}/* else {
+		morph = new Morph(objeto,200,200,m_TextView);
+	}*/
+
+	// ENVIAR A SERVIDOR
+	std::cout << this->nombreObjeto << " " << str
+			  << std::endl;
+
+	return this;
+}
+
+void Morph::do_it(){
+	std::string objeto;
+	std::string mensaje;
+	if (!m_TextView) std::cout << "error" << std::endl;
+	refTextViewConsola = m_TextView -> get_buffer();
+	std::string str = m_TextView->get_buffer()->get_text();
+	std::istringstream iss(str);
+	iss >> std::noskipws;
+	iss >> objeto  >> mensaje;  
+	std::cout << objeto << std::endl;
+	// ENVIAR A SERVIDOR
+	std::cout << this->nombreObjeto << " " << str
+			  << std::endl;
+}
+
+
 
 void Morph::agregarSlot(std::string nombreSlot){
 	//Morph* morph = new Morph(nombreSlot, this->posX, (this->posY)+(this->height), this->width, this->height);
 	Slot* slot = new Slot(nombreSlot, this->posX, (this->posY)+(this->height), this->width, this->height);
 	//this->height+=morph->height;
 	this->height+=slot->height;
-	
-	// ver que hacer con el alto del slot.
 	slots.push_back(slot);
 	//slots.push_back(morph);
 }
@@ -151,7 +222,9 @@ void Morph::mostrarDescripcionMorph(){
 	//Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;
 	//m_refTextBuffer1 = Gtk::TextBuffer::create();
 	//refTextViewConsola->set_text("");
-	m_TextView -> set_buffer(refTextViewConsola);
+	if (m_TextView){
+		m_TextView -> set_buffer(refTextViewConsola);
+	}
 }
 
 void Morph::actualizar_posicion(double x, double y){
@@ -179,11 +252,6 @@ void Morph::actualizar_posicion(double x, double y){
 		std::cout << "actualizaar pos slot\n";
 		slots[i] -> posX = x;
 		slots[i] -> posY = y + (slots[i]->posY - this->posY);
-		/*if(slots[i] -> referencia){
-			std::cout << "actualizaar referencia\n";
-			slots[i] ->referencia->posX=x-8;
-			slots[i] ->referencia->posY=y;
-		}*/
 	}
 	if(referencia != nullptr){
 		referencia->posX=x-8;
