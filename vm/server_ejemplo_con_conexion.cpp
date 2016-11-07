@@ -1,8 +1,8 @@
-#include "virtual_machine.h"
-#include "slot.h"
-#include "interface_slot.h"
-#include "json_reader.h"
-#include "server.h"
+#include "server_virtual_machine.h"
+#include "server_slot.h"
+#include "client_interface_slot.h"
+#include "client_json_reader.h"
+#include "server_server.h"
 #include "../interfaz/common_proxyClient.h"
 #include <iostream>
 
