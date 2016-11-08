@@ -215,6 +215,9 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
           
           if (slot->value == "object"){
             std::string infoSlots = proxyServer.recibirSlotsDe(slot->name);
+            std::cout << slot->name << std::endl;
+            std::cout << slot->value << std::endl;
+
             //DECODIFICACION DEL JSON (CLIENTE)
             std::vector<InterfaceSlot*> i_slots;
             JsonReader slots_reader;

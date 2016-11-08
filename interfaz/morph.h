@@ -20,7 +20,6 @@ class Morph : public Gtk::DrawingArea{
 		Morph* slotPadre;
 		//std::vector<Morph*> slots;
 		std::vector<Slot*> slots;
-		std::vector<Morph*> morphsReferenciados;
 		int posX;
 		int posY;
 		int width;
@@ -29,17 +28,14 @@ class Morph : public Gtk::DrawingArea{
 		Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView);
 		Morph(std::string nombreObjeto, double posX, double posY, int width, int height);
 		Morph(std::string nombreObjeto, double posX, double posY);
-		Morph(std::string nombreObjeto, double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
+		Morph(std::string nombreObjeto, double posX, double posY, 
+			Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
 
   		Morph* get_it();
   		void do_it();
   		void agregarSlot(std::string nombreSlot);
   		// decidir como hacer esto.
   		void agregarSlot(InterfaceSlot* nombreSlot);
-  		bool esUnaReferencia(){
-  			// SOLUCIONAR
-  			return (height==8 && width==8);
-  		}
 
   		Slot* obtenerSlot(int posX,int posY);
 

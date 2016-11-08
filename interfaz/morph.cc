@@ -189,7 +189,7 @@ Morph* Morph::clikEnObtenerSlot(int posX,int posY){
 			&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <=
 			((slots[i]->posY)+slots[i]->height-2))) {   
 				Morph* morph = nullptr;
-				if(slots[i]->type){
+				if(slots[i]->code){
 					morph = new Morph(slots[i]->name,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
 					morph -> refTextViewCodigoAsociado->set_text(slots[i]->value);
 				} else {

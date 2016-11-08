@@ -140,32 +140,34 @@ int main(int argc, char** argv){
 		// me solicitan los slots de lobby
 		try {
 			std::cout << proxyClient.recibirCodigoMensaje(1) << std::endl;
-		} catch (const std::exception e){ }
 
-		uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
+			uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
 
-		std::string nombreObjeto = proxyClient.recibir(tamMensaje);
+			std::string nombreObjeto = proxyClient.recibir(tamMensaje);
 
-		std::cout << nombreObjeto << std::endl;
+			std::cout << nombreObjeto << std::endl;
 
-		/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
-		string string_to_send = server.get_slots(nombreObjeto);
+			/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
+			string string_to_send = server.get_slots(nombreObjeto);
 
-		proxyClient.enviarSlots(string_to_send);
+			proxyClient.enviarSlots(string_to_send);
 
-		/***DECODIFICACION DEL JSON (CLIENTE)***/
-		std::vector<InterfaceSlot*> i_slots;
-		JsonReader slots_reader;
-		slots_reader.read(i_slots, string_to_send);
+			/***DECODIFICACION DEL JSON (CLIENTE)***/
+			std::vector<InterfaceSlot*> i_slots;
+			JsonReader slots_reader;
+			slots_reader.read(i_slots, string_to_send);
 
-		/***VEO SI LA LECTURA FUE CORRECTA***/
-		int size = i_slots.size();
-		for (int i = 0; i < size ; i++)
-			i_slots[i] -> print_attr();
+			/***VEO SI LA LECTURA FUE CORRECTA***/
+			int size = i_slots.size();
+			for (int i = 0; i < size ; i++)
+				i_slots[i] -> print_attr();
 
-		for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
-			delete* it;  
-			it = i_slots.erase(it);
+			for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+				delete* it;  
+				it = i_slots.erase(it);
+			}
+		} catch (const std::exception e){ 
+
 		}
 	}
 
