@@ -38,10 +38,15 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY) :
 	this->height = 2*text_height;
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
+
 }
 
-Morph::Morph(std::string nombreObjeto, double posX, double posY, 	Gtk::TextView* m_TextView) : 
-		nombreObjeto(nombreObjeto), posX(posX), posY(posY), m_TextView(m_TextView), referencia(nullptr) {
+// SE USA ESTE SIEMPRE VER LOS DEMAS ELIMINAR
+Morph::Morph(std::string nombreObjeto, double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) : 
+		nombreObjeto(nombreObjeto), posX(posX), 
+		posY(posY), m_TextView(m_TextView),
+		textViewCodigoAsociado(codigoAsociado),
+		referencia(nullptr) {
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
@@ -55,6 +60,8 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY, 	Gtk::TextView*
 	this->height = 2*text_height;
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
+	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+	refTextViewCodigoAsociado->set_text("");
 	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
 }
 
@@ -139,10 +146,9 @@ void Morph::agregarSlot(InterfaceSlot* interface_slot){
 	Slot* slot = new Slot(interface_slot->get_name(), this->posX, (this->posY)+(this->height), this->width, this->height);
 	this->height+=slot->height;
 	
-	std::cout << this ->height << std::endl;
-	std::cout << this -> width << std::endl;
-
+	slot->code = interface_slot->has_code();
 	slot->value = interface_slot->get_value();
+	slot->type = interface_slot->get_type();
 	slots.push_back(slot);
 }
 
@@ -182,7 +188,13 @@ Morph* Morph::clikEnObtenerSlot(int posX,int posY){
 		if ((posX >= (slots[i]->posX) + (slots[i]->width) -10) && (posY >= (slots[i]->posY) + 2)
 			&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <=
 			((slots[i]->posY)+slots[i]->height-2))) {   
-				Morph* morph = new Morph(slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView);             
+				Morph* morph = nullptr;
+				if(slots[i]->type){
+					morph = new Morph(slots[i]->name,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
+					morph -> refTextViewCodigoAsociado->set_text(slots[i]->value);
+				} else {
+					morph = new Morph(slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
+				}
 				//Morph* morph = new (slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView);             
 				
 				morph -> referencia = new Morph(morph->posX-8,morph->posY,8,8,m_TextView);                   
@@ -224,6 +236,9 @@ void Morph::mostrarDescripcionMorph(){
 	//refTextViewConsola->set_text("");
 	if (m_TextView){
 		m_TextView -> set_buffer(refTextViewConsola);
+	}
+	if (textViewCodigoAsociado){
+		textViewCodigoAsociado->set_buffer(refTextViewCodigoAsociado);
 	}
 }
 

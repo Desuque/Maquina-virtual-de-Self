@@ -12,8 +12,10 @@ class Morph : public Gtk::DrawingArea{
 	public:
 		std::string nombreObjeto;
 		Gtk::TextView* m_TextView;
+		Gtk::TextView* textViewCodigoAsociado;
 		//Glib::RefPtr<Gtk::Builder> m_builder;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
+		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
 		Morph* referencia;
 		Morph* slotPadre;
 		//std::vector<Morph*> slots;
@@ -27,7 +29,7 @@ class Morph : public Gtk::DrawingArea{
 		Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView);
 		Morph(std::string nombreObjeto, double posX, double posY, int width, int height);
 		Morph(std::string nombreObjeto, double posX, double posY);
-		Morph(std::string nombreObjeto, double posX, double posY, 	Gtk::TextView* m_TextView);
+		Morph(std::string nombreObjeto, double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
 
   		Morph* get_it();
   		void do_it();

@@ -18,7 +18,8 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   m_builder(builder),
   m_pButton(nullptr),
   m_pButton2(nullptr),
-  m_TextView(nullptr)
+  m_TextView(nullptr),
+  textViewCodAsociado(nullptr)
 {
   add_events(Gdk::BUTTON_PRESS_MASK |
          Gdk::BUTTON_RELEASE_MASK |
@@ -55,6 +56,9 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   m_builder-> Gtk::Builder::get_widget("textview2", m_TextView);
   if (m_TextView == NULL) std::cout << "error" << std::endl;
 
+  m_builder-> Gtk::Builder::get_widget("textview1", textViewCodAsociado);
+  if (textViewCodAsociado == nullptr) std::cout << "error" << std::endl; 
+	
   resetFlag=true;
   queue_draw();
   moveFlag=false;
@@ -72,7 +76,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     JsonReader slots_reader;
     slots_reader.read(i_slots, infoSlots);
 
-    Morph* lobby= new Morph("lobby",10.,10.,m_TextView);
+    Morph* lobby= new Morph("lobby",10.,10.,m_TextView, textViewCodAsociado);
     actual=lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     morphs.push_back(lobby);
@@ -89,7 +93,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     }
 
   } catch (const std::exception &e) {
-    Morph* lobby= new Morph("lobby",10.,10.,m_TextView);
+    Morph* lobby= new Morph("lobby",10.,10.,m_TextView,textViewCodAsociado);
     actual=lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     morphs.push_back(lobby);    
@@ -132,7 +136,7 @@ void MyArea::agregarSlot_event(){
 }
 
 void MyArea::get_it_event(){
-  Morph* morph = new Morph("que?",200,200,m_TextView);
+  Morph* morph = new Morph("que?",200,200,m_TextView,textViewCodAsociado);
   actual = morph->get_it();
   //morph->nombreObjeto=objeto;
   morphs.push_back(actual); 
@@ -208,6 +212,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
             std::cout << "error obtenerSlot devolvio null" << std::endl;
           }
           std::string infoSlots="";
+          
           if (slot->value == "object"){
             std::string infoSlots = proxyServer.recibirSlotsDe(slot->name);
             //DECODIFICACION DEL JSON (CLIENTE)

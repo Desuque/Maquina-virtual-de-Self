@@ -20,6 +20,7 @@ protected:
 
   sigc::connection sigcButtonGuardar;
   Gtk::TextView* m_TextView;
+  Gtk::TextView* textViewCodAsociado;
 
   bool resetFlag;
   bool moveFlag;

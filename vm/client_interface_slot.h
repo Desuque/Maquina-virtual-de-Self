@@ -19,6 +19,8 @@ class InterfaceSlot{
 		void print_attr();
 		string get_name();
 		string get_value();
+		bool has_code();
+		bool get_type();
 };
 
 #endif

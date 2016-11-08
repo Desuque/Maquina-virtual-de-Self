@@ -30,3 +30,12 @@ std::string InterfaceSlot::get_name(){
 std::string InterfaceSlot::get_value(){
 	return this->value;
 }
+
+bool InterfaceSlot::has_code(){
+	return this->code;
+}
+
+bool InterfaceSlot::get_type(){
+	return this->type;
+}
+
