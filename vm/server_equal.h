@@ -6,6 +6,7 @@
 
 class Equal: public Object{
 	public:
+		Equal(int id);
 		Slot* execute(VM& vm, p_objects& args);
 };
 

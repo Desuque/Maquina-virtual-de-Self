@@ -21,7 +21,7 @@ class Slot: public Object{
 		Object* value;
 	
 	public:
-		Slot(string slot_name);
+		Slot(int id, string slot_name);
 		string get_name();
 		string parent_name();
 		Object* get_value();
@@ -29,11 +29,11 @@ class Slot: public Object{
 		void set_parent(bool val, string name_parent);
 		void set_code(bool val);
 		void set_type(bool val);
-		void set_obj_value();
-		void set_int_value(int value);
-		void set_boolean_value(bool value);
-		void set_string_value(string value);
-		void set_int_method_value(string name);
+		void set_obj_value(int id);
+		void set_int_value(int id, int value);
+		void set_boolean_value(int id, bool value);
+		void set_string_value(int id, string value);
+		void set_int_method_value(int id, string name);
 		void add_slot(Slot* slot);
 		bool name_is(string name);
 		bool is_parent();

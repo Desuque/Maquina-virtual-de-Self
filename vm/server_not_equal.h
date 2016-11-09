@@ -6,6 +6,7 @@
 
 class NotEqual: public Object{
 	public:
+		NotEqual(int id);
 		Slot* execute(VM& vm, p_objects& args);
 };
 

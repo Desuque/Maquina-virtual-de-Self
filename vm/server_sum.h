@@ -6,6 +6,7 @@
 
 class Sum: public Object{
 	public:
+		Sum(int id);
 		Slot* execute(VM& vm, p_objects& args);
 };
 

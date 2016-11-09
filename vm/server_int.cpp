@@ -2,7 +2,7 @@
 #include <iostream>
 #include "server_virtual_machine.h"
 
-Int::Int(int value){
+Int::Int(int id, int value):Object(id){
 	this -> value = value;
 }
 

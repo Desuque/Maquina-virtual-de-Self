@@ -15,8 +15,9 @@ void JsonReader::read(std::vector<InterfaceSlot*>& i_slots, string json_slots){
 		string value = (*itr)["value"].GetString();
 		bool type = (*itr)["type"].GetBool();
 		bool code = (*itr)["code"].GetBool();
+		int id = (*itr)["id"].GetInt();
 		/*std::cout << name << ": " << value 
 			<< " C: " << code << " T: " << type << std::endl;*/
-		i_slots.push_back(new InterfaceSlot(name, value, code, type));
+		i_slots.push_back(new InterfaceSlot(name, value, code, type, id));
 	}
 }

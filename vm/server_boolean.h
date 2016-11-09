@@ -8,7 +8,7 @@ class Boolean: public Object{
 	private:
 		bool value;
 	public:
-		Boolean(bool value);
+		Boolean(int id, bool value);
 		Slot* clone(VM& vm);
 		Slot* print(VM& vm);
 		string as_string();

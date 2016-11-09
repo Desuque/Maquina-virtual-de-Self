@@ -2,7 +2,7 @@
 #include <iostream>
 #include "server_virtual_machine.h"
 
-String::String(string value){
+String::String(int id, string value):Object(id){
 	this -> value = value;
 }
 

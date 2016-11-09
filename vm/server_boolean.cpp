@@ -2,7 +2,7 @@
 #include <iostream>
 #include "server_virtual_machine.h"
 
-Boolean::Boolean(bool value){
+Boolean::Boolean(int id, bool value):Object(id){
 	this -> value = value;
 }
 
