@@ -9,10 +9,14 @@ static const char* class_name = "object";
 static const char* name_slot = "_Name";
 static const char* self_slot = "_Self";
 
-Object::Object(){
+Object::Object(int id){
 	this -> mark = false;
+	this -> id = id;
 }
 
+int Object::get_id(){
+	return this -> id;
+}
 
 void Object::set_mark(bool val){
 	this -> mark = val;

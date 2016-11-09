@@ -9,9 +9,10 @@ Server::Server(){
 void Server::recv_messages(){
 }
 
-string Server::get_slots(string object){
+string Server::get_slots(string id){
 	//Slot* obj = call parser to get object
-	Slot* obj = vm->search_obj(object);
+	//Slot* obj = vm->search_obj(object);
+	Slot* obj = vm->search_obj_id(std::stoi(id));
 	string obj_str = vm->get_slots(obj); 
 	return obj_str;
 }

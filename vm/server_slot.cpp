@@ -17,7 +17,7 @@ static const char* dv = "/";
 static const char* eq = "==";
 static const char* neq = "!=";
 
-Slot::Slot(string slot_name){
+Slot::Slot(int id, string slot_name):Object(id){
 	this -> name = slot_name;
 	this -> parent.first = false;
 	this -> parent.second = "";
@@ -34,43 +34,43 @@ Object* Slot::get_value(){
 	return this -> value;
 }
 
-void Slot::set_obj_value(){
+void Slot::set_obj_value(int id){
 	if (this -> type)
 		throw ErrorType(this -> name);
- 	this -> value = new Object();
+ 	this -> value = new Object(id);
 }
  
-void Slot::set_int_value(int value){
+void Slot::set_int_value(int id, int value){
 	if (this -> type)
 		throw ErrorType(this -> name);
- 	this -> value = new Int(value);
+ 	this -> value = new Int(id, value);
 }
  
-void Slot::set_string_value(string value){
+void Slot::set_string_value(int id, string value){
 	if (this -> type)
 		throw ErrorType(this -> name);
- 	this -> value = new String(value);
+ 	this -> value = new String(id, value);
 }
  
-void Slot::set_boolean_value(bool value){
+void Slot::set_boolean_value(int id, bool value){
 	if (this -> type)
 		throw ErrorType(this -> name);
-	this -> value = new Boolean(value);
+	this -> value = new Boolean(id, value);
 }
  
-void Slot::set_int_method_value(string name){
+void Slot::set_int_method_value(int id, string name){
 	if (name == sum)
-		this -> value = new Sum();
+		this -> value = new Sum(id);
 	else if (name == mult)
-		this -> value = new Mult();
+		this -> value = new Mult(id);
 	else if (name == sub)
-		this -> value = new Sub();
+		this -> value = new Sub(id);
 	else if (name == dv)
-		this -> value = new Div();
+		this -> value = new Div(id);
 	else if (name == eq)
-		this -> value = new Equal();
+		this -> value = new Equal(id);
 	else if (name == neq)
-		this -> value = new NotEqual();
+		this -> value = new NotEqual(id);
 }
 
 void Slot::set_name(string name){

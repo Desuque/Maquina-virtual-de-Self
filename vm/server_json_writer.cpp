@@ -12,8 +12,9 @@ string JsonWriter::write(m_slots& slots){
 		if (!sl->is_base_slot(sl)){
 			string name, value;
 			bool type, code;
-			get_slot_attr(sl, name, value, type, code);
-			write_slot_attr(writer,name, value, type, code);
+			int id;
+			get_slot_attr(sl, name, value, type, code, id);
+			write_slot_attr(writer,name, value, type, code, id);
 		}
 	}
 	
@@ -22,15 +23,18 @@ string JsonWriter::write(m_slots& slots){
 	return s.GetString();
 }
 
-void JsonWriter::get_slot_attr(Slot* sl, string& name, string& value, bool& type, bool& code){
+void JsonWriter::get_slot_attr(Slot* sl, string& name, string& value, bool& type, bool& code, int& id){
 	name = sl -> get_name();
 	value = sl -> get_value() -> as_string();
 	type = sl -> is_immutable();
 	code = sl -> is_code();
+	id = sl -> get_id();
 }
 
-void JsonWriter::write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code){
+void JsonWriter::write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code, int& id){
 	writer.StartObject();
+	writer.Key("id");
+	writer.Int(id);
 	writer.Key("name");
 	writer.String(name.c_str());
 	writer.Key("value");

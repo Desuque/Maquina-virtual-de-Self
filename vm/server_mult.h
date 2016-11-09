@@ -6,6 +6,7 @@
 
 class Mult: public Object{
 	public:
+		Mult(int id);
 		Slot* execute(VM& vm, p_objects& args);
 };
 

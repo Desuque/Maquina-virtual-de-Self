@@ -12,8 +12,10 @@ static const char* num_slots[] = {"+", "*", "-", "/", "==", "!="};
 static const int idx_global = 0;
 
 VM::VM(){
-	Slot* lobby = new Slot(global_obj);
-	lobby -> set_obj_value();
+	this -> id_slots = 0;
+	Slot* lobby = new Slot(this -> id_slots, global_obj);
+	this -> id_slots++;
+	lobby -> set_obj_value(get_id_slots());
 	add_basic_slots(lobby, global_obj);
 	lobby -> set_mark(true);
 }
@@ -24,18 +26,18 @@ Slot* VM::immutable_object(Slot* sl){
 }
 
 void VM::unmark_slots(){
-	int size = this -> slots.size();
-	for (int i = 1; i < size; i++)
-		slots[i] -> get_value() -> set_mark(false);
+	for (map_slots::iterator it = slots.begin(); it != slots.end();++it)  
+		(it->second) -> get_value() -> set_mark(false);
 }
 
 void VM::garbage_collector(){
-	for (p_slots::iterator it = slots.begin(); it != slots.end();){
-		if (!(*it) -> is_mark()){  
-			delete* it;  
-			it = slots.erase(it);
+	map_slots::iterator itr = slots.begin();
+	while (itr != slots.end()) {
+		if (!(itr->second) -> is_mark()){
+			delete itr->second;
+			itr = slots.erase(itr);
 		}else{
-			++it;
+			++itr;
 		}
 	}
 }
@@ -62,7 +64,7 @@ Slot* VM::pop_slot(){
 }
 
 void VM::checkpoint(){
-	Slot* check = new CheckPoint("check");
+	Slot* check = new CheckPoint(get_id_slots(), "check");
 	tmp_slots.push(check);
 }
 
@@ -83,7 +85,7 @@ Slot* VM::search_obj(string name){
 	if (name == global_obj)
 		return lobby;
 	
-	p_slots results;
+	p_slots2 results;
 	lobby -> get_value() -> look_up(name, results);
 	return results[0];
 }
@@ -112,49 +114,49 @@ Slot* VM::add_code(Slot* sl_recv, string sl_recv_id, Slot* sl){
 }
 
 void VM::add_default_name_slot(Slot* sl_recv, string name = obj_name){
-	Slot* sl = new Slot(name_slot);
-	sl -> set_string_value(name);
+	Slot* sl = new Slot(get_id_slots(), name_slot);
+	sl -> set_string_value(get_id_slots(), name);
 	sl_recv -> add_slot(sl);
-	this -> slots.push_back(sl);
+	this -> slots.insert(std::pair<int,Slot*>(sl -> get_id(),sl));
 }
 
 Slot* VM::create_object(){
-	Slot* sl = new Slot(obj_name);
-	sl -> set_obj_value();
+	Slot* sl = new Slot(get_id_slots(), obj_name);
+	sl -> set_obj_value(get_id_slots());
 	add_basic_slots(sl, obj_name);
 	return sl;
 }
 
 Slot* VM::create_int(int value){
-	Slot* sl = new Slot(std::to_string(value));
-	sl -> set_int_value(value);
+	Slot* sl = new Slot(get_id_slots(), std::to_string(value));
+	sl -> set_int_value(get_id_slots(), value);
 	add_basic_slots(sl, std::to_string(value));
 	add_default_numeric_slots(sl);
 	return sl;
 }
 
 Slot* VM::create_string(string value){
-	Slot* sl = new Slot(value);
-	sl -> set_string_value(value);
+	Slot* sl = new Slot(get_id_slots(), value);
+	sl -> set_string_value(get_id_slots(), value);
 	add_basic_slots(sl, value);
 	return sl;
 }
 
 Slot* VM::create_boolean(bool value){
-	Slot* sl = new Slot(std::to_string(value));
-	sl -> set_boolean_value(value);
+	Slot* sl = new Slot(get_id_slots(), std::to_string(value));
+	sl -> set_boolean_value(get_id_slots(), value);
 	add_basic_slots(sl, std::to_string(value));
 	return sl;
 }
 
 void VM::add_basic_slots(Slot* sl, string name){
-	this -> slots.push_back(sl);
+	this -> slots.insert(std::pair<int,Slot*>(sl -> get_id(),sl));
 	add_default_name_slot(sl, name);
 	add_default_self_slot(sl);
 }
 
 Slot* VM::search_msg(Slot* sl_recv, string msg){
-	p_slots results;
+	p_slots2 results;
 	sl_recv -> get_value() -> look_up(msg, results);
 	if (results.size() == 1)
 		return results[0];
@@ -211,19 +213,19 @@ Slot* VM::keyword_message(Slot* sl_recv, string obj_id, Slot* sl){
 
 void VM::add_default_numeric_slots(Slot* sl_recv){
 	for(const string &name : num_slots){
-		Slot* sl = new Slot(name);
-		sl -> set_int_method_value(name);
+		Slot* sl = new Slot(get_id_slots(), name);
+		sl -> set_int_method_value(get_id_slots(), name);
 		add_basic_slots(sl, name);
 		sl_recv -> add_slot(sl);
 	}
 }
 
 void VM::add_default_self_slot(Slot* sl_recv){
-	Slot* sl = new Slot(self_slot);
-	sl -> set_obj_value();
+	Slot* sl = new Slot(get_id_slots(), self_slot);
+	sl -> set_obj_value(get_id_slots());
 	sl -> set_parent(true, self_slot);
 	sl_recv -> add_slot(sl);
-	this -> slots.push_back(sl);
+	this -> slots.insert(std::pair<int,Slot*>(sl -> get_id(),sl));
 }
 
 string VM::save(){
@@ -233,8 +235,16 @@ string VM::save(){
 	return vm_slots;
 }
 
+int VM::get_id_slots(){
+	this ->id_slots++;
+	return id_slots;
+}
+
+Slot* VM::search_obj_id(int id){
+	return slots[id];
+}
+
 VM::~VM(){
-	int size = this -> slots.size();
-	for (int i = 0; i < size; i++)
-		delete this -> slots[i];
+	for (map_slots::iterator it = slots.begin(); it != slots.end();++it)  
+		delete (it->second);
 }

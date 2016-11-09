@@ -10,7 +10,7 @@ class String: public Object{
 	private:
 		string value;
 	public:
-		String(string value);
+		String(int id, string value);
 		string as_string();
 		Slot* clone(VM& vm);
 		Slot* print(VM& vm);

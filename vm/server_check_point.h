@@ -8,7 +8,7 @@ typedef std::string string;
 
 class CheckPoint: public Slot{
 	public:
-		CheckPoint(string name);
+		CheckPoint(int id, string name);
 		bool is_check();
 };
 

@@ -13,7 +13,7 @@ class Server{
 		Server();
 		void recv_messages();
 		VM* get_vm();
-		string get_slots(string context);
+		string get_slots(string id);
 		string save_vm();
 		~Server();
 		

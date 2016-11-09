@@ -18,9 +18,10 @@ class Object{
 	protected:
 		m_slots slots;
 		bool mark;
-
+		int id;
+		
 	public:
-		Object();
+		Object(int id);
 		void add_slot(Slot* sl);
 		Slot* rm_slot(string slot);
 		Slot* get_slot(string name);
@@ -28,6 +29,7 @@ class Object{
 		void mark_slots();
 		void set_mark(bool val);
 		string get_json_slots();
+		int get_id();
 		bool is_mark();
 		bool is_base_slot(Slot* sl);
 		bool is_num_slot(Slot* sl);

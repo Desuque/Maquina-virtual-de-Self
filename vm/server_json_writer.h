@@ -18,8 +18,8 @@ class JsonWriter{
 		string write(m_slots& slots);
 	
 	private:
-		void write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code);
-		void get_slot_attr(Slot* sl, string& name, string& value, bool& type, bool& code);
+		void write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code, int& id);
+		void get_slot_attr(Slot* sl, string& name, string& value, bool& type, bool& code, int& id);
 };
 
 #endif

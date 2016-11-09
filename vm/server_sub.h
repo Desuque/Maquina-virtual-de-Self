@@ -6,6 +6,7 @@
 
 class Sub: public Object{
 	public:
+		Sub(int id);
 		Slot* execute(VM& vm, p_objects& args);
 };
 

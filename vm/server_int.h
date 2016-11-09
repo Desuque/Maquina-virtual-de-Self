@@ -8,7 +8,7 @@ class Int: public Object{
 	private:
 		int value;
 	public:
-		Int(int value);
+		Int(int id, int value);
 		Slot* clone(VM& vm);
 		Slot* print(VM& vm);
 		string as_string();

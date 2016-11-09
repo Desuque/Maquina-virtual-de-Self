@@ -6,6 +6,7 @@
 
 class Div: public Object{
 	public:
+		Div(int id);
 		Slot* execute(VM& vm, p_objects& args);
 };
 

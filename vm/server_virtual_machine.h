@@ -4,29 +4,34 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <map>
 #include "server_object.h"
 
-typedef std::vector<Slot*> p_slots;
+typedef std::map<int, Slot*> map_slots;
+typedef std::vector<Slot*> p_slots2;
 typedef std::vector<Object*> p_objects;
 typedef std::string string;
 typedef std::stack<Slot*> stack_slots;
 
 class VM{
 	private:
-		p_slots slots;
+		map_slots slots;
 		stack_slots tmp_slots;
-		
+		int id_slots;
+
 	public:
 		VM();
 		void push_slot(Slot* sl);
 		void revert();
 		void checkpoint();
 		void collect();
+		int get_id_slots();
 		Slot* immutable_object(Slot* sl);
 		string save();
 		string get_slots(Slot* sl);
 		Slot* pop_slot();
 		Slot* search_obj(string name);
+		Slot* search_obj_id(int id);
 		Slot* create_object();
 		Slot* create_int(int value);
 		Slot* create_string(string value);
