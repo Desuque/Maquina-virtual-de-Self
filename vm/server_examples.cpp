@@ -125,7 +125,9 @@ int main(int argc, char** argv){
 	vm->revert();
 	
 	/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
-	string string_to_send = server.get_slots("lobby");
+	std::cout << "pido slots de lobby" << std::endl;
+	//string string_to_send = server.get_slots("lobby");
+	string string_to_send = server.get_slots("0");
 	
 	/***DECODIFICACION DEL JSON (CLIENTE)***/
 	std::vector<InterfaceSlot*> i_slots;
@@ -136,6 +138,27 @@ int main(int argc, char** argv){
 	int size = i_slots.size();
 	for (int i = 0; i < size ; i++)
 		i_slots[i] -> print_attr();
+	
+	for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();++it){  
+	
+		/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
+		std::vector<InterfaceSlot*> i_slots2;
+		std::cout << "pido slots de " << (*it) -> get_name() << std::endl;
+		string_to_send = server.get_slots(std::to_string((*it) -> get_id()));
+	
+		/***DECODIFICACION DEL JSON (CLIENTE)***/
+		slots_reader.read(i_slots2, string_to_send);
+	
+		/***VEO SI LA LECTURA FUE CORRECTA***/
+		size = i_slots2.size();
+		for (int i = 0; i < size ; i++)
+			i_slots2[i] -> print_attr();
+		
+		for (std::vector<InterfaceSlot*>::iterator itr = i_slots2.begin(); itr != i_slots2.end();){  
+			delete* itr;  
+			itr = i_slots2.erase(itr);
+		}
+	}
 	
 	for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
 		delete* it;  
