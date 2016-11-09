@@ -8,7 +8,7 @@
 #include "server_object.h"
 
 typedef std::map<int, Slot*> map_slots;
-typedef std::vector<Slot*> p_slots2;
+typedef std::vector<Slot*> p_slots;
 typedef std::vector<Object*> p_objects;
 typedef std::string string;
 typedef std::stack<Slot*> stack_slots;

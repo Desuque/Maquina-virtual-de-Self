@@ -85,7 +85,7 @@ Slot* VM::search_obj(string name){
 	if (name == global_obj)
 		return lobby;
 	
-	p_slots2 results;
+	p_slots results;
 	lobby -> get_value() -> look_up(name, results);
 	return results[0];
 }
@@ -156,7 +156,7 @@ void VM::add_basic_slots(Slot* sl, string name){
 }
 
 Slot* VM::search_msg(Slot* sl_recv, string msg){
-	p_slots2 results;
+	p_slots results;
 	sl_recv -> get_value() -> look_up(msg, results);
 	if (results.size() == 1)
 		return results[0];
