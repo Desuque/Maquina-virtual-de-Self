@@ -16,7 +16,8 @@ class Morph : public Gtk::DrawingArea{
 		//Glib::RefPtr<Gtk::Builder> m_builder;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
-		Morph* referencia;
+		Referencia* referencia;
+		std::vector<Referencia*> referencias;
 		Morph* slotPadre;
 		//std::vector<Morph*> slots;
 		std::vector<Slot*> slots;
@@ -33,6 +34,7 @@ class Morph : public Gtk::DrawingArea{
 
   		Morph* get_it();
   		void do_it();
+  		void actualizarAlturaMorph(size_t alturaDeSlot);
   		void agregarSlot(std::string nombreSlot);
   		// decidir como hacer esto.
   		void agregarSlot(InterfaceSlot* nombreSlot);

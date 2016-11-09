@@ -2,6 +2,16 @@
 #include <gtkmm.h>
 #include "myarea.h"
 
+// hacer en la clase windows.
+static MyArea* myArea;
+
+bool onWindowDelete(GdkEventAny*){
+	std::cout << "cerrar" << std::endl;
+	if (myArea){
+		myArea->liberarMemoria();
+	}
+	return false;
+}
 
 int main(int argc, char *argv[])
 {
@@ -17,9 +27,11 @@ int main(int argc, char *argv[])
 	
 	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
 
-	MyArea* myArea = nullptr;
+	//MyArea* myArea = nullptr;
 	refBuilder-> Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 
+	window->signal_delete_event().connect(sigc::ptr_fun(onWindowDelete));
+  	
   	app->run(*window);
 	
 	return 0;

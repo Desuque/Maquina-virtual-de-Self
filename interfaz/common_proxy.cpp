@@ -22,8 +22,11 @@ void Proxy::enviar(Socket& socket, std::string mensaje, size_t cantidad){
 }
 
 std::string Proxy::recibir(Socket& socket,size_t cantidad){
-	char buff[cantidad+1];
-	bzero(buff,cantidad+1);
+	/*char buff[cantidad+1];
+	bzero(buff,cantidad+1);*/
+	
+	char buff[1024];
+	bzero(buff,1024);
 	socket.receive(buff,cantidad);
 	return std::string(buff);
 }

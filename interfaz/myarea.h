@@ -27,6 +27,9 @@ protected:
   Morph* actual;
   std::vector<Morph*> morphs;
 
+  Referencia* refenciaActual = nullptr;
+  std::vector<Referencia*> referencias;
+
   // Used to memorize last mouse coordinates
   int offXMouse, offYMouse;
 
@@ -49,6 +52,7 @@ public:
   //void botonGuardarNuevoSlotEvent();
   void botonGuardarNuevoSlotEvent();
   MyArea();
+  void liberarMemoria();
   virtual ~MyArea();
 
 protected:

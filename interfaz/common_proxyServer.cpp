@@ -59,8 +59,10 @@ std::string ProxyServer::recibirSlotsDe(std::string objeto){
 	memcpy(&tamMensaje, buff,sizeof(tamMensaje));
 	tamMensaje = ntohl(tamMensaje);
 
-	char infoSlots[tamMensaje+1];
-	bzero(infoSlots,tamMensaje+1);
+	/*char infoSlots[tamMensaje+1];
+	bzero(infoSlots,tamMensaje+1);*/
+	char infoSlots[1024];
+	bzero(infoSlots,1024);
 
 	sktCliente.receive(infoSlots,tamMensaje);
 
