@@ -4,8 +4,8 @@
 #include <cairomm/enums.h>
 #include "morph.h"
 #include "slot.h"
-#include "../vm/client_interface_slot.h"
-#include "../vm/client_json_reader.h"
+#include "client_interface_slot.h"
+#include "client_json_reader.h"
 
 #define CREAR_MAQUINA_VIRTUAL 0x01
 

@@ -4,7 +4,7 @@ class Slot;
 class Referencia;
 #include <iostream>
 #include <gtkmm.h>
-#include "../vm/client_interface_slot.h"
+#include "client_interface_slot.h"
 //#include "slot.h"
 //#include "referencia.h"
 
