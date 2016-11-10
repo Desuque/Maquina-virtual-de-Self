@@ -69,14 +69,14 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     //uint32_t lobbyId = proxyServer.recibirId(sizeof(uint32_t));
     // cambiar recibirId por recibirTam
     //uint32_t tamMensaje = proxyServer.recibirId(sizeof(uint32_t));
-    std::string infoSlots = proxyServer.recibirSlotsDe("lobby");
+    std::string infoSlots = proxyServer.recibirSlotsDe("0");
 
     /***DECODIFICACION DEL JSON (CLIENTE)***/
     std::vector<InterfaceSlot*> i_slots;
     JsonReader slots_reader;
     slots_reader.read(i_slots, infoSlots);
 
-    Morph* lobby= new Morph("lobby",10.,10.,m_TextView, textViewCodAsociado);
+    Morph* lobby= new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
     actual=lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     morphs.push_back(lobby);
@@ -93,7 +93,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     }
 
   } catch (const std::exception &e) {
-    Morph* lobby = new Morph("lobby",10.,10.,m_TextView,textViewCodAsociado);
+    Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView,textViewCodAsociado);
     actual=lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     morphs.push_back(lobby);    
@@ -144,11 +144,11 @@ void MyArea::agregarSlot_event(){
 }
 
 void MyArea::get_it_event(){
-  Morph* morph = new Morph("que?",200,200,m_TextView,textViewCodAsociado);
+  /*Morph* morph = new Morph("que?",200,200,m_TextView,textViewCodAsociado);
   actual = morph->get_it();
   //morph->nombreObjeto=objeto;
   morphs.push_back(actual); 
-  actual -> mostrarDescripcionMorph();
+  actual -> mostrarDescripcionMorph();*/
   queue_draw();
 }
 
@@ -160,8 +160,15 @@ void MyArea::close_event(){
   if (actual == nullptr) return;
   for (int i =0; i < morphs.size() ; ++i){
       if(*(morphs[i]) == *actual){
-        // preguntar si alguien lo apunta 
-        // para borrar flechas
+        for (int j=0; j < morphs[i]->referencias.size(); ++j){
+          for (int v=0; v<referencias.size(); ++v){
+            if ((morphs[i]->referencias)[j] == referencias[v]){
+              referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
+              delete referencias[v];
+              referencias.erase(referencias.begin()+v);
+            }
+          }
+        }
         delete morphs[i];
         morphs.erase(morphs.begin()+i);
         break;
@@ -178,36 +185,15 @@ bool MyArea::on_button_release_event(GdkEventButton *event)
   if (event->button==1 && moveFlag)
   {
     // agrega la referencia para el drag and drop
-    // faltaria borrar
     if (refenciaActual){
       for (int i =0; i < morphs.size() ; ++i){
         if(*(morphs[i]) == Morph(event->x,event->y)){
-          //refenciaActual-> apuntaAEsteMorph(morphs[i]);
+          refenciaActual->borrarReferenciaAnterior();
+          refenciaActual->apuntaAEsteMorph(morphs[i]);
           morphs[i]->referencias.push_back(refenciaActual);
-          //refenciaActual ->apuntoAMorph -> referencia = nullptr;
-          //morphs[i]->agregarReferencia(refenciaActual);
-          //refenciaActual-> borrarReferenciaAnterior();
         }
       }
     } 
-    /*for (int i =0; i < morphs.size() ; ++i){
-    //draw_text(cr, morphs[i].first, morphs[i].second);
-      if(*(morphs[i]) == Morph(event->x,event->y)){
-        // PREGUNTAR ESUNAREFERENCIA
-        if(*actual != *morphs[i] && actual->width == 8
-              && actual->height==8 && morphs[i]->referencia!=actual){
-          //morphs[i]->slots.push_back(actual);
-          std::cout << "ahora apunto a: "<< morphs[i]->nombreObjeto << std::endl;
-          std::cout << " actual -> slotPadre: " << actual->slotPadre->nombreObjeto<< std::endl;
-          
-          actual -> slotPadre -> referencia = nullptr;
-          morphs[i]->referencia = actual;
-          //actual -> slotPadre = morphs[i];
-          //actual = morphs[i];
-          break;
-        }
-      }
-    }*/
     // End of motion
     moveFlag=false;    
     // Update display
@@ -231,16 +217,18 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
         refenciaActual=nullptr;
         Morph* morphDeSlot = actual->clikEnObtenerSlot(event->x,event->y);
         if (morphDeSlot){
+          for (int j = 0; j < morphs.size() ; ++j){
+            if (morphs[j]->id == morphDeSlot->id){
+              std::cout << " ya hay un morph con ese ID" << std::endl;
+            }
+          }
           Slot* slot = actual-> obtenerSlot(event->x,event->y);
           if (!slot){
             std::cout << "error obtenerSlot devolvio null" << std::endl;
           }
           std::string infoSlots="";
-          
           if (slot->value == "object"){
-            std::string infoSlots = proxyServer.recibirSlotsDe(slot->name);
-            std::cout << slot->name << std::endl;
-            std::cout << slot->value << std::endl;
+            std::string infoSlots = proxyServer.recibirSlotsDe(slot->get_id_to_string());
 
             //DECODIFICACION DEL JSON (CLIENTE)
             std::vector<InterfaceSlot*> i_slots;
@@ -254,8 +242,12 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
             }
           }
           morphs.push_back(morphDeSlot); 
-          if (morphDeSlot->referencia){ 
+          /*if (morphDeSlot->referencia){ 
            referencias.push_back(morphDeSlot->referencia);
+          }*/
+          std::vector<Referencia*> refs = morphDeSlot->referencias;
+          for (int i=0; i < refs.size(); ++i){
+            referencias.push_back(refs[i]);
           }
         }
         offXMouse = actual->posX - event->x;

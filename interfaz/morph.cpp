@@ -8,7 +8,7 @@ Morph::Morph(double posX, double posY) : m_TextView(nullptr), refTextViewConsola
 	this->posX = posX;
 	this->posY = posY;
 	this -> nombreObjeto = "que?";
-	this->referencia=nullptr;
+	//this->referencia=nullptr;
 }
 
 Morph::Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView){
@@ -20,11 +20,11 @@ Morph::Morph(double posX, double posY, int width, int height,Gtk::TextView* m_Te
 	this->m_TextView=m_TextView;
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
-	this->referencia=nullptr;
+	//this->referencia=nullptr;
 }
 
 Morph::Morph(std::string nombreObjeto, double posX, double posY) : 
-	nombreObjeto(nombreObjeto), posX(posX), posY(posY), referencia(nullptr), m_TextView(nullptr) {
+	nombreObjeto(nombreObjeto), posX(posX), posY(posY), /*referencia(nullptr),*/ m_TextView(nullptr) {
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
@@ -42,11 +42,12 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY) :
 }
 
 // SE USA ESTE SIEMPRE VER LOS DEMAS ELIMINAR
-Morph::Morph(std::string nombreObjeto, double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) : 
+Morph::Morph(std::string nombreObjeto, int id, double posX, double posY, 
+		Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) : 
 		nombreObjeto(nombreObjeto), posX(posX), 
 		posY(posY), m_TextView(m_TextView),
-		textViewCodigoAsociado(codigoAsociado),
-		referencia(nullptr) {
+		textViewCodigoAsociado(codigoAsociado)/*,
+		referencia(nullptr)*/ {
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
@@ -62,6 +63,7 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY, Gtk::TextView* 
 	refTextViewConsola->set_text("");
 	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 	refTextViewCodigoAsociado->set_text("");
+	this->id=id;
 	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
 }
 
@@ -83,7 +85,7 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int 
 	this->nombreObjeto = nombreObjeto;
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
-	this->referencia=nullptr;
+	//this->referencia=nullptr;
 	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
 }
 
@@ -163,10 +165,7 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	cr-> stroke();
 
 	for (int i=0; i < slots.size(); ++i){
-		//slots[i] -> draw_slot(cr);
 		slots[i] -> draw(cr);
-		//morph->width += text_width;
-		//this->height += slots[i]->height;
 	}
 
 	Pango::FontDescription font;
@@ -185,20 +184,21 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 }
 
 Morph* Morph::clikEnObtenerSlot(int posX,int posY){     
-	for (int i=0; i < slots.size(); ++i){         // guardar cuando agregue poli         
-		if ((posX >= (slots[i]->posX) + (slots[i]->width) -10) && (posY >= (slots[i]->posY) + 2)
-			&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <=
-			((slots[i]->posY)+slots[i]->height-2))) {   
+	for (int i=0; i < slots.size(); ++i){       
+		if (slots[i]->clikEnObtenerSlot(posX,posY)
+			 && !(slots[i]->estaDibujadoComoMorph())) {   
+				slots[i]->setEstaDibujadoComoMorph(true);
 				Morph* morph = nullptr;
 				if(slots[i]->code){
-					morph = new Morph(slots[i]->name,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
+					morph = new Morph(slots[i]->name,slots[i]->id,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
 					morph -> refTextViewCodigoAsociado->set_text(slots[i]->value);
 				} else {
-					morph = new Morph(slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
+					morph = new Morph(slots[i]->value,slots[i]->id,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
 				}
 				//Morph* morph = new (slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView);             
 				//morph -> referencia = new Morph(morph->posX-8,morph->posY,8,8,m_TextView);                   
-				morph -> referencia = new Referencia(morph, slots[i]);
+				//morph -> referencia = new Referencia(morph, slots[i]);
+				morph->referencias.push_back(new Referencia(morph, slots[i]));
 				//slots[i] -> referencia = morph->referencia;
 				//morph -> referencia -> slotPadre = morph;
 				//slots[i] -> referencia -> slotPadre = morph;
@@ -269,10 +269,14 @@ void Morph::actualizar_posicion(double x, double y){
 		slots[i] -> posX = x;
 		slots[i] -> posY = y + (slots[i]->posY - this->posY);
 	}
-	if(referencia != nullptr){
+	for (int i=0; i < referencias.size(); ++i){
+		referencias[i]->posX=x-8;
+		referencias[i]->posY=y;
+	}
+	/*if(referencia != nullptr){
 		referencia->posX=x-8;
 		referencia->posY=y;
-	}
+	}*/
 	this->posX = x;
 	this->posY = y;		
 }

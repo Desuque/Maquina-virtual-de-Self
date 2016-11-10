@@ -7,17 +7,17 @@ class Slot : public Morph{
 public:
 	//std::string name;
 	//Morph* morph;
-	Morph* referencia = nullptr;
-	int posX;
+	/*int posX;
 	int posY;
 	int width;
-	int height;
-
+	int height;*/
+	bool dibujadoComoMorph;
 	/* interface Slot */
 	bool type;
 	bool code;
 	std::string name;
 	std::string value;
+	int id;
 public:	
 	Slot(){}
 	
@@ -32,7 +32,7 @@ public:
 		int text_height;
 		layout->get_pixel_size(text_width, text_height);
 		std::cout << text_height << std::endl;*/
-
+		this->dibujadoComoMorph=false;
 		this->width = width;
 		this->height = 18;
 		this->posX = posX;
@@ -41,6 +41,7 @@ public:
 		this->code = interfaceSlot->has_code();
 		this->value = interfaceSlot->get_value();
 		this->type = interfaceSlot->get_type();
+		this->id = interfaceSlot->get_id();
 	}
 
 	Slot(std::string name, double posX, double posY, int width, int height){
@@ -58,9 +59,22 @@ public:
 		this->posY = posY;
 		this->width = width;
 		this->name = name;
+		this->dibujadoComoMorph=false;
 		/*refTextViewConsola = Gtk::TextBuffer::create();
 		refTextViewConsola->set_text("");*/
 		//referencia = new Morph(posX-8,posY,8,8,m_TextView);
+	}
+
+	bool estaDibujadoComoMorph(){
+		return this->dibujadoComoMorph;
+	}
+
+	void setEstaDibujadoComoMorph(bool estaDibujado){
+		this->dibujadoComoMorph = estaDibujado;
+	}
+
+	std::string get_id_to_string(){
+		return std::to_string(this->id);
 	}
 
 	void draw(const Cairo::RefPtr<Cairo::Context>& cr){
@@ -93,12 +107,19 @@ public:
 		}*/
 
 		cr->stroke();
-		
+
 		cr->move_to(this->posX, this->posY);
 
 		layout->show_in_cairo_context(cr);
 	}
 
+	bool clikEnObtenerSlot(int posX,int posY){
+		return	(posX >= (this->posX) + (this->width) - 10) 
+				&& (posY >= (this->posY) + 2)
+				&& (posX <= (((this->posX) + (this->width)) - 2)) 
+				&& (posY <= ((this->posY) + this->height - 2));
+	}
+	
 	size_t get_height(){
 		return this->height;
 	}

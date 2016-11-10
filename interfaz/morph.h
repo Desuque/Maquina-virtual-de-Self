@@ -16,7 +16,6 @@ class Morph : public Gtk::DrawingArea{
 		//Glib::RefPtr<Gtk::Builder> m_builder;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
-		Referencia* referencia;
 		std::vector<Referencia*> referencias;
 		Morph* slotPadre;
 		//std::vector<Morph*> slots;
@@ -25,12 +24,21 @@ class Morph : public Gtk::DrawingArea{
 		int posY;
 		int width;
 		int height;
+		int id;
 	public:
 		Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView);
 		Morph(std::string nombreObjeto, double posX, double posY, int width, int height);
 		Morph(std::string nombreObjeto, double posX, double posY);
-		Morph(std::string nombreObjeto, double posX, double posY, 
+		Morph(std::string nombreObjeto, int id, double posX, double posY, 
 			Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
+		
+		void borrarReferencia(Referencia* referencia){
+			for (int i=0; i < referencias.size(); ++i){
+				if (referencias[i] == referencia){
+					referencias.erase(referencias.begin()+i);
+				}
+			}
+		}
 
   		Morph* get_it();
   		void do_it();
@@ -51,9 +59,10 @@ class Morph : public Gtk::DrawingArea{
 		void draw(const Cairo::RefPtr<Cairo::Context>& cr);
 		void draw_slot(const Cairo::RefPtr<Cairo::Context>& cr);
 
-	    bool operator==(const Morph& rhs) const { 
+	    bool operator==(const Morph& rhs) const {
 	    	if ((rhs.posX >= this->posX) && (rhs.posY >= this->posY)
-	    		&& (rhs.posX <= ((this->posX) + this->width)) && (rhs.posY <= ((this->posY)+this->height))){
+	    		&& (rhs.posX <= ((this->posX) + this->width)) 
+	    		&& (rhs.posY <= ((this->posY)+this->height))){
 	    		return true;
 	    	}
 	    	return false;

@@ -6,10 +6,10 @@ class Referencia : public Morph{
 public:
 	Morph* apuntoAMorph;
 	Slot* perteneceASlot;
-	int posX;
-	int posY;
-	int width;
-	int height;
+	/*int posX;
+	int posY;*/
+	/*int width;
+	int height;*/
 
 public:	
 	Referencia(Morph* apuntoAMorph, Slot* perteneceASlot){
@@ -21,7 +21,9 @@ public:
 		this->height = 8;
 	}
 	//solo para comparar PREGUNTAR
-	Referencia(int posX, int posY) : posX(posX), posY(posY) {}
+	Referencia(int posX, int posY) : Morph(posX,posY) {
+
+	}
 
 	void draw(const Cairo::RefPtr<Cairo::Context>& cr){
 		cr->set_line_width(0.5);
@@ -39,20 +41,27 @@ public:
 		this->apuntoAMorph = apuntar;
 	}
 
+	void borrarReferenciaAnterior(){
+		//std::vector<Referencia*> refs = this->apuntoAMorph->referencias;
+		this->apuntoAMorph->borrarReferencia(this);
 
-	bool operator==(const Morph& rhs) const { 
+	}
+
+	//PREGUNTAR POR QUE NO ANDA EL OPERADOR DE MORPH
+	/*bool operator==(const Referencia& rhs) const {
 		if ((rhs.posX >= this->posX) && (rhs.posY >= this->posY)
-			&& (rhs.posX <= ((this->posX) + this->width)) && (rhs.posY <= ((this->posY)+this->height))){
+			&& (rhs.posX <= ((this->posX) + this->width)) 
+			&& (rhs.posY <= ((this->posY) + this->height))){
 			return true;
 		}
 		return false;
 	}
 
-	bool operator!=(const Morph& rhs) const { 
+	bool operator!=(const Referencia& rhs) const { 
 		return !(*this==rhs);
-	}
+	}*/
+	
 	void actualizar_posicion(double x, double y){
-		std::cout << "actualizar_posicion de ref\n";
 		this->posX = x;
 		this->posY = y;	
 	}
