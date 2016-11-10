@@ -97,10 +97,13 @@ Slot* VM::add_slot(Slot* sl_recv, string sl_recv_id, Slot* sl){
 }
 
 Slot* VM::add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl){
-	Slot* sl_clone = sl  -> get_value() -> clone(*this);
+	/*Slot* sl_clone = sl  -> get_value() -> clone(*this);
 	sl_clone -> set_name(sl_recv_id);
 	sl_clone -> set_parent(true, sl -> get_name());
 	sl_recv -> add_slot(sl_clone);
+	return sl_recv;*/
+	sl -> set_parent(true, sl -> get_name());
+	sl_recv -> add_slot(sl);
 	return sl_recv;
 }
 
