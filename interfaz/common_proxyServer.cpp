@@ -6,6 +6,7 @@
 #include <string.h>
 
 #define PEDIR_SLOTS 2
+#define AGREGAR_SLOT 3
 
 ProxyServer::ProxyServer(const char* hostname, const unsigned int puerto){
 	sktCliente.connect(hostname,puerto);
@@ -33,6 +34,58 @@ uint32_t ProxyServer::recibirId(size_t cantidad){
 	lobbyId = ntohl(lobbyId);
 	return lobbyId;
 }
+
+
+std::string ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar){
+	// modificar cuando sea generico
+	return agregarSlotA(idObjeto, textoAEnviar);
+}
+
+std::string ProxyServer::agregarSlotA(std::string idObjeto, std::string textoAEnviar){
+	char buff[5];
+	bzero(buff,5);
+
+	/*uint32_t idMensaje = PEDIR_SLOTS;
+	memcpy(buff,&idMensaje ,sizeof(idMensaje));
+	sktCliente.send(buff,sizeof(idMensaje));*/
+
+    this->enviar(AGREGAR_SLOT,sizeof(char));
+
+	uint32_t tamMensaje = idObjeto.length();
+	bzero(buff,5);
+	tamMensaje = htonl(tamMensaje);
+	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
+	
+	sktCliente.send(buff,sizeof(uint32_t));
+
+	sktCliente.send(idObjeto.c_str(), idObjeto.length());
+
+	//repito codigo luego
+	tamMensaje = textoAEnviar.length();
+	bzero(buff,5);
+	tamMensaje = htonl(tamMensaje);
+	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
+	
+	sktCliente.send(buff,sizeof(uint32_t));
+
+	sktCliente.send(textoAEnviar.c_str(), textoAEnviar.length());
+
+	tamMensaje = 0;
+	bzero(buff,5);
+	sktCliente.receive(buff, sizeof(tamMensaje));
+	memcpy(&tamMensaje, buff,sizeof(tamMensaje));
+	tamMensaje = ntohl(tamMensaje);
+
+	/*char infoSlots[tamMensaje+1];
+	bzero(infoSlots,tamMensaje+1);*/
+	char infoSlots[1024];
+	bzero(infoSlots,1024);
+
+	sktCliente.receive(infoSlots,tamMensaje);
+
+	return std::string(infoSlots);
+}
+
 
 std::string ProxyServer::recibirSlotsDe(std::string objeto){
 	char buff[5];

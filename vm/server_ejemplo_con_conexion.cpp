@@ -2,6 +2,7 @@
 #include "server_slot.h"
 #include "../interfaz/client_interface_slot.h"
 #include "../interfaz/client_json_reader.h"
+#include "server_json_writer.h"
 #include "server_server.h"
 #include "../interfaz/common_proxyClient.h"
 #include <iostream>
@@ -139,37 +140,82 @@ int main(int argc, char** argv){
 	while (true){
 		// me solicitan los slots de lobby
 		try {
-			std::cout << proxyClient.recibirCodigoMensaje(1) << std::endl;
+			uint32_t codigoMensaje = proxyClient.recibirCodigoMensaje(1);
+			switch (codigoMensaje){
+				case 2:{
+					uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
 
-			uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
+					std::string nombreObjeto = proxyClient.recibir(tamMensaje);
 
-			std::string nombreObjeto = proxyClient.recibir(tamMensaje);
+					std::cout << nombreObjeto << std::endl;
 
-			std::cout << nombreObjeto << std::endl;
+					/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
+					string string_to_send = server.get_slots(nombreObjeto);
 
-			/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
-			string string_to_send = server.get_slots(nombreObjeto);
+					proxyClient.enviarSlots(string_to_send);
 
-			proxyClient.enviarSlots(string_to_send);
+					/***DECODIFICACION DEL JSON (CLIENTE)***/
+					std::vector<InterfaceSlot*> i_slots;
+					JsonReader slots_reader;
+					slots_reader.read(i_slots, string_to_send);
 
-			/***DECODIFICACION DEL JSON (CLIENTE)***/
-			std::vector<InterfaceSlot*> i_slots;
-			JsonReader slots_reader;
-			slots_reader.read(i_slots, string_to_send);
+					/***VEO SI LA LECTURA FUE CORRECTA***/
+					int size = i_slots.size();
+					for (int i = 0; i < size ; i++)
+						i_slots[i] -> print_attr();
 
-			/***VEO SI LA LECTURA FUE CORRECTA***/
-			int size = i_slots.size();
-			for (int i = 0; i < size ; i++)
-				i_slots[i] -> print_attr();
+					for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+						delete* it;  
+						it = i_slots.erase(it);
+					}	
+					break;
+				}
+				case 3:{
+					uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
 
-			for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
-				delete* it;  
-				it = i_slots.erase(it);
+					std::string nombreObjeto = proxyClient.recibir(tamMensaje);
+
+					std::cout << "id del objeto: " << nombreObjeto << std::endl;
+					
+					tamMensaje = proxyClient.recibirTamMensaje(4);
+					std::string codigoAEjecutar = proxyClient.recibir(tamMensaje);
+					std::cout << "codigo A Ejecutar: " << codigoAEjecutar << std::endl;
+
+					JsonWriter writer;
+					string json = writer.write_code(nombreObjeto, codigoAEjecutar);
+
+					string result = server.execute(json);
+
+					std::cout << "devolucion: " << result << std::endl;
+					
+					proxyClient.enviarSlots(result);
+
+					break;
+				}
+				default:
+					std::cout << "error en default switch ejconconexion" << std::endl;
+					std::cout << "recibio: " << codigoMensaje << std::endl;
+
+					break;
 			}
+				
 		} catch (const std::exception e){ 
 
 		}
 	}
+
+	/*JsonWriter writer;
+	string json = writer.write_code("470", "punto11 _AddSlots: (| p=8. |).");
+	
+	string result = server.execute(json);
+	
+	std::cout << result << std::endl;
+	
+	json = writer.write_code("900", "'hello self!' print.");
+	
+	result = server.execute(json);
+	
+	std::cout << result << std::endl;*/
 
 	vm->collect();
 	server.save_vm();

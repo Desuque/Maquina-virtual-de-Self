@@ -92,6 +92,10 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int 
 Morph::Morph(){
 }
 
+std::string Morph::get_id_to_string(){
+	return std::to_string(this->id);
+}
+
 Morph* Morph::get_it(){
 	std::string objeto;
 	std::string mensaje;
@@ -118,20 +122,16 @@ Morph* Morph::get_it(){
 	return this;
 }
 
-void Morph::do_it(){
+std::string Morph::do_it(ProxyServer& proxyServer){
 	std::string objeto;
 	std::string mensaje;
 	if (!m_TextView) std::cout << "error" << std::endl;
 	//refTextViewConsola = m_TextView -> get_buffer();
-	std::string str = m_TextView->get_buffer()->get_text();
-	std::cout << str << std::endl;
-	std::istringstream iss(str);
-	iss >> std::noskipws;
-	iss >> objeto  >> mensaje;  
-	std::cout << objeto << std::endl;
-	// ENVIAR A SERVIDOR
-	std::cout << this->nombreObjeto << " " << str
-			  << std::endl;
+	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
+	std::cout << textoAEnviar << std::endl;
+	std::string respuesta = proxyServer.enviarCodigoAEjecutar(this->get_id_to_string(), textoAEnviar);	
+	std::cout << respuesta << std::endl;
+	return respuesta;
 }
 
 
@@ -196,13 +196,7 @@ Morph* Morph::clikEnObtenerSlot(int posX,int posY){
 				} else {
 					morph = new Morph(slots[i]->value,slots[i]->id,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
 				}
-				//Morph* morph = new (slots[i]->value,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView);             
-				//morph -> referencia = new Morph(morph->posX-8,morph->posY,8,8,m_TextView);                   
-				//morph -> referencia = new Referencia(morph, slots[i]);
 				morph->referencias.push_back(new Referencia(morph, slots[i]));
-				//slots[i] -> referencia = morph->referencia;
-				//morph -> referencia -> slotPadre = morph;
-				//slots[i] -> referencia -> slotPadre = morph;
 				return morph;         
 			}     
 		}     
@@ -216,8 +210,8 @@ Slot* Morph::obtenerSlot(int posX,int posY){
 			&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <=
 			((slots[i]->posY)+slots[i]->height-2))) {   
 				return slots[i];     
-			}     
 		}     
+	}     
 	return nullptr; 
 }
 
@@ -284,4 +278,11 @@ void Morph::actualizar_posicion(double x, double y){
 
 
 
-Morph::~Morph(){}
+Morph::~Morph(){
+	for (int i=0; i < slots.size(); ++i){
+		delete slots[i];
+	}
+	for (int i=0; i < referencias.size(); ++i){
+		delete referencias[i];
+	}
+}

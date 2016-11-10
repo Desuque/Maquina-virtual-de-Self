@@ -5,6 +5,7 @@ class Referencia;
 #include <iostream>
 #include <gtkmm.h>
 #include "client_interface_slot.h"
+#include "common_proxyServer.h"
 //#include "slot.h"
 //#include "referencia.h"
 
@@ -17,7 +18,6 @@ class Morph : public Gtk::DrawingArea{
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
 		std::vector<Referencia*> referencias;
-		Morph* slotPadre;
 		//std::vector<Morph*> slots;
 		std::vector<Slot*> slots;
 		int posX;
@@ -39,9 +39,11 @@ class Morph : public Gtk::DrawingArea{
 				}
 			}
 		}
+		std::string get_id_to_string();
+		
 
   		Morph* get_it();
-  		void do_it();
+  		std::string do_it(ProxyServer& proxyServer);
   		void actualizarAlturaMorph(size_t alturaDeSlot);
   		void agregarSlot(std::string nombreSlot);
   		// decidir como hacer esto.
