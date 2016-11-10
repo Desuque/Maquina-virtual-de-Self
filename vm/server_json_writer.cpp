@@ -45,3 +45,15 @@ void JsonWriter::write_slot_attr(Writer<StringBuffer>& writer, string& name, str
 	writer.Bool(code);
 	writer.EndObject();
 }
+
+string JsonWriter::write_code(string id, string code){
+	StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("id");
+	writer.String(id.c_str());
+	writer.Key("code");
+	writer.String(code.c_str());
+	writer.EndObject();
+	return s.GetString();
+}

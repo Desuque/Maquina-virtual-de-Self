@@ -15,10 +15,8 @@ class Server{
 		VM* get_vm();
 		string get_slots(string id);
 		string save_vm();
+		string execute(string msg);
 		~Server();
-		
-	private:
-		string execute(string context, string code);
 		
 };
 

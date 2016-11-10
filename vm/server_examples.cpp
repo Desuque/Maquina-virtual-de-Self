@@ -2,6 +2,7 @@
 #include "server_slot.h"
 #include "client_interface_slot.h"
 #include "client_json_reader.h"
+#include "server_json_writer.h"
 #include "server_server.h"
 #include <iostream>
 
@@ -164,6 +165,21 @@ int main(int argc, char** argv){
 		delete* it;  
 		it = i_slots.erase(it);
 	}
+	
+	/*** SIMULACION EJECUCION CODIGO(CLIENTE)***/
+	JsonWriter writer;
+	string json = writer.write_code("470", "punto11 _AddSlots: (| p=8. |).");
+	
+	string result = server.execute(json);
+	
+	std::cout << result << std::endl;
+	
+	json = writer.write_code("900", "'hello self!' print.");
+	
+	result = server.execute(json);
+	
+	std::cout << result << std::endl;
+	/*******************************************/
 	
 	vm->collect();
 	server.save_vm();

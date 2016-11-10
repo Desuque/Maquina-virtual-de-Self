@@ -1,4 +1,5 @@
 #include "server_server.h"
+#include "client_json_reader.h"
 #include <iostream>
 #include <fstream>
 
@@ -26,8 +27,31 @@ string Server::save_vm(){
 	return data;
 }
 
-string Server::execute(string context, string code){
-	return "call parser to execute code";
+string Server::execute(string msg){
+	JsonReader read;
+	string id, code;
+	read.read_code(msg, id, code);
+	
+	/*****************SIMULACION******************/
+	Slot* res = NULL;
+	string pat = "_AddSlots:";
+	std::size_t found_add = code.find(pat);
+	if (found_add != std::string::npos){
+		Slot* X0 = vm->search_obj_id(std::stoi(id));
+		Slot* X1 = vm->create_object();
+		Slot* X2 = vm->create_int(8);
+		vm->add_slot(X1, "p", X2);
+		res = vm->keyword_message(X0, "_AddSlots:", X1);
+	}else{
+		Slot* X0 = vm->create_object();
+		Slot* X1 = vm->create_string("hello self!");
+		vm->add_slot(X0, "hello self!", X1);
+		res = vm->unary_message(X0, "print");
+	}
+	/*******************************************/
+	
+	string json = vm->get_slots(res);
+	return json;
 }
 
 VM* Server::get_vm(){
