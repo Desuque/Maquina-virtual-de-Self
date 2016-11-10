@@ -217,11 +217,11 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
         refenciaActual=nullptr;
         Morph* morphDeSlot = actual->clikEnObtenerSlot(event->x,event->y);
         if (morphDeSlot){
-          for (int j = 0; j < morphs.size() ; ++j){
+          /*for (int j = 0; j < morphs.size() ; ++j){
             if (morphs[j]->id == morphDeSlot->id){
               std::cout << " ya hay un morph con ese ID" << std::endl;
             }
-          }
+          }*/
           Slot* slot = actual-> obtenerSlot(event->x,event->y);
           if (!slot){
             std::cout << "error obtenerSlot devolvio null" << std::endl;
@@ -276,9 +276,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
   // Check if the event is a right button click.
   if(event->button == 3)
   {
-    for (int i =0; i < morphs.size() ; ++i){
-     //draw_text(cr, morphs[i].first, morphs[i].second);
-      
+    for (int i =0; i < morphs.size() ; ++i){      
       if(*(morphs[i]) == Morph(event->x,event->y)){
         actual = morphs[i];
         lNombreObjeto->set_text(actual->nombreObjeto);

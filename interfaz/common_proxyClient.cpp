@@ -26,7 +26,6 @@ void ProxyClient::enviarSlots(std::string slots){
 	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
 	
 	server.send(buff,sizeof(uint32_t));
-
 	server.send(slots.c_str(), slots.length());
 }
 

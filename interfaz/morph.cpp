@@ -122,8 +122,9 @@ void Morph::do_it(){
 	std::string objeto;
 	std::string mensaje;
 	if (!m_TextView) std::cout << "error" << std::endl;
-	refTextViewConsola = m_TextView -> get_buffer();
+	//refTextViewConsola = m_TextView -> get_buffer();
 	std::string str = m_TextView->get_buffer()->get_text();
+	std::cout << str << std::endl;
 	std::istringstream iss(str);
 	iss >> std::noskipws;
 	iss >> objeto  >> mensaje;  
