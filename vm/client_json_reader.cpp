@@ -21,3 +21,10 @@ void JsonReader::read(std::vector<InterfaceSlot*>& i_slots, string json_slots){
 		i_slots.push_back(new InterfaceSlot(name, value, code, type, id));
 	}
 }
+
+void JsonReader::read_code(string json, string& id, string& code){
+	Document document;
+	document.Parse(json.c_str());
+	id = document["id"].GetString();
+	code = document["code"].GetString();
+}
