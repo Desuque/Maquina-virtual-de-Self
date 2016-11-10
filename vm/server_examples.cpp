@@ -1,7 +1,7 @@
 #include "server_virtual_machine.h"
 #include "server_slot.h"
-#include "client_interface_slot.h"
-#include "client_json_reader.h"
+#include "../interfaz/client_interface_slot.h"
+#include "../interfaz/client_json_reader.h"
 #include "server_json_writer.h"
 #include "server_server.h"
 #include <iostream>

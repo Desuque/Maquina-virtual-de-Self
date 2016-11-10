@@ -1,5 +1,5 @@
 #include "client_json_reader.h"
-#include "rapidjson/document.h"
+#include "../vm/rapidjson/document.h"
 #include "client_interface_slot.h"
 #include <iostream>
 
