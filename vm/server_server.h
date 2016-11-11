@@ -4,11 +4,14 @@
 #include <vector>
 #include <string>
 #include "server_virtual_machine.h"
+#include "../interfaz/common_proxyClient.h"
 
 class Server{
 	private:
 		VM* vm;
 		//Parser parser;
+		ProxyClient proxyClient;
+		
 	public:
 		Server();
 		void recv_messages();
@@ -16,8 +19,10 @@ class Server{
 		string get_slots(string id);
 		string save_vm();
 		string execute(string msg);
+		int execute_file(string file_name);
+		void bind(int port);
+		void listen();
 		~Server();
-		
 };
 
 #endif

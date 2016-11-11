@@ -58,6 +58,67 @@ VM* Server::get_vm(){
 	return this -> vm;
 }
 
+void Server::bind(int port){
+	this -> proxyClient.bindAndListen(port);
+}
+
+void Server::listen(){
+	ProxyClient proxy; 
+	proxy = proxyClient.aceptarCliente();
+	std::cout << proxy.recibirCodigoMensaje(1) << std::endl;
+	while (true){
+		// me solicitan los slots de lobby
+		try {
+			std::cout << proxy.recibirCodigoMensaje(1) << std::endl;
+
+			uint32_t tamMensaje = proxy.recibirTamMensaje(4);
+
+			std::string nombreObjeto = proxy.recibir(tamMensaje);
+
+			std::cout << nombreObjeto << std::endl;
+
+			/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
+			string string_to_send = get_slots(nombreObjeto);
+
+			proxy.enviarSlots(string_to_send);
+
+			/***DECODIFICACION DEL JSON (CLIENTE)***/
+			std::vector<InterfaceSlot*> i_slots;
+			JsonReader slots_reader;
+			slots_reader.read(i_slots, string_to_send);
+
+			/***VEO SI LA LECTURA FUE CORRECTA***/
+			int size = i_slots.size();
+			for (int i = 0; i < size ; i++)
+				i_slots[i] -> print_attr();
+
+			for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+				delete* it;  
+				it = i_slots.erase(it);
+			}
+		} catch (const std::exception e){ 
+
+		}
+	}
+
+}
+
+int Server::execute_file(string file_name){
+	std::ifstream file;
+	file.open(file_name, std::ifstream::in);
+	if (!file.is_open())
+		return 1;
+	
+	std::string str;
+	std::string file_contents;
+	while (std::getline(file, str)){
+		file_contents += str;
+		file_contents.push_back('\n');
+	}  
+	//Call Parser with file_contents
+	return 0;
+}
+
 Server::~Server(){
 	delete this -> vm;
 }

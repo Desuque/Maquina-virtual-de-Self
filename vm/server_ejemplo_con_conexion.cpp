@@ -2,10 +2,10 @@
 #include "server_slot.h"
 #include "../interfaz/client_interface_slot.h"
 #include "../interfaz/client_json_reader.h"
-#include "server_json_writer.h"
 #include "server_server.h"
 #include "../interfaz/common_proxyClient.h"
 #include <iostream>
+#include <string.h>
 
 int main(int argc, char** argv){
 	Server server;
@@ -126,97 +126,72 @@ int main(int argc, char** argv){
 	
 	vm->revert();
 	
-	ProxyClient proxyClient(8080);
+	//ProxyClient proxyClient(8080);
 
-	proxyClient = proxyClient.aceptarCliente();
+	//proxyClient = proxyClient.aceptarCliente();
 
 	// pido el codigo del mensaje, este caso me mandan a crear una vm
 	// ya la tengo creada
-	std::cout << proxyClient.recibirCodigoMensaje(1) << std::endl;
+	//std::cout << proxyClient.recibirCodigoMensaje(1) << std::endl;
 
 	// enviaba el id del lobby, consultar con grupo
 	//proxyClient.enviar(1,4);
-
+	/*
 	while (true){
 		// me solicitan los slots de lobby
 		try {
-			uint32_t codigoMensaje = proxyClient.recibirCodigoMensaje(1);
-			switch (codigoMensaje){
-				case 2:{
-					uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
+			std::cout << proxyClient.recibirCodigoMensaje(1) << std::endl;
 
-					std::string nombreObjeto = proxyClient.recibir(tamMensaje);
+			uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
 
-					std::cout << nombreObjeto << std::endl;
+			std::string nombreObjeto = proxyClient.recibir(tamMensaje);
 
-					/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
-					string string_to_send = server.get_slots(nombreObjeto);
+			std::cout << nombreObjeto << std::endl;
+			*/
+			/*** SIMULACION PEDIDO DE SLOTS DE LOBBY(CLIENTE)***/
+			/*string string_to_send = server.get_slots(nombreObjeto);
 
-					proxyClient.enviarSlots(string_to_send);
+			proxyClient.enviarSlots(string_to_send);
 
-					/***DECODIFICACION DEL JSON (CLIENTE)***/
-					std::vector<InterfaceSlot*> i_slots;
-					JsonReader slots_reader;
-					slots_reader.read(i_slots, string_to_send);
+			/***DECODIFICACION DEL JSON (CLIENTE)***/
+			/*std::vector<InterfaceSlot*> i_slots;
+			JsonReader slots_reader;
+			slots_reader.read(i_slots, string_to_send);
 
-					/***VEO SI LA LECTURA FUE CORRECTA***/
-					int size = i_slots.size();
-					for (int i = 0; i < size ; i++)
-						i_slots[i] -> print_attr();
+			/***VEO SI LA LECTURA FUE CORRECTA***/
+			/*int size = i_slots.size();
+			for (int i = 0; i < size ; i++)
+				i_slots[i] -> print_attr();
 
-					for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
-						delete* it;  
-						it = i_slots.erase(it);
-					}	
-					break;
-				}
-				case 3:{
-					uint32_t tamMensaje = proxyClient.recibirTamMensaje(4);
-
-					std::string nombreObjeto = proxyClient.recibir(tamMensaje);
-
-					std::cout << "id del objeto: " << nombreObjeto << std::endl;
-					
-					tamMensaje = proxyClient.recibirTamMensaje(4);
-					std::string codigoAEjecutar = proxyClient.recibir(tamMensaje);
-					std::cout << "codigo A Ejecutar: " << codigoAEjecutar << std::endl;
-
-					JsonWriter writer;
-					string json = writer.write_code(nombreObjeto, codigoAEjecutar);
-
-					string result = server.execute(json);
-
-					std::cout << "devolucion: " << result << std::endl;
-					
-					proxyClient.enviarSlots(result);
-
-					break;
-				}
-				default:
-					std::cout << "error en default switch ejconconexion" << std::endl;
-					std::cout << "recibio: " << codigoMensaje << std::endl;
-
-					break;
+			for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+				delete* it;  
+				it = i_slots.erase(it);
 			}
-				
 		} catch (const std::exception e){ 
 
 		}
+	}*/
+	
+	
+	if (argc != 3){
+		printf("Error: La cantidad de parametros necesarios es 2.\n");
+		printf("Ejemplos: \n");;
+		printf("\t ./server -p <port>\n");
+		printf("\t ./server -f <file>\n");
 	}
-
-	/*JsonWriter writer;
-	string json = writer.write_code("470", "punto11 _AddSlots: (| p=8. |).");
 	
-	string result = server.execute(json);
+	if (strcmp(argv[1],"-p")){
+		server.bind(atoi(argv[2]));
+		server.listen();
+	}else if(strcmp(argv[1],"-f")){
+		string file = argv[2];
+		if (server.execute_file(file))
+			std::cout << "Error: " << file << "no existe." << std::endl;
+	}else{
+		std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
+	}
 	
-	std::cout << result << std::endl;
 	
-	json = writer.write_code("900", "'hello self!' print.");
-	
-	result = server.execute(json);
-	
-	std::cout << result << std::endl;*/
-
 	vm->collect();
 	server.save_vm();
 	return 0;
