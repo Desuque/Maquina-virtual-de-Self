@@ -19,8 +19,9 @@ static const char* neq = "!=";
 
 Slot::Slot(int id, string slot_name):Object(id){
 	this -> name = slot_name;
-	this -> parent.first = false;
-	this -> parent.second = "";
+	std::get<0>(this -> parent) = false;
+	std::get<1>(this -> parent) = "";
+	std::get<2>(this -> parent) = 0;
 	this -> type = false;
 	this -> code = false;
 	this -> value = NULL;
@@ -91,9 +92,10 @@ Slot* Slot::execute(VM& vm, p_objects& args){
 	return this -> value -> clone(vm);
 }
 
-void Slot::set_parent(bool val, string name_parent){
-	this -> parent.first = val;
-	this ->parent.second = name_parent;
+void Slot::set_parent(bool val, string name_parent, int id_parent){
+	std::get<0>(this -> parent) = val;
+	std::get<1>(this -> parent) = name_parent;
+	std::get<2>(this -> parent) = id_parent;
 }
 
 void Slot::set_code(bool val){
@@ -109,11 +111,11 @@ string Slot::get_name(){
 }
 
 string Slot::parent_name(){
-	return this -> parent.second;
+	return std::get<1>(this -> parent);
 }
 
 bool Slot::is_parent(){
-	return this -> parent.first;
+	return std::get<0>(this -> parent);
 }
 
 bool Slot::is_code(){
@@ -124,6 +126,15 @@ bool Slot::is_immutable(){
 	return this -> type;
 }
 
+void Slot::set_value(Object* obj){
+	this -> value = obj;
+}
+
+int Slot::get_parent_id(){
+	return std::get<2>(this -> parent);
+}
+
 Slot::~Slot(){
-	delete this -> value;
+	if ( (std::get<0>(this -> parent) == false) || (this -> name == "_Self") )
+		delete this -> value;
 }

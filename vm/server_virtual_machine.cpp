@@ -102,8 +102,12 @@ Slot* VM::add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	sl_clone -> set_parent(true, sl -> get_name());
 	sl_recv -> add_slot(sl_clone);
 	return sl_recv;*/
-	sl -> set_parent(true, sl -> get_name());
-	sl_recv -> add_slot(sl);
+	Slot* sl_p = new Slot(get_id_slots(), sl_recv_id);
+	sl_p -> set_value(sl->get_value());
+	add_basic_slots(sl_p, sl_recv_id);
+	sl_p -> set_parent(true, sl_p -> get_name(), sl -> get_id());
+	sl_recv -> add_slot(sl_p);
+	this -> slots.insert(std::pair<int,Slot*>(sl_p -> get_id(),sl_p));
 	return sl_recv;
 }
 
@@ -226,7 +230,7 @@ void VM::add_default_numeric_slots(Slot* sl_recv){
 void VM::add_default_self_slot(Slot* sl_recv){
 	Slot* sl = new Slot(get_id_slots(), self_slot);
 	sl -> set_obj_value(get_id_slots());
-	sl -> set_parent(true, self_slot);
+	sl -> set_parent(true, self_slot, sl -> get_id());
 	sl_recv -> add_slot(sl);
 	this -> slots.insert(std::pair<int,Slot*>(sl -> get_id(),sl));
 }

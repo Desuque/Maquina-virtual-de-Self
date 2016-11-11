@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include <utility>
+#include <tuple>
 #include "server_object.h"
 #include "server_error_type.h"
 
@@ -15,7 +15,7 @@ class Slot: public Object{
 	private:
 		bool type;
 		//bool parent;
-		std::pair <bool,string> parent;
+		std::tuple <bool,string,int> parent;
 		bool code;
 		string name;
 		Object* value;
@@ -26,9 +26,10 @@ class Slot: public Object{
 		string parent_name();
 		Object* get_value();
 		void set_name(string name);
-		void set_parent(bool val, string name_parent);
+		void set_parent(bool val, string name_parent, int id_parent);
 		void set_code(bool val);
 		void set_type(bool val);
+		void set_value(Object* obj);
 		void set_obj_value(int id);
 		void set_int_value(int id, int value);
 		void set_boolean_value(int id, bool value);
@@ -39,6 +40,7 @@ class Slot: public Object{
 		bool is_parent();
 		bool is_code();
 		bool is_immutable();
+		int get_parent_id();
 		Slot* execute(VM& vm, p_objects& args);
 		virtual bool is_check();
 		~Slot();
