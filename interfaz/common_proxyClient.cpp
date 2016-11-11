@@ -9,6 +9,10 @@ ProxyClient::ProxyClient(const unsigned int puerto){
 	server.bindAndListen(puerto);
 }
 
+void ProxyClient::bindAndListen(const unsigned int puerto){
+	server.bindAndListen(puerto);
+}
+
 ProxyClient::ProxyClient(Socket& socket):server(std::move(socket)){}
 
 ProxyClient::ProxyClient(ProxyClient&& other):server(std::move(other.server)){}

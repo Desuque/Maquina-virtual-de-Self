@@ -9,8 +9,10 @@ class ProxyClient : public Proxy {
 	private:
 		Socket server;
 	public:
+		ProxyClient(){}
 		explicit ProxyClient(const unsigned int puerto);
 		explicit ProxyClient(Socket& socket);
+		void bindAndListen(const unsigned int puerto);
 		ProxyClient aceptarCliente();
 		void cerrarConexion();
 		void enviarSlots(std::string slots);
