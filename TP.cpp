@@ -12,6 +12,8 @@ int main() {
 	std::cout<<std::endl<<std::endl;
 	parser.parsear("'hola' print.");
 	std::cout<<std::endl<<std::endl;
+	parser.parsear("'hola' print. 'chau' print.");
+	std::cout<<std::endl<<std::endl;
 
 	//Test binary message
 	parser.parsear("2 + 2 .");
@@ -24,6 +26,8 @@ int main() {
 	std::cout<<std::endl<<std::endl;
 	parser.parsear("(6 / 3 ) print.");
 	std::cout<<std::endl<<std::endl;
+	std::cout<<std::endl<<std::endl;
+	parser.parsear("(3 + 4 ) print.");
 
 
 	//parser.parsear("(| algo = 3 . | print. ) print.");
@@ -42,13 +46,10 @@ int main() {
 	parser.parsear("123 != 45 .");
 	std::cout<<std::endl<<std::endl;
 
-	parser.parsear("'hola' print. 'chau' print.");
 
-
-	std::cout<<std::endl<<std::endl;
-	parser.parsear("(3 + 4 ) print.");
 	std::cout<<std::endl<<std::endl;
 	parser.parsear("(2 print ) print.");
+
 
 	std::cout<<std::endl<<std::endl;
 	parser.parsear("lobby _AddSlots: (| y <- 8 . | print. ) print.");

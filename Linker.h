@@ -15,7 +15,7 @@ public:
 	void create_unary_message(std::string msg);
 	void create_binary_message(std::string op);
 
-	//Private
+private:
 	int get_last_created_pos();
 	Slot* get_slot(int pos);
 
@@ -24,7 +24,7 @@ public:
 
 
 
-
+public:
 	void create_name(std::string name);
 	void create_int(std::string number);
 	void create_string(std::string string);
@@ -32,7 +32,6 @@ public:
 	void set_lower_keyword(std::string keyword);
 	void create_keyword_message(std::string lower_keyword);
 	void set_name(std::string name);
-	void create_unary_message();
 
 
 	void create_slot_list();
