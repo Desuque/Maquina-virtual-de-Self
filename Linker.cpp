@@ -19,6 +19,11 @@ void Linker::create_unary_message(std::string msg) {
 	vm.unary_message(get_slot(get_last_created_pos()), msg);
 }
 
+void Linker::create_unary_message(std::string name, std::string msg) {
+	Slot* slot = get_object_by_name(name);
+	vm.unary_message(slot, msg);
+}
+
 void Linker::create_int(std::string number) {
 	Slot* slot = vm.create_int(atoi(number.c_str()));
 	slots.push_back(slot);
@@ -34,9 +39,28 @@ void Linker::create_binary_message(std::string op) {
 	slots.push_back(slot);
 }
 
+void Linker::create_keyword_message(std::string obj, std::string lower_key) {
+	//lobby _AddSlots: (| y <- 8. |).
+	Slot* X0 = vm.search_obj(obj);
 
+	//Slot* X1 = vm.create_object();
+	//Slot* X2 = vm.create_int(8);
+	//vm.add_slot(X1, "y", X2);
 
+	vm.keyword_message(X0, lower_key, get_slot(get_last_created_pos()));
+}
 
+void Linker::create_slot(std::string slot) {
+	Slot* X1 = vm.create_object();
+	Slot* X2 = get_slot(get_last_created_pos());
+	slots.push_back(X1);
+
+	vm.add_slot(X1, slot, X2);
+}
+
+Slot* Linker::get_object_by_name(std::string name) {
+	return vm.search_obj(name);
+}
 
 
 
