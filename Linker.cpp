@@ -53,25 +53,6 @@ void Linker::create_binary_message(std::string op) {
 
 
 
-void Linker::vaciar() {
-	/**
-	 * Se mantienen las listas vacias porque el orden de entrada de los
-	 * datos es importante
-	 */
-	//slots.clear();
-	//objetos.clear();
-}
-
-void Linker::create_slot_list() {
-	/**
-	 * En la lista slots tengo los XN necesarios para crear el slot_list
-	 * En la lista datos (objetos por ahora) tengo los datos necesarios extra
-	 */
-
-	//vm.add_slot(slots.at(0), objetos.at(0), slots.at(1));
-	//last_created = slots.at(0);
-	vaciar();
-}
 
 
 
@@ -97,8 +78,6 @@ void Linker::create_keyword_message(std::string lower_keyword) {
 	//std::string obj = objetos.at(0);
 	//Slot* X0 = vm.search_obj(obj);
 	//vm.keyword_message(X0, lower_keyword, last_created);
-
-	vaciar();
 }
 
 void Linker::collect() {

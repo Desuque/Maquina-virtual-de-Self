@@ -32,16 +32,9 @@ public:
 	void set_lower_keyword(std::string keyword);
 	void create_keyword_message(std::string lower_keyword);
 	void set_name(std::string name);
-
-
-	void create_slot_list();
 	void unary_message(std::string message);
-
 	void collect();
 	virtual ~Linker();
-
-private:
-	void vaciar();
 };
 
 #endif /* LINKER_H_ */

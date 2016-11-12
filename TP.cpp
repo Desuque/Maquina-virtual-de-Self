@@ -26,8 +26,9 @@ int main() {
 	std::cout<<std::endl<<std::endl;
 	parser.parsear("(6 / 3 ) print.");
 	std::cout<<std::endl<<std::endl;
-	std::cout<<std::endl<<std::endl;
 	parser.parsear("(3 + 4 ) print.");
+	std::cout<<std::endl<<std::endl;
+	parser.parsear("(5 == 7 ) print.");
 
 
 	//parser.parsear("(| algo = 3 . | print. ) print.");
