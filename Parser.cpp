@@ -6,6 +6,7 @@
 #include "Linker.h"
 
 Parser::Parser() {
+	msg = "";
 }
 
 bool Parser::number(std::stringstream* codigo, int* posicion) {
@@ -214,6 +215,7 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion) {
 	codigo->seekg(*posicion, std::ios::beg);
 
 	if(slot_name_extended(codigo, posicion)) {
+		std::string slot = get_msg();
 		codigo->seekg(*posicion, std::ios::beg);
 		*codigo>>valor;
 
@@ -221,6 +223,7 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion) {
 			*posicion = codigo->tellg();
 			if(expression(codigo, posicion)) {
 				if(final(codigo, posicion)) {
+					linker.create_slot(slot);
 					*posicion = codigo->tellg();
 					return true;
 				}
@@ -335,14 +338,17 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 	*codigo>>valor;
 
 	if(receiver(codigo, posicion)) {
+		std::string msg = get_msg();
 		if(lower_keyword(codigo, posicion)) {
 			codigo->seekg(*posicion, std::ios::beg);
 			*codigo>>valor;
+			std::string lower_key = valor;
 			if((valor.at(valor.size()-1) == ':')) {
 				*posicion = codigo->tellg();
 				codigo->seekg(*posicion, std::ios::beg);
 				*codigo>>valor;
 				if(expressionCP(codigo, posicion)) {
+					linker.create_keyword_message(msg, lower_key);
 					return true;
 				}
 			}
@@ -415,9 +421,14 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion) {
 bool Parser::unary_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 	if(receiver(codigo, posicion)) {
+		std::string msg_name = get_msg();
 		if (name(codigo, posicion)) {
 			std::string msg = get_msg();
-			linker.create_unary_message(msg);
+			if (msg_name.size() == 0) {
+				linker.create_unary_message(msg);
+			} else {
+				linker.create_unary_message(msg_name, msg);
+			}
 			return true;
 		}
 	}
@@ -471,10 +482,10 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 
 	if(valor.at(0) == '.') {
 		//*posicion = (int)codigo->tellg() - 1;
+
 		*posicion = posicionOriginal + 1;
 		return true;
 	}
-
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -512,7 +523,9 @@ void Parser::set_msg(std::string msg) {
 }
 
 std::string Parser::get_msg() {
-	return msg;
+	std::string aux = msg;
+	msg = "";
+	return aux;
 }
 
 void Parser::set_op(std::string op) {

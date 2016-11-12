@@ -73,7 +73,7 @@ Slot* VM::search_obj(string name){
 	Slot* lobby = this -> slots[idx_global];
 	if (name == global_obj)
 		return lobby;
-	
+
 	p_slots results;
 	lobby -> get_value() -> look_up(name, results);
 	return results[0];

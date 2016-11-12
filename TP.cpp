@@ -33,6 +33,10 @@ int main() {
 	//Test objeto
 	parser.parsear("lobby _AddSlots: (| y <- 8 . |).");
 	std::cout<<std::endl<<std::endl;
+	parser.parsear("y print .");
+	std::cout<<std::endl<<std::endl;
+
+
 
 
 
