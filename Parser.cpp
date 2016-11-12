@@ -84,8 +84,12 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 		*posicion = codigo->tellg();
 		if(slot_list(codigo, posicion)) {
 			*codigo>>valor;
-			if(valor == "|") {
-				*posicion = codigo->tellg();
+			//El script puede ser parte o no del objeto
+			if((valor.at(0) == '|') && (valor.at(1) == ')')) {
+				*posicion = *posicion - (valor.length()-2);
+				return true;
+			} else if((valor.at(0) == '|') && (valor.at(1) != ')')) {
+				*posicion = *posicion + 1;
 				if(script(codigo, posicion)) {
 					*codigo>>valor;
 					if(valor == ")") {
@@ -94,11 +98,8 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 						return true;
 					}
 				}
-				//El script puede ser parte o no del objeto
-				if(valor.at(0) == ')') {
-					return true;
-				}
 			}
+
 		}
 	}
 
@@ -313,6 +314,7 @@ bool Parser::lower_keyword(std::stringstream* codigo, int* posicion) {
 
 	std::regex rr(R"((\_|[a-z])[A-Z-a-z-0-9]*)");
 	if(regex_match(auxiliar,rr)) {
+		std::cout<<"Entre"<<std::endl;
 		*posicion = *posicion - (lengValor - lengAux);
 		//*posicion = codigo->tellg();
 		//*posicion = *posicion - 1;
@@ -336,8 +338,10 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 		if(lower_keyword(codigo, posicion)) {
 			codigo->seekg(*posicion, std::ios::beg);
 			*codigo>>valor;
-			if((valor.at(0) == ':')) {
+			if((valor.at(valor.size()-1) == ':')) {
 				*posicion = codigo->tellg();
+				codigo->seekg(*posicion, std::ios::beg);
+				*codigo>>valor;
 				if(expressionCP(codigo, posicion)) {
 					return true;
 				}
@@ -429,10 +433,10 @@ bool Parser::expressionCP(std::stringstream* codigo, int* posicion) {
 	if (expressionP(codigo, posicion)) {
 		return true;
 	}
-
 	if (constant(codigo, posicion)) {
 		return true;
 	}
+
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -453,6 +457,7 @@ bool Parser::expression(std::stringstream* codigo, int* posicion) {
 	if(expressionCP(codigo, posicion)) {
 		return true;
 	}
+
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -465,7 +470,8 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 	*codigo>>valor;
 
 	if(valor.at(0) == '.') {
-		*posicion = *posicion + 1;
+		//*posicion = (int)codigo->tellg() - 1;
+		*posicion = posicionOriginal + 1;
 		return true;
 	}
 
@@ -475,9 +481,13 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 }
 
 bool Parser::script(std::stringstream *codigo, int* posicion) {
+	std::cout<<"Entra a un script"<<std::endl;
 	if(expression(codigo, posicion)) {
 		if(final(codigo, posicion)) {
 			std::cout<<"Aca tengo un script!"<<std::endl;
+			codigo->seekg(*posicion, std::ios::beg);
+			std::string valor;
+			*codigo>>valor;
 			if (!codigo->eof()) {
 				script(codigo, posicion);
 			}

@@ -30,6 +30,11 @@ int main() {
 	std::cout<<std::endl<<std::endl;
 	parser.parsear("(5 == 7 ) print.");
 
+	//Test objeto
+	parser.parsear("lobby _AddSlots: (| y <- 8 . |).");
+	std::cout<<std::endl<<std::endl;
+
+
 
 	//parser.parsear("(| algo = 3 . | print. ) print.");
 	//std::cout<<std::endl<<std::endl;
