@@ -127,6 +127,16 @@ Slot* Object::print(VM& vm){
 	return vm.create_string(class_name);
 }
 
+p_slots Object::get_slots(){
+        p_slots v_slots;
+        for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
+		if (!is_base_slot(it->second)){
+			v_slots.push_back((it->second)->get_value()->as_slot());
+                }
+	}
+	return std::move(v_slots);
+}
+
 Slot* Object::as_slot(){
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
 		if (!is_base_slot(it->second))

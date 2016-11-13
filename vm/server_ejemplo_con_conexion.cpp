@@ -16,24 +16,29 @@ int main(int argc, char** argv){
 	
 	//lobby _AddSlots: (| y <- 8. |).
 	Slot* X0 = vm->search_obj("lobby");
+        Slot* cont = vm->create_object();
 	Slot* X1 = vm->create_object();
 	Slot* X2 = vm->create_int(8);
 	vm->immutable_object(X2);
 	vm->add_slot(X1, "y", X2);
-	vm->keyword_message(X0, "_AddSlots:", X1);
+        vm->add_slot(cont, "", X1);
+	vm->keyword_message(X0, "_AddSlots:", cont);
 	vm->collect();
-	//y print.
+	
+        //y print.
 	Slot* X4 = vm->search_obj("y");
 	vm->unary_message(X4, "print");
 	
 	//lobby _AddSlots: (| punto1 = (| y <- 4. |). |).
 	Slot* X6 = vm->search_obj("lobby");
+        Slot* cont1 = vm->create_object();
 	Slot* X7 = vm->create_object();
 	Slot* X8 = vm->create_object();
 	Slot* X9 = vm->create_int(4);
 	vm->add_slot(X8, "y", X9);
 	vm->add_slot(X7, "punto1", X8);
-	vm->keyword_message(X6, "_AddSlots:", X7);
+        vm->add_slot(cont1, "", X7);
+	vm->keyword_message(X6, "_AddSlots:", cont1);
 	
 	//(punto1 y) print.
 	Slot* X10 = vm->search_obj("punto1");
@@ -54,12 +59,15 @@ int main(int argc, char** argv){
 	Slot* X19 = vm->binary_message(X17,"!=",X18);
 	vm->unary_message(X19, "print");
 	vm->collect();
+        
 	//lobby _AddSlots: (| str = 'hello'. |).
 	Slot* X20 = vm->search_obj("lobby");
-	Slot* X21 = vm->create_object();
+	Slot* cont2 = vm->create_object();
+        Slot* X21 = vm->create_object();
 	Slot* X22 = vm->create_string("hello");
 	vm->add_slot(X21, "str", X22);
-	vm->keyword_message(X20, "_AddSlots:", X21);
+	vm->add_slot(cont2,"",X21);
+        vm->keyword_message(X20, "_AddSlots:", cont2);
 	
 	//str print.
 	Slot* X23 = vm->search_obj("str");
@@ -68,14 +76,16 @@ int main(int argc, char** argv){
 	
 	//lobby _AddSlots: (| punto11 = (| x<-5. padre* = punto1 |)).
 	Slot* X24 = vm->search_obj("lobby");
-	Slot* X25 = vm->create_object();
+	Slot* cont3 = vm->create_object();
+        Slot* X25 = vm->create_object();
 	Slot* X26 = vm->search_obj("punto1");
 	Slot* X27 = vm->create_object();
 	Slot* X28 = vm->create_int(5);
 	vm->add_slot(X27, "x", X28);
 	vm->add_parent(X27, "padre", X26);
 	vm->add_slot(X25, "punto11", X27);
-	vm->keyword_message(X24, "_AddSlots:", X25);
+        vm->add_slot(cont3,"",X25);
+	vm->keyword_message(X24, "_AddSlots:", cont3);
 	
 	//(punto11 y) print.
 	Slot* X29 = vm->search_obj("punto11");
@@ -89,7 +99,8 @@ int main(int argc, char** argv){
 	//		    |).
 	
 	Slot* X31 = vm->search_obj("lobby");
-	Slot* X32 = vm->create_object();
+	Slot* cont4 = vm->create_object();
+        Slot* X32 = vm->create_object();
 	Slot* X33 = vm->create_object();
 	Slot* X34 = vm->create_string("((x*x)+(y*y))");
 	Slot* X35 = vm->create_string("print x");
@@ -99,7 +110,8 @@ int main(int argc, char** argv){
 	vm->add_code(X33, "square_norm", X34);
 	vm->add_slot(X33, "y", X3Y);
 	vm->add_slot(X32, "punto", X33);
-	vm->keyword_message(X31, "_AddSlots:", X32);
+        vm->add_slot(cont4,"",X32);
+	vm->keyword_message(X31, "_AddSlots:", cont4);
 	
 	//punto print.   #Print Method Object
 	Slot* X36 = vm->search_obj("punto");
@@ -126,6 +138,20 @@ int main(int argc, char** argv){
 	Slot* X44 = vm->search_obj("lobby");
 	vm->rm_slot(X44, "y");
 	
+        //lobby _AddSlots: (| prueba1 = 'hello'. prueba2 = 'hello2'. |).
+	Slot* X90 = vm->search_obj("lobby");
+	Slot* X91 = vm->create_object();
+        Slot* X92 = vm->create_object();
+	Slot* X93 = vm->create_string("hello");
+	Slot* X94 = vm->create_object();
+	Slot* X95 = vm->create_string("hello2");
+        vm->add_slot(X92, "prueba1", X93);
+        vm->add_slot(X94, "prueba2", X95);
+        vm->add_slot(X91, "", X92);
+	vm->add_slot(X91, "", X94);
+        vm->keyword_message(X90, "_AddSlots:", X91);
+        
+        
 	vm->revert();
 	
 	if (argc != 3){

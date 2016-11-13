@@ -227,8 +227,13 @@ Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 }
 
 Slot* VM::keyword_message(Slot* sl_recv, string obj_id, Slot* sl){
-	Slot* sl_lobby = sl -> get_value() -> as_slot();
-	sl_recv -> add_slot(sl_lobby);
+	//Slot* sl_lobby = sl -> get_value() -> as_slot();
+	//sl_recv -> add_slot(sl_lobby);
+        p_slots v_slots = sl -> get_value() -> get_slots();
+        int size = v_slots.size();
+        for (int i = 0; i < size; i++){
+                sl_recv -> add_slot(v_slots[i]);
+        }
 	return sl_recv;
 }
 

@@ -25,6 +25,7 @@ class Object{
 		void add_slot(Slot* sl);
 		Slot* rm_slot(string slot);
 		Slot* get_slot(string name);
+		p_slots get_slots();
 		void look_up(string name, p_slots& results);
 		void mark_slots();
 		void set_mark(bool val);
