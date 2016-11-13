@@ -229,6 +229,7 @@ Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
 	//Slot* sl_lobby = sl -> get_value() -> as_slot();
 	//sl_recv -> add_slot(sl_lobby);
+        Slot* ret = sl_recv;
         if (msg == "_AddSlots:"){
                 p_slots v_slots = sl -> get_value() -> get_slots();
                 int size = v_slots.size();
@@ -236,15 +237,17 @@ Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
                         sl_recv -> add_slot(v_slots[i]);
                 }
         } else if (msg == "_RemoveSlots:"){
+                Slot* rm_slots = create_object();
                 p_slots v_slots = sl -> get_value() -> get_slots();
                 int size = v_slots.size();
                 for (int i = 0; i < size; i++){
-                        rm_slot(sl_recv, v_slots[i]->get_name());
+                        rm_slots -> add_slot(rm_slot(sl_recv, v_slots[i]->get_name()));
                 }
+                ret = rm_slots;
         }else{
             std::cout << "Metodo de usuario" << std::endl;
         }
-	return sl_recv;
+	return ret;
 }
 
 void VM::add_default_numeric_slots(Slot* sl_recv){
