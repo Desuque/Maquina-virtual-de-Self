@@ -84,10 +84,18 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 	if(valor == "(|") {
 		*posicion = codigo->tellg();
 		if(slot_list(codigo, posicion)) {
+			bool nextSlot = true;
+			while(nextSlot) {
+				nextSlot = slot_list(codigo, posicion);
+				std::cout<<"Entre al menos..."<<std::endl;
+				//TODO CARGAR LOS SLOTS LISTS DESDE EL LINKER!
+			}
 			*codigo>>valor;
+			std::cout<<"VALOR EN OB: "<<valor<<std::endl;
 			//El script puede ser parte o no del objeto
 			if((valor.at(0) == '|') && (valor.at(1) == ')')) {
 				*posicion = codigo->tellg();
+				std::cout<<"Estoy aca!"<<std::endl;
 				return true;
 			} else if((valor.at(0) == '|') && (valor.at(1) != ')')) {
 				*posicion = *posicion + 1;
@@ -100,7 +108,6 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 					}
 				}
 			}
-
 		}
 	}
 
@@ -214,14 +221,20 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion) {
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 
+	std::cout<<"Pos slot_list: "<<*posicion<<std::endl;
+
+
 	if(slot_name_extended(codigo, posicion)) {
 		std::string slot = get_msg();
 		codigo->seekg(*posicion, std::ios::beg);
 		*codigo>>valor;
 
+		std::cout<<"Despues del slot name extended: "<<valor<<std::endl;
+
 		if((valor == "=") || (valor == "<-")) {
 			*posicion = codigo->tellg();
 			if(expression(codigo, posicion)) {
+				std::cout<<"Aca entra ien"<<std::endl;
 				if(final(codigo, posicion)) {
 					linker.create_slot(slot);
 					*posicion = codigo->tellg();
@@ -557,8 +570,10 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
 	*codigo>>valor;
+	std::cout<<"Valor en final: "<<valor<<std::endl;
 
 	if(valor.at(0) == '.') {
+		std::cout<<"Valor en final: "<<valor<<std::endl;
 		//*posicion = (int)codigo->tellg() - 1;
 
 		*posicion = posicionOriginal + 1;

@@ -8,8 +8,8 @@ int main() {
 	Parser parser;
 
 	//Test unary message
-	//parser.parsear("223423 print.");
-	//std::cout<<std::endl<<std::endl;
+	parser.parsear("223423 print.");
+	std::cout<<std::endl<<std::endl;
 	/**
 	parser.parsear("'hola' print.");
 	std::cout<<std::endl<<std::endl;
@@ -37,12 +37,14 @@ int main() {
 	parser.parsear("y print .");
 	std::cout<<std::endl<<std::endl;
 
-**/
+
 	//Test lower and cap keyword
 	parser.parsear("lobby _AddSlots: (| y <- 8 . |) Algo: 8 Algomas: 8 . ");
 	std::cout<<std::endl<<std::endl;
+**/
 
-
+	//Test mas de un slot_list
+	parser.parsear("lobby _AddSlots: (| prueba1 = 'hello' . prueba2 = 'hello2' . |) .");
 
 	//parser.parsear("(| algo = 3 . | print. ) print.");
 	//std::cout<<std::endl<<std::endl;
