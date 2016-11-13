@@ -1,5 +1,6 @@
 #include "server_slot.h"
 #include "server_int.h"
+#include "server_float.h"
 #include "server_string.h"
 #include "server_sum.h"
 #include "server_mult.h"
@@ -8,6 +9,7 @@
 #include "server_equal.h"
 #include "server_not_equal.h"
 #include "server_boolean.h"
+#include "server_json_writer.h"
 #include <iostream>
 
 static const char* sum = "+";
@@ -45,6 +47,12 @@ void Slot::set_int_value(int id, int value){
 	if (this -> type)
 		throw ErrorType(this -> name);
  	this -> value = new Int(id, value);
+}
+
+void Slot::set_float_value(int id, float value){
+	if (this -> type)
+		throw ErrorType(this -> name);
+ 	this -> value = new Float(id, value);
 }
  
 void Slot::set_string_value(int id, string value){
@@ -132,6 +140,12 @@ void Slot::set_value(Object* obj){
 
 int Slot::get_parent_id(){
 	return std::get<2>(this -> parent);
+}
+
+string Slot::json(){
+	JsonWriter json_writer;
+	string json = json_writer.write_slot(this);
+	return json;
 }
 
 Slot::~Slot(){

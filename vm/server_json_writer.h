@@ -15,6 +15,7 @@ using namespace rapidjson;
 
 class JsonWriter{	
 	public:
+		string write_slot(Slot* sl);
 		string write(m_slots& slots);
 		string write_code(string id, string code);
 	

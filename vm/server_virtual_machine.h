@@ -29,11 +29,13 @@ class VM{
 		Slot* immutable_object(Slot* sl);
 		string save();
 		string get_slots(Slot* sl);
+		string get_slot(Slot* sl);
 		Slot* pop_slot();
 		Slot* search_obj(string name);
 		Slot* search_obj_id(int id);
 		Slot* create_object();
 		Slot* create_int(int value);
+		Slot* create_float(float value);
 		Slot* create_string(string value);
 		Slot* create_boolean(bool value);
 		Slot* add_slot(Slot* sl_recv, string sl_recv_id, Slot* sl);

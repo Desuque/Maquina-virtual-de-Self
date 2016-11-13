@@ -32,6 +32,7 @@ class Slot: public Object{
 		void set_value(Object* obj);
 		void set_obj_value(int id);
 		void set_int_value(int id, int value);
+		void set_float_value(int id, float value);
 		void set_boolean_value(int id, bool value);
 		void set_string_value(int id, string value);
 		void set_int_method_value(int id, string name);
@@ -41,6 +42,7 @@ class Slot: public Object{
 		bool is_code();
 		bool is_immutable();
 		int get_parent_id();
+		string json();
 		Slot* execute(VM& vm, p_objects& args);
 		virtual bool is_check();
 		~Slot();

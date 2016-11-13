@@ -32,7 +32,7 @@ string Server::execute(string msg){
 	JsonReader read;
 	string id, code;
 	read.read_code(msg, id, code);
-	string json = "";
+	
 	/*****************SIMULACION******************/
 	Slot* res = NULL;
 	
@@ -42,20 +42,18 @@ string Server::execute(string msg){
 		Slot* X2 = vm->create_int(8);
 		vm->add_slot(X1, "p", X2);
 		res = vm->keyword_message(X0, "_AddSlots:", X1);
-		json = vm->get_slots(res);
 	}else if (code.find("_RemoveSlots:") != std::string::npos){
 		Slot* X0 = vm->search_obj_id(std::stoi(id));
-		res = vm -> rm_slot(X0, "x");
-		json = vm->get_slot(res);
+		Slot* res = vm -> rm_slot(X0, "x");
 	}else{
 		Slot* X0 = vm->create_object();
 		Slot* X1 = vm->create_string("hello self!");
 		vm->add_slot(X0, "hello self!", X1);
 		res = vm->unary_message(X0, "print");
-		json = vm->get_slots(res);
 	}
 	/*******************************************/
 	
+	string json = vm->get_slots(res);
 	return json;
 }
 

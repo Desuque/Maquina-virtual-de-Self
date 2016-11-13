@@ -1,5 +1,21 @@
 #include "server_json_writer.h"
 
+string JsonWriter::write_slot(Slot* sl){
+	StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("slots");
+	writer.StartArray();
+	string name, value;
+	bool type, code;
+	int id;
+	get_slot_attr(sl, name, value, type, code, id);
+	write_slot_attr(writer,name, value, type, code, id);
+	writer.EndArray();
+	writer.EndObject();
+	return s.GetString();
+}
+
 string JsonWriter::write(m_slots& slots){
 	StringBuffer s;
 	Writer<StringBuffer> writer(s);
@@ -9,7 +25,7 @@ string JsonWriter::write(m_slots& slots){
 	
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
 		Slot* sl = it->second;
-		if (!sl->is_base_slot(sl)){
+		if ((!sl->is_base_slot(sl)) && (!sl->is_num_slot(sl))){
 			string name, value;
 			bool type, code;
 			int id;

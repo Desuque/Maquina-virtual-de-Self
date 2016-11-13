@@ -53,6 +53,10 @@ string VM::get_slots(Slot* sl){
 	return sl -> get_value() -> get_json_slots();
 }
 
+string VM::get_slot(Slot* sl){
+	return sl -> json();
+}
+
 void VM::push_slot(Slot* sl){
 	tmp_slots.push(sl);
 }
@@ -139,6 +143,14 @@ Slot* VM::create_object(){
 Slot* VM::create_int(int value){
 	Slot* sl = new Slot(get_id_slots(), std::to_string(value));
 	sl -> set_int_value(get_id_slots(), value);
+	add_basic_slots(sl, std::to_string(value));
+	add_default_numeric_slots(sl);
+	return sl;
+}
+
+Slot* VM::create_float(float value){
+	Slot* sl = new Slot(get_id_slots(), std::to_string(value));
+	sl -> set_float_value(get_id_slots(), value);
 	add_basic_slots(sl, std::to_string(value));
 	add_default_numeric_slots(sl);
 	return sl;
