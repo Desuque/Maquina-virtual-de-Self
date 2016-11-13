@@ -4,9 +4,15 @@
 #include <regex>
 #include "Parser.h"
 #include "Linker.h"
+#include "server_virtual_machine.h"
 
-Parser::Parser() {
+Parser::Parser() : vm(NULL) {
 	msg = "";
+}
+
+void Parser::setVM(VM* vm) {
+	this->vm = vm;
+	linker.setVM(vm);
 }
 
 bool Parser::number(std::stringstream* codigo, int* posicion) {

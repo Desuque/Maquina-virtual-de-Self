@@ -3,15 +3,18 @@
 #define PARSER_H_
 
 #include "Linker.h"
+#include "server_virtual_machine.h"
 
 class Parser {
 private:
+	VM* vm;
 	Linker linker;
 	std::string msg;
 	std::string op;
 
 public:
 	Parser();
+	void setVM(VM* vm);
 	void parsear(std::string codigo);
 	virtual ~Parser();
 private:

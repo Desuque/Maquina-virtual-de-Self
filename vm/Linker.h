@@ -2,16 +2,17 @@
 #ifndef LINKER_H_
 #define LINKER_H_
 
-#include "virtual_machine.h"
+#include "server_virtual_machine.h"
 #include <vector>
 
 class Linker {
 private:
-	VM vm;
+	VM* vm;
 	std::vector<Slot*> slots;
 
 public:
 	Linker();
+	void setVM(VM* vm);
 	void create_unary_message(std::string msg);
 	void create_unary_message(std::string name, std::string msg);
 	void create_binary_message(std::string op);
