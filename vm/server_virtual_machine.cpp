@@ -87,6 +87,8 @@ Slot* VM::search_obj(string name){
 	
 	p_slots results;
 	lobby -> get_value() -> look_up(name, results);
+	if (results.size() == 0)
+		return NULL;
 	return results[0];
 }
 
