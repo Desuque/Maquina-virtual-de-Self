@@ -50,9 +50,14 @@ string Server::execute(string msg){
                 res = vm->keyword_message(X0, "_AddSlots:", cont);
 		json = vm->get_slots(res);
 	}else if (code.find("_RemoveSlots:") != std::string::npos){
-		Slot* X0 = vm->search_obj_id(std::stoi(id));
-		res = vm -> rm_slot(X0, "x");
-		json = vm->get_slot(res);
+                Slot* X0 = vm->search_obj_id(std::stoi(id));
+                Slot* X1 = vm->create_object();
+                Slot* X2 = vm->create_object();
+                Slot* X3 = vm->create_string("x");
+                vm->add_slot(X2, "x", X3);
+                vm->add_slot(X1, "", X2);
+                res = vm->keyword_message(X0, "_RemoveSlots:", X1);
+		json = vm->get_slots(res);
 	}else{
 		Slot* X0 = vm->create_object();
 		Slot* X1 = vm->create_string("hello self!");
