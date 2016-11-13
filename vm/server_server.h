@@ -5,11 +5,12 @@
 #include <string>
 #include "server_virtual_machine.h"
 #include "../interfaz/common_proxyClient.h"
+#include "Parser.h"
 
 class Server{
 	private:
 		VM* vm;
-		//Parser parser;
+		Parser parser;
 		ProxyClient proxyClient;
 		
 	public:

@@ -6,6 +6,7 @@
 
 Server::Server(){
 	this -> vm = new VM();
+	parser.setVM(vm);
 }
 
 void Server::recv_messages(){
@@ -33,6 +34,9 @@ string Server::execute(string msg){
 	string id, code;
 	read.read_code(msg, id, code);
 	string json = "";
+
+	parser.parsear(code);
+
 	/*****************SIMULACION******************/
 	Slot* res = NULL;
 	
