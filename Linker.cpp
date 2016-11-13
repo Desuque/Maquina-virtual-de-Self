@@ -80,36 +80,6 @@ Slot* Linker::get_object_by_name(std::string name) {
 
 
 
-void Linker::create_name(std::string name) {
-	Slot* X1 = vm.create_object();
-	//slots.push_back(X1);
-	//objetos.push_back(name);
-}
-
-void Linker::set_name(std::string name) {
-	//objetos.push_back(name);
-}
-
-void Linker::set_lower_keyword(std::string keyword) {
-	//objetos.push_back(keyword);
-}
-
-void Linker::set_receiver(std::string receiver) {
-	//objetos.push_back(receiver);
-}
-
-void Linker::create_keyword_message(std::string lower_keyword) {
-	//std::string obj = objetos.at(0);
-	//Slot* X0 = vm.search_obj(obj);
-	//vm.keyword_message(X0, lower_keyword, last_created);
-}
-
-void Linker::collect() {
-	vm.collect();
-}
-
-
-
 //ESTE METODO NO SE USA!
 void Linker::unary_message(std::string message) {
 	//Lo tabeado esta terminado!!!

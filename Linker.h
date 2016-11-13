@@ -14,9 +14,11 @@ public:
 	Linker();
 	void create_unary_message(std::string msg);
 	void create_unary_message(std::string name, std::string msg);
-
 	void create_binary_message(std::string op);
 	void create_keyword_message(std::string obj, std::string lower_key);
+	void create_string(std::string string);
+	void create_int(std::string number);
+
 	void create_slot(std::string slot);
 	Slot* get_object_by_name(std::string name);
 
@@ -30,15 +32,7 @@ private:
 
 
 public:
-	void create_name(std::string name);
-	void create_int(std::string number);
-	void create_string(std::string string);
-	void set_receiver(std::string receiber);
-	void set_lower_keyword(std::string keyword);
-	void create_keyword_message(std::string lower_keyword);
-	void set_name(std::string name);
 	void unary_message(std::string message);
-	void collect();
 	virtual ~Linker();
 };
 
