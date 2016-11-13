@@ -44,7 +44,7 @@ string Server::execute(string msg){
 		res = vm->keyword_message(X0, "_AddSlots:", X1);
 	}else if (code.find("_RemoveSlots:") != std::string::npos){
 		Slot* X0 = vm->search_obj_id(std::stoi(id));
-		Slot* res = vm -> rm_slot(X0, "x");
+		res = vm -> rm_slot(X0, "x");
 	}else{
 		Slot* X0 = vm->create_object();
 		Slot* X1 = vm->create_string("hello self!");
