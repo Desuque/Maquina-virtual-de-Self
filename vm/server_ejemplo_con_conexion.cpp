@@ -151,6 +151,19 @@ int main(int argc, char** argv){
 	vm->add_slot(X91, "", X94);
         vm->keyword_message(X90, "_AddSlots:", X91);
         
+        //lobby _RemoveSlots: (| prueba1. prueba2. |).
+	Slot* X96 = vm->search_obj("lobby");
+	Slot* X97 = vm->create_object();
+        Slot* X98 = vm->create_object();
+	Slot* X99 = vm->create_string("prueba1");
+	Slot* X100 = vm->create_object();
+	Slot* X101 = vm->create_string("prueba2");
+        vm->add_slot(X98, "prueba1", X99);
+        vm->add_slot(X100, "prueba2", X101);
+        vm->add_slot(X97, "", X98);
+	vm->add_slot(X97, "", X100);
+        vm->keyword_message(X96, "_RemoveSlots:", X97);
+        
         
 	vm->revert();
 	

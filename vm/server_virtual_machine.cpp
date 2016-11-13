@@ -226,13 +226,23 @@ Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 	return msg -> get_value() -> execute(*this, args);
 }
 
-Slot* VM::keyword_message(Slot* sl_recv, string obj_id, Slot* sl){
+Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
 	//Slot* sl_lobby = sl -> get_value() -> as_slot();
 	//sl_recv -> add_slot(sl_lobby);
-        p_slots v_slots = sl -> get_value() -> get_slots();
-        int size = v_slots.size();
-        for (int i = 0; i < size; i++){
-                sl_recv -> add_slot(v_slots[i]);
+        if (msg == "_AddSlots:"){
+                p_slots v_slots = sl -> get_value() -> get_slots();
+                int size = v_slots.size();
+                for (int i = 0; i < size; i++){
+                        sl_recv -> add_slot(v_slots[i]);
+                }
+        } else if (msg == "_RemoveSlots:"){
+                p_slots v_slots = sl -> get_value() -> get_slots();
+                int size = v_slots.size();
+                for (int i = 0; i < size; i++){
+                        rm_slot(sl_recv, v_slots[i]->get_name());
+                }
+        }else{
+            std::cout << "Metodo de usuario" << std::endl;
         }
 	return sl_recv;
 }
