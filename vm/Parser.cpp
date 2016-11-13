@@ -93,15 +93,12 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 			bool nextSlot = true;
 			while(nextSlot) {
 				nextSlot = slot_list(codigo, posicion);
-				std::cout<<"Entre al menos..."<<std::endl;
 				//TODO CARGAR LOS SLOTS LISTS DESDE EL LINKER!
 			}
 			*codigo>>valor;
-			std::cout<<"VALOR EN OB: "<<valor<<std::endl;
 			//El script puede ser parte o no del objeto
 			if((valor.at(0) == '|') && (valor.at(1) == ')')) {
 				*posicion = codigo->tellg();
-				std::cout<<"Estoy aca!"<<std::endl;
 				return true;
 			} else if((valor.at(0) == '|') && (valor.at(1) != ')')) {
 				*posicion = *posicion + 1;
@@ -227,20 +224,14 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion) {
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 
-	std::cout<<"Pos slot_list: "<<*posicion<<std::endl;
-
-
 	if(slot_name_extended(codigo, posicion)) {
 		std::string slot = get_msg();
 		codigo->seekg(*posicion, std::ios::beg);
 		*codigo>>valor;
 
-		std::cout<<"Despues del slot name extended: "<<valor<<std::endl;
-
 		if((valor == "=") || (valor == "<-")) {
 			*posicion = codigo->tellg();
 			if(expression(codigo, posicion)) {
-				std::cout<<"Aca entra ien"<<std::endl;
 				if(final(codigo, posicion)) {
 					linker.create_slot(slot);
 					*posicion = codigo->tellg();
@@ -262,10 +253,6 @@ bool Parser::expressionP(std::stringstream* codigo, int* posicion) {
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
 	*codigo>>valor;
-
-	std::cout<<"Posicion: "<<*posicion<<std::endl;
-
-	std::cout<<"Valor de expressionP: "<<valor<<std::endl;
 
 	if(valor.at(0) == '(') {
 		*posicion = posicionOriginal + 1;
@@ -340,7 +327,6 @@ bool Parser::lower_keyword(std::stringstream* codigo, int* posicion) {
 
 	std::regex rr(R"((\_|[a-z])[A-Z-a-z-0-9]*)");
 	if(regex_match(auxiliar,rr)) {
-		std::cout<<"Entre"<<std::endl;
 		//*posicion = codigo->tellg();
 		*posicion = *posicion - (lengValor - lengAux);
 		//*posicion = codigo->tellg();
@@ -364,8 +350,6 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 	unsigned int i=0;
 	std::string auxiliar;
 
-	std::cout<<"Auxiliar: "<<valor<<std::endl;
-
 	while((valor.at(i) != ':') && (i<valor.size()-1)) {
 		auxiliar+=valor.at(i);
 		i++;
@@ -375,10 +359,8 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 
 	std::regex rr(R"(([A-Z])[A-Z-a-z-0-9]*)");
 	if(regex_match(auxiliar,rr)) {
-		std::cout<<"Entre al cap: "<<auxiliar<<std::endl;
 		*posicion = codigo->tellg();
 		*posicion = *posicion - (lengValor - lengAux);
-		std::cout<<"Posicion al salir del cap: "<<*posicion<<std::endl;
 		//*posicion = codigo->tellg();
 		//*posicion = *posicion - 1;
 		return true;
@@ -403,26 +385,19 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 		if(lower_keyword(codigo, posicion)) {
 			codigo->seekg(*posicion, std::ios::beg);
 			*codigo>>valor;
-			std::cout<<"EL valor que sale: "<<valor<<std::endl;
 			std::string lower_key = valor;
 			if((valor.at(valor.size()-1) == ':')) {
-				std::cout<<"Entra?"<<std::endl;
 				*posicion = codigo->tellg();
 				codigo->seekg(*posicion, std::ios::beg);
 				*codigo>>valor;
 				if(expressionCP(codigo, posicion)) {
 					linker.create_keyword_message(msg, lower_key);
 					bool isCap_keyword = true;
-					std::cout<<"POr entrar"<<std::endl;
-					std::cout<<"Posicion: "<<*posicion<<std::endl;
 					while(isCap_keyword) {
-						std::cout<<"Adentro"<<std::endl;
 
 						if(cap_keyword(codigo, posicion)) {
-							std::cout<<"ES un cap"<<std::endl;
 							codigo->seekg(*posicion, std::ios::beg);
 							*codigo>>valor;
-							std::cout<<"Valor adentro del key: "<<valor<<std::endl;
 							std::string lower_key = valor;
 							if((valor.at(valor.size()-1) == ':')) {
 								*posicion = codigo->tellg();
@@ -441,7 +416,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 	}
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
-	std::cout<<"Sale mal: "<<*posicion<<std::endl;
 	return false;
 }
 
@@ -487,12 +461,9 @@ bool Parser::operador(std::stringstream* codigo, int* posicion) {
 
 bool Parser::binary_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
-	std::cout<<"EL receiver no lo paso"<<std::endl;
 
 	if(receiver(codigo, posicion)) {
-		std::cout<<"EL receiver lo paso"<<std::endl;
 		if(operador(codigo, posicion)) {
-			std::cout<<"EL operator no"<<std::endl;
 			if(expressionCP(codigo, posicion)) {
 				std::string op = get_op();
 				linker.create_binary_message(op);
@@ -528,12 +499,10 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion) {
 
 bool Parser::expressionCP(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
-	std::cout<<"Rompe 1"<<std::endl;
 
 	if (expressionP(codigo, posicion)) {
 		return true;
 	}
-	std::cout<<"Rompe 2"<<std::endl;
 
 	if (constant(codigo, posicion)) {
 		return true;
@@ -546,22 +515,16 @@ bool Parser::expressionCP(std::stringstream* codigo, int* posicion) {
 
 bool Parser::expression(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
-	std::cout<<"Analizo key: "<<*posicion<<std::endl;
 
 	if(keyword_message(codigo, posicion)) {
 		return true;
 	}
-	std::cout<<"Analizo binary: "<<*posicion<<std::endl;
 	if(binary_message(codigo, posicion)) {
 		return true;
 	}
-	std::cout<<"Analizo unary: "<<*posicion<<std::endl;
-
 	if(unary_message(codigo, posicion)) {
 		return true;
 	}
-	std::cout<<"Analizo expCP: "<<*posicion<<std::endl;
-
 	if(expressionCP(codigo, posicion)) {
 		return true;
 	}
@@ -576,12 +539,9 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
 	*codigo>>valor;
-	std::cout<<"Valor en final: "<<valor<<std::endl;
 
 	if(valor.at(0) == '.') {
-		std::cout<<"Valor en final: "<<valor<<std::endl;
 		//*posicion = (int)codigo->tellg() - 1;
-
 		*posicion = posicionOriginal + 1;
 		return true;
 	}
@@ -591,10 +551,8 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 }
 
 bool Parser::script(std::stringstream *codigo, int* posicion) {
-	std::cout<<"Entra a un script"<<std::endl;
 	if(expression(codigo, posicion)) {
 		if(final(codigo, posicion)) {
-			std::cout<<"Aca tengo un script!"<<std::endl;
 			codigo->seekg(*posicion, std::ios::beg);
 			std::string valor;
 			*codigo>>valor;
