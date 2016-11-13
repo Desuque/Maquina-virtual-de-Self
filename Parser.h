@@ -33,6 +33,8 @@ private:
 	bool name(std::stringstream* codigo, int* posicion);
 	bool operador(std::stringstream* codigo, int* posicion);
 	bool lower_keyword(std::stringstream* codigo, int* posicion);
+	bool cap_keyword(std::stringstream* codigo, int* posicion);
+
 	bool final(std::stringstream *codigo, int* posicion);
 
 	void set_msg(std::string msg);
