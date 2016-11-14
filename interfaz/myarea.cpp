@@ -163,9 +163,32 @@ void MyArea::get_it_event(){
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
       slots_reader.read(i_slots, json);
-      Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
-      morphs.push_back(nuevoMorph);
+      if(i_slots.size()){
+        Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
+        morphs.push_back(nuevoMorph);
+      }
       break;
+    }
+    case 3: {
+      // recibe el tamanio del mensaje, cambiar nombre
+      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
+      std::string json = proxyServer.recibir(tamMensaje);
+      std::cout << json << std::endl;
+      std::vector<InterfaceSlot*> i_slots;
+      JsonReader slots_reader;
+      slots_reader.read(i_slots, json);
+
+      int size = 1;
+      //int size = i_slots.size();
+      for (int i = 0; i < size ; i++){
+        i_slots[i] -> print_attr();
+        actual->agregarSlot(i_slots[i]);
+      }
+      break;
+    } 
+    case 0: {
+      std::cout << "el server devolvio un error " <<
+       " cuando quizo ejecutar ese codigo" << std::endl;
     }
     default: { 
       std::cout << "error en default switch MyArea::do_it_event" << std::endl;
@@ -213,6 +236,9 @@ void borrarSlot(Morph* actual, std::vector<Referencia*> referencias){
   }
 }
 
+
+
+
 void MyArea::do_it_event(){
   std::string textoAEnviar = actual -> do_it();
   
@@ -234,6 +260,23 @@ void MyArea::do_it_event(){
       std::cout << i_slots[0]->get_name() << std::endl;
       break;
     }
+    case 3: {
+      // recibe el tamanio del mensaje, cambiar nombre
+      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
+      std::string json = proxyServer.recibir(tamMensaje);
+      std::cout << json << std::endl;
+      std::vector<InterfaceSlot*> i_slots;
+      JsonReader slots_reader;
+      slots_reader.read(i_slots, json);
+
+      int size = 1;
+      //int size = i_slots.size();
+      for (int i = 0; i < size ; i++){
+        i_slots[i] -> print_attr();
+        actual->agregarSlot(i_slots[i]);
+      }
+      break;
+    } 
     default: { 
       std::cout << "error en default switch MyArea::do_it_event" << std::endl;
       std::cout << "recibio: " << codigoMensaje << std::endl;
