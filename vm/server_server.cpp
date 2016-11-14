@@ -131,6 +131,10 @@ void Server::listen(){
 
 					string result = execute(json);
 
+					// ver como hacer con esto, mando mensaje "generic" pero 
+					// podria ser cualquier cosa, ejemplo : agregarSlot remove
+					proxy.enviar(5,1);
+
 					std::cout << "devolucion: " << result << std::endl;
 					
 					proxy.enviarSlots(result);
