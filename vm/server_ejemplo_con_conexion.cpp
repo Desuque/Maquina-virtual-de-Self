@@ -7,11 +7,40 @@
 #include <iostream>
 #include <string.h>
 
+void test_example(VM* vm);
 void example();
 
 int main(int argc, char** argv){
-	Server server;
-	VM* vm = server.get_vm();
+	Server server;	
+	if (argc != 3){
+		printf("Error: La cantidad de parametros necesarios es 2.\n");
+		example();
+	}else{
+		if (!strcmp(argv[1],"-p")){
+			test_example(server.get_vm());
+                        server.bind(atoi(argv[2]));
+			server.listen();
+		}else if(!strcmp(argv[1],"-f")){
+			string file = argv[2];
+		if (server.execute_file(file))
+			std::cout << "Error: " << file << " no existe." << std::endl;
+		}else{
+			std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
+			example();
+		}
+	}
+	
+	server.save_vm();
+	return 0;
+}
+
+void example(){
+	printf("Ejemplos: \n");;
+	printf("\t ./server -p <port>\n");
+	printf("\t ./server -f <file>\n");
+}
+
+void test_example(VM* vm){
 	vm->checkpoint();
 	
 	//lobby _AddSlots: (| y <- 8. |).
@@ -166,30 +195,5 @@ int main(int argc, char** argv){
         
         
 	vm->revert();
-	
-	if (argc != 3){
-		printf("Error: La cantidad de parametros necesarios es 2.\n");
-		example();
-	}else{
-		if (!strcmp(argv[1],"-p")){
-			server.bind(atoi(argv[2]));
-			server.listen();
-		}else if(!strcmp(argv[1],"-f")){
-			string file = argv[2];
-		if (server.execute_file(file))
-			std::cout << "Error: " << file << " no existe." << std::endl;
-		}else{
-			std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
-			example();
-		}
-	}
-	vm->collect();
-	server.save_vm();
-	return 0;
-}
-
-void example(){
-	printf("Ejemplos: \n");;
-	printf("\t ./server -p <port>\n");
-	printf("\t ./server -f <file>\n");
+        vm->collect();
 }
