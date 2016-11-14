@@ -36,36 +36,8 @@ string Server::execute(string msg){
 	string json = "";
 
 	Slot* res = NULL;
-	std::cout<<"Aca llega"<<std::endl;
 	res = parser.parsear(code);
-	std::cout<<"Aca llega tambien"<<std::endl;
 	json = vm->get_slots(res);
-	std::cout<<"El json: "<<json<<std::endl;
-
-	/*****************SIMULACION******************
-	Slot* res = NULL;
-	
-	if (code.find("_AddSlots:") != std::string::npos){
-		Slot* X0 = vm->search_obj_id(std::stoi(id));
-		Slot* cont = vm->create_object();
-                Slot* X1 = vm->create_object();
-		Slot* X2 = vm->create_int(8);
-		vm->add_slot(X1, "p", X2);
-		vm->add_slot(cont, "", X1);
-                res = vm->keyword_message(X0, "_AddSlots:", cont);
-		json = vm->get_slots(res);
-	}else if (code.find("_RemoveSlots:") != std::string::npos){
-		Slot* X0 = vm->search_obj_id(std::stoi(id));
-		res = vm -> rm_slot(X0, "x");
-		json = vm->get_slot(res);
-	}else{
-		Slot* X0 = vm->create_object();
-		Slot* X1 = vm->create_string("hello self!");
-		vm->add_slot(X0, "hello self!", X1);
-		res = vm->unary_message(X0, "print");
-		json = vm->get_slots(res);
-	}
-	*******************************************/
 	
 	return json;
 }
@@ -133,7 +105,14 @@ void Server::listen(){
 
 					// ver como hacer con esto, mando mensaje "generic" pero 
 					// podria ser cualquier cosa, ejemplo : agregarSlot remove
-					proxy.enviar(5,1);
+
+					int flag = parser.getFlag();
+					if (flag == 3) {
+				  		proxy.enviar(flag, 1);
+					} else {
+						//hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
+						proxy.enviar(5, 1);
+					}
 
 					std::cout << "devolucion: " << result << std::endl;
 					

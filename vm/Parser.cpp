@@ -6,8 +6,11 @@
 #include "Linker.h"
 #include "server_virtual_machine.h"
 
+#define NOT_SET -1
+
 Parser::Parser() : vm(NULL) {
 	msg = "";
+	flag = NOT_SET;
 }
 
 void Parser::setVM(VM* vm) {
@@ -372,6 +375,18 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 
 }
 
+void Parser::setFlag(std::string valor) {
+	if(valor == "_AddSlots") {
+		flag = 3;
+	} else {
+		flag = -1;
+	}
+}
+
+int Parser::getFlag() {
+	return flag;
+}
+
 bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
@@ -386,6 +401,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 			codigo->seekg(*posicion, std::ios::beg);
 			*codigo>>valor;
 			std::string lower_key = valor;
+			setFlag(valor);
 			if((valor.at(valor.size()-1) == ':')) {
 				*posicion = codigo->tellg();
 				codigo->seekg(*posicion, std::ios::beg);
@@ -484,10 +500,8 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion) {
 		if (name(codigo, posicion)) {
 			std::string msg = get_msg();
 			if (msg_name.size() == 0) {
-				std::cout<<"Entro sin el name?"<<std::endl;
 				linker.create_unary_message(msg);
 			} else {
-				std::cout<<"Entro sin el name?: "<<msg<<std::endl;
 				linker.create_unary_message(msg_name, msg);
 			}
 			return true;

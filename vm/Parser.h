@@ -11,13 +11,16 @@ private:
 	Linker linker;
 	std::string msg;
 	std::string op;
+	int flag;
 
 public:
 	Parser();
 	void setVM(VM* vm);
+	int getFlag();
 	Slot* parsear(std::string codigo);
 	virtual ~Parser();
 private:
+	void setFlag(std::string valor);
 	bool script(std::stringstream* codigo, int* posicion);
 	bool expression(std::stringstream* codigo, int* posicion);
 	bool keyword_message(std::stringstream* codigo, int* posicion);
