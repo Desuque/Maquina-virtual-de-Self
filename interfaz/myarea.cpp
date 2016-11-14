@@ -163,7 +163,7 @@ void MyArea::get_it_event(){
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
       slots_reader.read(i_slots, json);
-      Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),0,250.,550.,m_TextView, textViewCodAsociado);
+      Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
       morphs.push_back(nuevoMorph);
       break;
     }
