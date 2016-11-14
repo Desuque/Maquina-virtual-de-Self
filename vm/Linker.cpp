@@ -24,6 +24,7 @@ Slot* Linker::get_slot(int pos) {
 }
 
 void Linker::create_unary_message(std::string msg) {
+	std::cout<<"Aca entro.asdasdasds.."<<std::endl;
 	Slot* slot = vm->unary_message(get_slot(get_last_created_pos()), msg);
 	slots.push_back(slot);
 }
@@ -35,13 +36,15 @@ void Linker::create_unary_message(std::string name, std::string msg) {
 }
 
 void Linker::create_int(std::string number) {
-	Slot* slot = vm->create_int(atoi(number.c_str()));
-	slots.push_back(slot);
+	Slot* X1 = vm->create_int(atoi(number.c_str()));
+	slots.push_back(X1);
 }
 
 void Linker::create_string(std::string string) {
-	Slot* slot = vm->create_string(string);
-	slots.push_back(slot);
+	Slot* X0 = vm->create_object();
+	Slot* X1 = vm->create_string(string);
+	vm->add_slot(X0, string, X1);
+	slots.push_back(X0);
 }
 
 void Linker::create_binary_message(std::string op) {

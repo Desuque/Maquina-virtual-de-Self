@@ -36,9 +36,13 @@ string Server::execute(string msg){
 	string json = "";
 
 	Slot* res = NULL;
+	std::cout<<"Aca llega"<<std::endl;
 	res = parser.parsear(code);
+	std::cout<<"Aca llega tambien"<<std::endl;
 	json = vm->get_slots(res);
-	/*****************SIMULACION*****************
+	std::cout<<"El json: "<<json<<std::endl;
+
+	/*****************SIMULACION******************
 	Slot* res = NULL;
 	
 	if (code.find("_AddSlots:") != std::string::npos){
@@ -51,14 +55,9 @@ string Server::execute(string msg){
                 res = vm->keyword_message(X0, "_AddSlots:", cont);
 		json = vm->get_slots(res);
 	}else if (code.find("_RemoveSlots:") != std::string::npos){
-                Slot* X0 = vm->search_obj_id(std::stoi(id));
-                Slot* X1 = vm->create_object();
-                Slot* X2 = vm->create_object();
-                Slot* X3 = vm->create_string("x");
-                vm->add_slot(X2, "x", X3);
-                vm->add_slot(X1, "", X2);
-                res = vm->keyword_message(X0, "_RemoveSlots:", X1);
-		json = vm->get_slots(res);
+		Slot* X0 = vm->search_obj_id(std::stoi(id));
+		res = vm -> rm_slot(X0, "x");
+		json = vm->get_slot(res);
 	}else{
 		Slot* X0 = vm->create_object();
 		Slot* X1 = vm->create_string("hello self!");
@@ -66,7 +65,7 @@ string Server::execute(string msg){
 		res = vm->unary_message(X0, "print");
 		json = vm->get_slots(res);
 	}
-	*****************************************/
+	*******************************************/
 	
 	return json;
 }
@@ -134,10 +133,6 @@ void Server::listen(){
 
 					std::cout << "devolucion: " << result << std::endl;
 					
-					// hardocodeado que devuelvo un generic, puede ser un addslot
-					// un remove slot etc.
-					proxy.enviar(5,1);
-
 					proxy.enviarSlots(result);
 
 					break;
@@ -145,6 +140,7 @@ void Server::listen(){
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
 					std::cout << "recibio: " << codigoMensaje << std::endl;
+
 					break;
 			}
 				
@@ -166,9 +162,8 @@ int Server::execute_file(string file_name){
 	while (std::getline(file, str)){
 		file_contents += str;
 		file_contents.push_back('\n');
-	}
-	
-        parser.parsear(file_contents);
+	}  
+	std::cout<<"Aca llamo al parser?"<<std::endl;
 	return 0;
 }
 

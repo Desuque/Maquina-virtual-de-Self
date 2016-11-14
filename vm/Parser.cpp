@@ -484,8 +484,10 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion) {
 		if (name(codigo, posicion)) {
 			std::string msg = get_msg();
 			if (msg_name.size() == 0) {
+				std::cout<<"Entro sin el name?"<<std::endl;
 				linker.create_unary_message(msg);
 			} else {
+				std::cout<<"Entro sin el name?: "<<msg<<std::endl;
 				linker.create_unary_message(msg_name, msg);
 			}
 			return true;
