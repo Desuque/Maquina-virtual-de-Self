@@ -376,7 +376,7 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 }
 
 void Parser::setFlag(std::string valor) {
-	if(valor == "_AddSlots") {
+	if(valor == "_AddSlots:") {
 		flag = 3;
 	} else {
 		flag = -1;
