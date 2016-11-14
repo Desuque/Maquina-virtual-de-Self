@@ -149,30 +149,121 @@ void MyArea::get_it_event(){
   //morph->nombreObjeto=objeto;
   morphs.push_back(actual); 
   actual -> mostrarDescripcionMorph();*/
+  std::string textoAEnviar = actual->get_it();
+  uint32_t codigoMensaje = proxyServer.enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  
+  std::cout << codigoMensaje << std::endl;
+
+  switch(codigoMensaje) {
+    case 5: { 
+      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
+      std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
+      std::string json = proxyServer.recibir(tamMensaje);
+      std::cout << json << std::endl;
+      std::vector<InterfaceSlot*> i_slots;
+      JsonReader slots_reader;
+      slots_reader.read(i_slots, json);
+      Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),0,250.,550.,m_TextView, textViewCodAsociado);
+      morphs.push_back(nuevoMorph);
+      break;
+    }
+    default: { 
+      std::cout << "error en default switch MyArea::do_it_event" << std::endl;
+      std::cout << "recibio: " << codigoMensaje << std::endl;
+      break;
+    }
+  }
   queue_draw();
 }
 
+void borrarSlot(Morph* actual, std::vector<Referencia*> referencias){
+    if (actual!= nullptr){
+    //std::vector<Slot*> listaSlots = ;
+      for (int i = 0; i < (actual->slots).size(); ++i){
+        if ((actual->slots)[i]->id == 500){
+          std::cout << "elimine slot" << std::endl;
+          if ((actual->slots)[i]->estaDibujadoComoMorph()){
+            // si esta dibujado borro la referencia al morph
+            // que apunta
+            std::cout << " esta dibujado como morph\n";
+            for (int j = 0; j < referencias.size(); ++j){
+              if ((actual->slots)[i]->id
+                   == referencias[j]->perteneceASlot->id ){
+                for (int v = 0; v < referencias[j]->apuntoAMorph->referencias.size(); ++v){
+                  // la comparacion se hace por referencias de memoria
+                  if (referencias[j]->apuntoAMorph->referencias[v]
+                      == referencias[j]){
+                    std::cout << " borro ref de lista de ref de morph\n";
+                    referencias[j]->apuntoAMorph->referencias.
+                              erase(referencias[j]->apuntoAMorph->referencias.begin()+v);
+                  } 
+                }
+                delete referencias[j];
+                std::cout << referencias.size() << std::endl;
+                referencias.erase(referencias.begin()+j);
+                std::cout << referencias.size() << std::endl;
+
+              }
+            }
+          }
+          delete (actual->slots)[i];
+          (actual->slots).erase((actual->slots).begin()+i);
+        }
+      }
+  }
+}
+
 void MyArea::do_it_event(){
-  std::string respuesta = actual -> do_it(proxyServer);
+  std::string textoAEnviar = actual -> do_it();
+  
+  uint32_t codigoMensaje = proxyServer.enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  
+  std::cout << codigoMensaje << std::endl;
+
+  switch(codigoMensaje) {
+    case 5: { 
+      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
+      std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
+      std::string json = proxyServer.recibir(tamMensaje);
+      std::cout << json << std::endl;
+      std::vector<InterfaceSlot*> i_slots;
+      JsonReader slots_reader;
+      slots_reader.read(i_slots, json);
+      /*Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),0,250.,550.,m_TextView, textViewCodAsociado);
+      morphs.push_back(nuevoMorph);*/
+      std::cout << i_slots[0]->get_name() << std::endl;
+      break;
+    }
+    default: { 
+      std::cout << "error en default switch MyArea::do_it_event" << std::endl;
+      std::cout << "recibio: " << codigoMensaje << std::endl;
+      break;
+    }
+  }
+  /*std::string respuesta = proxyServer.recibirRespuesta();
+
   std::cout << respuesta << std::endl;
+  
   std::vector<InterfaceSlot*> i_slots;
   JsonReader slots_reader;
-  slots_reader.read(i_slots, respuesta);
+  slots_reader.read(i_slots, respuesta);*/
 
-  i_slots[0]->print_attr();
-  actual->agregarSlot(i_slots[0]);
-  queue_draw();
-  /*int size = i_slots.size();
+
+  /*int size = 1;
+  //int size = i_slots.size();
   for (int i = 0; i < size ; i++){
     i_slots[i] -> print_attr();
     actual->agregarSlot(i_slots[i]);
   }*/
-    
+  // borrar slot
+  //borrarSlot(actual, referencias);
+  
+  queue_draw();    
 }
 
 void MyArea::close_event(){
   if (actual == nullptr) return;
-  for (int i =0; i < morphs.size() ; ++i){
+  /*for (int i =0; i < morphs.size() ; ++i){
       if(*(morphs[i]) == *actual){
         for (int j=0; j < morphs[i]->referencias.size(); ++j){
           for (int v=0; v<referencias.size(); ++v){
@@ -187,7 +278,7 @@ void MyArea::close_event(){
         morphs.erase(morphs.begin()+i);
         break;
       }
-  }
+  }*/
   actual = nullptr;
   queue_draw();
 }

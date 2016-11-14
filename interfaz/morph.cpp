@@ -96,45 +96,23 @@ std::string Morph::get_id_to_string(){
 	return std::to_string(this->id);
 }
 
-Morph* Morph::get_it(){
-	std::string objeto;
-	std::string mensaje;
+std::string Morph::get_it(){
 	if (!m_TextView) std::cout << "error" << std::endl;
-	refTextViewConsola = m_TextView -> get_buffer();
-	std::string str = m_TextView->get_buffer()->get_text();
-	std::istringstream iss(str);
-	iss >> std::noskipws;
-	iss >> objeto  >> mensaje;  
-	std::cout << objeto << std::endl;
-	//Morph* morph = nullptr;
-	if (str != ""){
-		//morph = new Morph("que?",200,200,m_TextView);
-		this->nombreObjeto=objeto;
-		
-	}/* else {
-		morph = new Morph(objeto,200,200,m_TextView);
-	}*/
-
-	// ENVIAR A SERVIDOR
-	std::cout << this->nombreObjeto << " " << str
-			  << std::endl;
-
-	return this;
+	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
+	std::cout << textoAEnviar << std::endl;
+	return textoAEnviar;
 }
 
-std::string Morph::do_it(ProxyServer& proxyServer){
-	std::string objeto;
-	std::string mensaje;
+std::string Morph::do_it(){
 	if (!m_TextView) std::cout << "error" << std::endl;
 	//refTextViewConsola = m_TextView -> get_buffer();
 	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
 	std::cout << textoAEnviar << std::endl;
-	std::string respuesta = proxyServer.enviarCodigoAEjecutar(this->get_id_to_string(), textoAEnviar);	
+	/*std::string respuesta = proxyServer.enviarCodigoAEjecutar(this->get_id_to_string(), textoAEnviar);	
 	std::cout << respuesta << std::endl;
-	return respuesta;
+	return respuesta;*/
+	return textoAEnviar;
 }
-
-
 
 void Morph::agregarSlot(std::string nombreSlot){
 	//Morph* morph = new Morph(nombreSlot, this->posX, (this->posY)+(this->height), this->width, this->height);

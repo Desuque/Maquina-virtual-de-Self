@@ -133,6 +133,10 @@ void Server::listen(){
 
 					std::cout << "devolucion: " << result << std::endl;
 					
+					// hardocodeado que devuelvo un generic, puede ser un addslot
+					// un remove slot etc.
+					proxy.enviar(5,1);
+
 					proxy.enviarSlots(result);
 
 					break;
@@ -140,7 +144,6 @@ void Server::listen(){
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
 					std::cout << "recibio: " << codigoMensaje << std::endl;
-
 					break;
 			}
 				

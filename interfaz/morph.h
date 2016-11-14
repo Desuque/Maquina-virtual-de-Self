@@ -42,8 +42,8 @@ class Morph : public Gtk::DrawingArea{
 		std::string get_id_to_string();
 		
 
-  		Morph* get_it();
-  		std::string do_it(ProxyServer& proxyServer);
+  		std::string get_it();
+  		std::string do_it();
   		void actualizarAlturaMorph(size_t alturaDeSlot);
   		void agregarSlot(std::string nombreSlot);
   		// decidir como hacer esto.
@@ -62,6 +62,7 @@ class Morph : public Gtk::DrawingArea{
 		void draw_slot(const Cairo::RefPtr<Cairo::Context>& cr);
 
 	    bool operator==(const Morph& rhs) const {
+	    	std::cout << "se comparan dos morphs\n";
 	    	if ((rhs.posX >= this->posX) && (rhs.posY >= this->posY)
 	    		&& (rhs.posX <= ((this->posX) + this->width)) 
 	    		&& (rhs.posY <= ((this->posY)+this->height))){

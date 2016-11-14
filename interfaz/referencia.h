@@ -29,6 +29,7 @@ public:
 		cr->set_line_width(0.5);
 		cr->set_source_rgb(1.0, 0.0, 0.0);
 
+		//std::cout << apuntoAMorph->nombreObjeto << std::endl;
 		cr->move_to(perteneceASlot->posX + perteneceASlot->width - 6, perteneceASlot->posY + (perteneceASlot->height/2));
 		cr -> line_to(this->posX,this->posY+4);
 
