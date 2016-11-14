@@ -123,7 +123,6 @@ Slot* Object::execute(VM& vm, p_objects& args){
 }
 
 Slot* Object::print(VM& vm){
-	std::cout << class_name << std::endl;
 	return vm.create_string(class_name);
 }
 
