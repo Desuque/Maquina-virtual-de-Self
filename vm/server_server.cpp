@@ -114,6 +114,7 @@ void Server::listen(){
 						proxy.enviar(5, 1);
 					}
 
+					std::cout << "flag: " << flag << result << std::endl;
 					std::cout << "devolucion: " << result << std::endl;
 					
 					proxy.enviarSlots(result);
