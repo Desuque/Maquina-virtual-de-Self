@@ -7,6 +7,8 @@
 #include "server_virtual_machine.h"
 
 #define NOT_SET -1
+#define ADD_SLOTS 3
+#define REMOVE_SLOTS 4
 
 Parser::Parser() : vm(NULL) {
 	msg = "";
@@ -377,9 +379,11 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 
 void Parser::setFlag(std::string valor) {
 	if(valor == "_AddSlots:") {
-		flag = 3;
+		flag = ADD_SLOTS;
+	} else if (valor == "_RemoveSlots:") {
+		flag = REMOVE_SLOTS;
 	} else {
-		flag = -1;
+		flag = NOT_SET;
 	}
 }
 

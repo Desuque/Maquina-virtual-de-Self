@@ -109,12 +109,13 @@ void Server::listen(){
 					int flag = parser.getFlag();
 					if (flag == 3) {
 				  		proxy.enviar(flag, 1);
+					} else if (flag == 4) {
+						proxy.enviar(flag, 1);
 					} else {
 						//hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
 						proxy.enviar(5, 1);
 					}
 
-					std::cout << "flag: " << flag << result << std::endl;
 					std::cout << "devolucion: " << result << std::endl;
 					
 					proxy.enviarSlots(result);
