@@ -128,7 +128,7 @@ void MyArea::botonGuardarNuevoSlotEvent(){
   actual -> agregarSlot(textoAEnviar);
   //proxyServer.agregarSlotA(actual->get_id_to_string(), textoAEnviar);
   // enviar esto al server.
-  std::cout << actual->nombreObjeto << " __addSlots:(|"
+  std::cout << actual->nombreObjeto << " _AddSlots:(|"
             << textoAEnviar << "|)."  << std::endl;
 
   sigcButtonGuardar.disconnect();
@@ -188,7 +188,8 @@ void MyArea::get_it_event(){
     } 
     case 0: {
       std::cout << "el server devolvio un error " <<
-       " cuando quizo ejecutar ese codigo" << std::endl;
+       " cuando quizo ejecutar este codigo:" 
+       << textoAEnviar << std::endl;
     }
     default: { 
       std::cout << "error en default switch MyArea::do_it_event" << std::endl;
@@ -257,7 +258,8 @@ void MyArea::do_it_event(){
       slots_reader.read(i_slots, json);
       /*Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),0,250.,550.,m_TextView, textViewCodAsociado);
       morphs.push_back(nuevoMorph);*/
-      std::cout << i_slots[0]->get_name() << std::endl;
+      if(i_slots.size())
+        std::cout << i_slots[0]->get_name() << std::endl;
       break;
     }
     case 3: {

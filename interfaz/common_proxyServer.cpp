@@ -42,7 +42,7 @@ uint32_t ProxyServer::recibirCodigoMensaje(size_t cantidad){
 uint32_t ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar){
 	// modificar cuando sea generico
 	
-    this->enviar(3,sizeof(char));
+    this->enviar(5,sizeof(char));
 
 	char buff[5];
 	bzero(buff,5);

@@ -87,7 +87,7 @@ void Server::listen(){
 					}	
 					break;
 				}
-				case 3:{
+				case 5:{
 					uint32_t tamMensaje = proxy.recibirTamMensaje(4);
 
 					std::string nombreObjeto = proxy.recibir(tamMensaje);
