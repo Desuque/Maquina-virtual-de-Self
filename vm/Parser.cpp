@@ -565,7 +565,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	return false;
 }
 
-void Parser::parsear(std::string codigo) {
+Slot* Parser::parsear(std::string codigo) {
 	std::stringstream scripts(codigo);
 	int posicion = scripts.tellg();
 
@@ -573,6 +573,8 @@ void Parser::parsear(std::string codigo) {
 	if(script(&scripts, &posicion)) {
 		std::cout<<"Era un script hecho y derecho!"<<std::endl;
 	}
+	std::cout<<"ESto devuelvo: "<<linker.get_last_slot()<<std::endl;
+	return linker.get_last_slot();
 }
 
 void Parser::set_msg(std::string msg) {

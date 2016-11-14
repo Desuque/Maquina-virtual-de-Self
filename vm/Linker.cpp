@@ -11,6 +11,10 @@ void Linker::setVM(VM* vm) {
 	this->vm = vm;
 }
 
+Slot* Linker::get_last_slot() {
+	return get_slot(get_last_created_pos());
+}
+
 int Linker::get_last_created_pos() {
 	return slots.size()-1;
 }
@@ -20,12 +24,14 @@ Slot* Linker::get_slot(int pos) {
 }
 
 void Linker::create_unary_message(std::string msg) {
-	vm->unary_message(get_slot(get_last_created_pos()), msg);
+	Slot* slot = vm->unary_message(get_slot(get_last_created_pos()), msg);
+	slots.push_back(slot);
 }
 
 void Linker::create_unary_message(std::string name, std::string msg) {
 	Slot* slot = get_object_by_name(name);
-	vm->unary_message(slot, msg);
+	Slot* last_slot = vm->unary_message(slot, msg);
+	slots.push_back(last_slot);
 }
 
 void Linker::create_int(std::string number) {

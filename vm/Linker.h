@@ -13,6 +13,7 @@ private:
 public:
 	Linker();
 	void setVM(VM* vm);
+	Slot* get_last_slot();
 	void create_unary_message(std::string msg);
 	void create_unary_message(std::string name, std::string msg);
 	void create_binary_message(std::string op);

@@ -15,7 +15,7 @@ private:
 public:
 	Parser();
 	void setVM(VM* vm);
-	void parsear(std::string codigo);
+	Slot* parsear(std::string codigo);
 	virtual ~Parser();
 private:
 	bool script(std::stringstream* codigo, int* posicion);
