@@ -35,9 +35,10 @@ string Server::execute(string msg){
 	read.read_code(msg, id, code);
 	string json = "";
 
-	parser.parsear(code);
-
-	/*****************SIMULACION******************/
+	Slot* res = NULL;
+	res = parser.parsear(code);
+	json = vm->get_slots(res);
+	/*****************SIMULACION*****************
 	Slot* res = NULL;
 	
 	if (code.find("_AddSlots:") != std::string::npos){
@@ -65,7 +66,7 @@ string Server::execute(string msg){
 		res = vm->unary_message(X0, "print");
 		json = vm->get_slots(res);
 	}
-	/*******************************************/
+	*****************************************/
 	
 	return json;
 }
