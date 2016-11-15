@@ -663,7 +663,7 @@ Slot* Parser::parsear(std::string codigo, std::string id) {
 	//Seteo el ID del contexto donde se va a trabajar
 	linker.setID(id);
 	//Parseo como un script comun
-	parsear(codigo);
+	return parsear(codigo);
 }
 
 void Parser::set_msg(std::string msg) {
