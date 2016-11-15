@@ -17,7 +17,7 @@ public:
 	void setID(std::string id);
 	Slot* get_last_slot();
 	void create_unary_message(std::string msg);
-	void create_unary_message(std::string name, std::string msg);
+	bool create_unary_message(std::string name, std::string msg);
 	void create_binary_message(std::string op);
 	void create_keyword_message(std::string obj, std::string lower_key);
 	void create_string(std::string string);

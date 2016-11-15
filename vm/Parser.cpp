@@ -410,37 +410,13 @@ bool Parser::removeSlots(std::stringstream* codigo, int* posicion, std::string c
 				std::cout<<"Name a borrar: "<<slot<<std::endl;
 		}
 		*codigo>>valor;
-		//El script puede ser parte o no del objeto
+
 		if((valor.at(0) == '|') && (valor.at(1) == ')')) {
 			*posicion = codigo->tellg();
 			return true;
 		}
 	}
-		/**
-			bool nextSlot = true;
-			while(nextSlot) {
-				nextSlot = slot_list(codigo, posicion);
-				//TODO CARGAR LOS SLOTS LISTS DESDE EL LINKER!
-			}
-			*codigo>>valor;
-			//El script puede ser parte o no del objeto
-			if((valor.at(0) == '|') && (valor.at(1) == ')')) {
-				*posicion = codigo->tellg();
-				return true;
-			} else if((valor.at(0) == '|') && (valor.at(1) != ')')) {
-				*posicion = *posicion + 1;
-				if(script(codigo, posicion)) {
-					*codigo>>valor;
-					if(valor == ")") {
-						//Actualizo la posicion en el codigo original
-						*posicion = codigo->tellg();
-						return true;
-					}
-				}
-			}
-		}
-	}
-**/
+
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -562,6 +538,7 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion) {
 
 bool Parser::unary_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
+	bool valid_search;
 	if(receiver(codigo, posicion)) {
 		std::string msg_name = get_msg();
 		if (name(codigo, posicion)) {
@@ -569,7 +546,10 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion) {
 			if (msg_name.size() == 0) {
 				linker.create_unary_message(msg);
 			} else {
-				linker.create_unary_message(msg_name, msg);
+				valid_search = linker.create_unary_message(msg_name, msg);
+				if(valid_search == false) {
+					setFlag("Error");
+				}
 			}
 			return true;
 		}

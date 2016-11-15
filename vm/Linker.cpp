@@ -36,12 +36,17 @@ Slot* Linker::get_object_by_name(std::string name, int id) {
 	return vm->search_obj_by_name(name, id);
 }
 
-void Linker::create_unary_message(std::string name, std::string msg) {
-	//Slot* slot = get_object_by_name(name);
+bool Linker::create_unary_message(std::string name, std::string msg) {
 	Slot* slot = get_object_by_name(name, atoi(id.c_str()));
 
+	if(slot == NULL) {
+		slots.push_back(slot);
+		return false;	
+	}
+
 	Slot* last_slot = vm->unary_message(slot, msg);
-	slots.push_back(last_slot);
+	slots.push_back(last_slot);	
+	return true;
 }
 
 void Linker::create_int(std::string number) {
