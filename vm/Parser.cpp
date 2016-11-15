@@ -21,15 +21,23 @@ void Parser::setVM(VM* vm) {
 }
 
 bool Parser::number(std::stringstream* codigo, int* posicion) {
+	codigo->clear();
 	int posicionOriginal = *posicion;
-	std::string valor;
+
+	int valor;
 	codigo->seekg(*posicion, std::ios::beg);
 	*codigo>>valor;
 
-	std::regex rr(R"(((\+|-)?[[:digit:]]+)(\.(([[:digit:]]+)?))?)");
-	if(regex_match(valor,rr)) {
+	if(codigo->fail()){
+		codigo->clear();
+		*posicion = posicionOriginal;
+		return false;
+	} else {
 		*posicion = codigo->tellg();
-		linker.create_int(valor);
+		std::stringstream ss;
+		ss << valor;
+		std::string str = ss.str();
+		linker.create_int(str);
 		return true;
 	}
 
@@ -39,6 +47,7 @@ bool Parser::number(std::stringstream* codigo, int* posicion) {
 }
 
 bool Parser::text(std::stringstream* codigo, int* posicion) {
+	codigo->clear();
 	int posicionOriginal = *posicion;
 
 	//Leo todo el valor desde la posicion indicada
@@ -56,6 +65,7 @@ bool Parser::text(std::stringstream* codigo, int* posicion) {
 	bool valido = true;
 	unsigned int i = 0;
 	if(valor.at(i) == inicial.at(0)) {
+		std::cout<<"Entro aca"<<std::endl;
 		auxiliar += valor.at(i);
 		i++;
     	*posicion = posicionOriginal+1;
@@ -85,6 +95,7 @@ bool Parser::text(std::stringstream* codigo, int* posicion) {
 }
 
 bool Parser::object(std::stringstream* codigo, int* posicion) {
+	codigo->clear();
 	int posicionOriginal = *posicion;
 
 	//Leo todo el valor desde la posicion indicada
@@ -125,6 +136,7 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 }
 
 bool Parser::nil(std::stringstream* codigo, int* posicion) {
+	codigo->clear();
 	int posicionOriginal = *posicion;
 
 	//Leo todo el valor desde la posicion indicada
@@ -377,20 +389,6 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 
 }
 
-void Parser::setFlag(std::string valor) {
-	if(valor == "_AddSlots:") {
-		flag = ADD_SLOTS;
-	} else if (valor == "_RemoveSlots:") {
-		flag = REMOVE_SLOTS;
-	} else {
-		flag = NOT_SET;
-	}
-}
-
-int Parser::getFlag() {
-	return flag;
-}
-
 bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
@@ -434,6 +432,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 			}
 		}
 	}
+
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -523,7 +522,6 @@ bool Parser::expressionCP(std::stringstream* codigo, int* posicion) {
 	if (expressionP(codigo, posicion)) {
 		return true;
 	}
-
 	if (constant(codigo, posicion)) {
 		return true;
 	}
@@ -614,6 +612,21 @@ void Parser::set_op(std::string op) {
 std::string Parser::get_op() {
 	return op;
 }
+
+void Parser::setFlag(std::string valor) {
+	if(valor == "_AddSlots:") {
+		flag = ADD_SLOTS;
+	} else if (valor == "_RemoveSlots:") {
+		flag = REMOVE_SLOTS;
+	} else {
+		flag = NOT_SET;
+	}
+}
+
+int Parser::getFlag() {
+	return flag;
+}
+
 
 Parser::~Parser() {
 }

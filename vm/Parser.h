@@ -20,7 +20,6 @@ public:
 	Slot* parsear(std::string codigo);
 	virtual ~Parser();
 private:
-	void setFlag(std::string valor);
 	bool script(std::stringstream* codigo, int* posicion);
 	bool expression(std::stringstream* codigo, int* posicion);
 	bool keyword_message(std::stringstream* codigo, int* posicion);
@@ -40,9 +39,9 @@ private:
 	bool operador(std::stringstream* codigo, int* posicion);
 	bool lower_keyword(std::stringstream* codigo, int* posicion);
 	bool cap_keyword(std::stringstream* codigo, int* posicion);
-
 	bool final(std::stringstream *codigo, int* posicion);
 
+	void setFlag(std::string valor);
 	void set_msg(std::string msg);
 	std::string get_msg();
 	void set_op(std::string op);
