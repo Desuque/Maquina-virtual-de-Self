@@ -66,11 +66,11 @@ void Linker::create_keyword_message(std::string obj, std::string lower_key) {
 }
 
 void Linker::remove_slots(std::string context, std::string slot) {
-	Slot* X0 = vm->search_obj("lobby");
+	Slot* X0 = vm->search_obj(context);
 	Slot* X1 = vm->create_object();
 	Slot* X2 = vm->create_object();
-	Slot* X3 = vm->create_string("str");
-	vm->add_slot(X2, "str", X3);
+	Slot* X3 = vm->create_string(slot);
+	vm->add_slot(X2, slot, X3);
 	vm->add_slot(X1, "", X2);
 	slots.push_back(vm->keyword_message(X0, "_RemoveSlots:", X1));
 }
