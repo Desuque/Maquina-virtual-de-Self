@@ -51,13 +51,12 @@ void test_example(VM* vm){
 	vm->immutable_object(X2);
 	vm->add_slot(X1, "y", X2);
         vm->add_slot(cont, "", X1);
-	Slot* la = vm->keyword_message(X0, "_AddSlots:", cont);
+	vm->keyword_message(X0, "_AddSlots:", cont);
 	vm->collect();
-        std::cout << vm -> get_slots(la) << std::endl;
-
+        /*
         //y print.
 	Slot* X4 = vm->search_obj("y");
-	vm->unary_message(X4, "print");
+	vm->unary_message(X4, "print");*/
 	
 	//lobby _AddSlots: (| punto1 = (| y <- 4. |). |).
 	Slot* X6 = vm->search_obj("lobby");
@@ -69,25 +68,25 @@ void test_example(VM* vm){
 	vm->add_slot(X7, "punto1", X8);
         vm->add_slot(cont1, "", X7);
 	vm->keyword_message(X6, "_AddSlots:", cont1);
-	
+	/*
 	//(punto1 y) print.
 	Slot* X10 = vm->search_obj("punto1");
 	Slot* X11 = vm->unary_message(X10, "y");
-	vm->unary_message(X11, "print");
-	
+	vm->unary_message(X11, "print");*/
+	/*
 	//((punto1 y) + y) print.
 	Slot* X12 = vm->search_obj("punto1");
 	Slot* X13 = vm->unary_message(X12, "y");
 	Slot* X14 = vm->search_obj("y");
 	Slot* X15 = vm->binary_message(X13,"+",X14);
-	vm->unary_message(X15, "print");
-	
+	vm->unary_message(X15, "print");*/
+	/*
 	//((punto1 y) != y) print.
 	Slot* X16 = vm->search_obj("punto1");
 	Slot* X17 = vm->unary_message(X16, "y");
 	Slot* X18 = vm->search_obj("y");
 	Slot* X19 = vm->binary_message(X17,"!=",X18);
-	vm->unary_message(X19, "print");
+	vm->unary_message(X19, "print");*/
 	vm->collect();
         
 	//lobby _AddSlots: (| str = 'hello'. |).
@@ -98,10 +97,10 @@ void test_example(VM* vm){
 	vm->add_slot(X21, "str", X22);
 	vm->add_slot(cont2,"",X21);
         vm->keyword_message(X20, "_AddSlots:", cont2);
-	
+	/*
 	//str print.
 	Slot* X23 = vm->search_obj("str");
-	vm->unary_message(X23, "print");
+	vm->unary_message(X23, "print");*/
 	
 	
 	//lobby _AddSlots: (| punto11 = (| x<-5. padre* = punto1 |)).
@@ -116,11 +115,11 @@ void test_example(VM* vm){
 	vm->add_slot(X25, "punto11", X27);
         vm->add_slot(cont3,"",X25);
 	vm->keyword_message(X24, "_AddSlots:", cont3);
-	
+	/*
 	//(punto11 y) print.
 	Slot* X29 = vm->search_obj("punto11");
 	Slot* X30 = vm->unary_message(X29, "y");
-	vm->unary_message(X30, "print");
+	vm->unary_message(X30, "print");*/
 	vm->collect();
 	//lobby _AddSlots: (| punto = (| square_norm = (| | ((x*x)+(y*y))).
 	//				 print = (| | print x.).
@@ -142,29 +141,29 @@ void test_example(VM* vm){
 	vm->add_slot(X32, "punto", X33);
         vm->add_slot(cont4,"",X32);
 	vm->keyword_message(X31, "_AddSlots:", cont4);
-	
+	/*
 	//punto print.   #Print Method Object
 	Slot* X36 = vm->search_obj("punto");
 	vm->unary_message(X36, "print");
-	
+	*/
 	Slot* X37 = vm->search_obj("punto1");
 	Slot* X38 = vm->search_obj("punto");
 	vm->add_parent(X37, "padre", X38);
-	
+	/*
 	//punto1 square_norm.   #Print Method Object
 	Slot* X39 = vm->search_obj("punto1");
-	vm->unary_message(X39, "square_norm");
-	
+	vm->unary_message(X39, "square_norm");*/
+	/*
         //(punto y) print.
 	Slot* X40 = vm->search_obj("punto");
 	Slot* X41 = vm->unary_message(X40, "y");
-	vm->unary_message(X41, "print");
-	
+	vm->unary_message(X41, "print");*/
+	/*
         //(punto1 y) print.
 	Slot* X42 = vm->search_obj("punto1");
 	Slot* X43 = vm->unary_message(X42, "y");
 	vm->unary_message(X43, "print");
-	
+	*/
 	Slot* X44 = vm->search_obj("lobby");
 	vm->rm_slot(X44, "y");
 	
@@ -179,9 +178,7 @@ void test_example(VM* vm){
         vm->add_slot(X94, "prueba2", X95);
         vm->add_slot(X91, "", X92);
 	vm->add_slot(X91, "", X94);
-        Slot* sl_add = vm->keyword_message(X90, "_AddSlots:", X91);
         
-        std::cout << vm -> get_slots(sl_add) << std::endl;
         //lobby _RemoveSlots: (| prueba1. prueba2. |).
 	Slot* X96 = vm->search_obj("lobby");
 	Slot* X97 = vm->create_object();
@@ -194,15 +191,13 @@ void test_example(VM* vm){
         vm->add_slot(X97, "", X98);
 	vm->add_slot(X97, "", X100);
         vm->keyword_message(X96, "_RemoveSlots:", X97);
-        
+        /*
         Slot* y = vm->search_obj_by_name("y",116);
-        Slot* print_res = vm->unary_message(y, "print");
+        vm->unary_message(y, "print");
 	
-        std::cout << vm -> get_slots(print_res) << std::endl;
         
-        Slot* y2 = vm->search_obj_by_name("y",494);
-	
-        std::cout <<  y2 << std::endl; // Is null because id number 494 (punto11) has two parents with slot called y
+        vm->search_obj_by_name("y",494);
+	*/
 	vm->revert();
         vm->collect();
 }
