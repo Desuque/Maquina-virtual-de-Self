@@ -245,7 +245,11 @@ Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
                 p_slots v_slots = sl -> get_value() -> get_slots();
                 int size = v_slots.size();
                 for (int i = 0; i < size; i++){
-                        rm_slots -> add_slot(rm_slot(sl_recv, v_slots[i]->get_name()));
+                        Slot* rm_sl =  rm_slot(sl_recv, v_slots[i]->get_name());
+                        if (!rm_sl)
+                            return NULL;
+                        
+                        rm_slots -> add_slot(rm_sl);
                 }
                 ret = rm_slots;
         }else{
