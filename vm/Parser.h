@@ -41,6 +41,7 @@ private:
 	bool cap_keyword(std::stringstream* codigo, int* posicion);
 	bool final(std::stringstream *codigo, int* posicion);
 
+	bool removeSlots(std::stringstream* codigo, int* posicion, std::string context);
 	void setFlag(std::string valor);
 	void set_msg(std::string msg);
 	std::string get_msg();

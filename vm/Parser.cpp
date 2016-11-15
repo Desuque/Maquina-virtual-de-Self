@@ -389,6 +389,58 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 
 }
 
+bool Parser::removeSlots(std::stringstream* codigo, int* posicion, std::string context) {
+	int posicionOriginal = *posicion;
+
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+	std::string valor;
+	*codigo>>valor;
+
+	if(valor == "(|") {
+		*posicion = codigo->tellg();
+		if(name(codigo, posicion)) {
+				std::string slot = get_msg();
+				linker.remove_slots(context, slot);
+				std::cout<<"Name a borrar: "<<slot<<std::endl;
+		}
+		*codigo>>valor;
+		//El script puede ser parte o no del objeto
+		if((valor.at(0) == '|') && (valor.at(1) == ')')) {
+			*posicion = codigo->tellg();
+			return true;
+		}
+	}
+		/**
+			bool nextSlot = true;
+			while(nextSlot) {
+				nextSlot = slot_list(codigo, posicion);
+				//TODO CARGAR LOS SLOTS LISTS DESDE EL LINKER!
+			}
+			*codigo>>valor;
+			//El script puede ser parte o no del objeto
+			if((valor.at(0) == '|') && (valor.at(1) == ')')) {
+				*posicion = codigo->tellg();
+				return true;
+			} else if((valor.at(0) == '|') && (valor.at(1) != ')')) {
+				*posicion = *posicion + 1;
+				if(script(codigo, posicion)) {
+					*codigo>>valor;
+					if(valor == ")") {
+						//Actualizo la posicion en el codigo original
+						*posicion = codigo->tellg();
+						return true;
+					}
+				}
+			}
+		}
+	}
+**/
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
+
 bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
@@ -403,12 +455,12 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 			codigo->seekg(*posicion, std::ios::beg);
 			*codigo>>valor;
 			std::string lower_key = valor;
-			setFlag(valor);
+			setFlag(lower_key);
 			if((valor.at(valor.size()-1) == ':')) {
 				*posicion = codigo->tellg();
 				codigo->seekg(*posicion, std::ios::beg);
 				*codigo>>valor;
-				if(expressionCP(codigo, posicion)) {
+				if((expressionCP(codigo, posicion)) && (lower_key != "_RemoveSlots:")) {
 					linker.create_keyword_message(msg, lower_key);
 					bool isCap_keyword = true;
 					while(isCap_keyword) {
@@ -428,6 +480,13 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 						}
 					}
 					return true;
+				
+				} else if(lower_key == "_RemoveSlots:") {
+					std::string contexto = msg;
+					if(removeSlots(codigo, posicion, contexto)) {
+						std::cout<<"Aca estoy por remover!"<<std::endl;
+						return true;
+					}
 				}
 			}
 		}
@@ -617,6 +676,7 @@ void Parser::setFlag(std::string valor) {
 	if(valor == "_AddSlots:") {
 		flag = ADD_SLOTS;
 	} else if (valor == "_RemoveSlots:") {
+		std::cout<<"Entre al flag"<<std::endl;
 		flag = REMOVE_SLOTS;
 	} else {
 		flag = NOT_SET;
@@ -626,7 +686,6 @@ void Parser::setFlag(std::string valor) {
 int Parser::getFlag() {
 	return flag;
 }
-
 
 Parser::~Parser() {
 }
