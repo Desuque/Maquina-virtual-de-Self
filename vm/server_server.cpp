@@ -107,7 +107,9 @@ void Server::listen(){
 					// podria ser cualquier cosa, ejemplo : agregarSlot remove
 
 					int flag = parser.getFlag();
-					if (flag == 3) {
+					if (flag == 0) {
+						proxy.enviar(flag, 1);
+					} else if (flag == 3) {
 				  		proxy.enviar(flag, 1);
 					} else if (flag == 4) {
 						proxy.enviar(flag, 1);

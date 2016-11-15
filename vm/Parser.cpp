@@ -9,6 +9,7 @@
 #define NOT_SET -1
 #define ADD_SLOTS 3
 #define REMOVE_SLOTS 4
+#define ERROR 0
 
 Parser::Parser() : vm(NULL) {
 	msg = "";
@@ -397,11 +398,15 @@ bool Parser::removeSlots(std::stringstream* codigo, int* posicion, std::string c
 	std::string valor;
 	*codigo>>valor;
 
+	bool erase;
 	if(valor == "(|") {
 		*posicion = codigo->tellg();
 		if(name(codigo, posicion)) {
 				std::string slot = get_msg();
-				linker.remove_slots(context, slot);
+				erase = linker.remove_slots(context, slot);
+				if(erase == false) {
+					setFlag("Error");
+				}
 				std::cout<<"Name a borrar: "<<slot<<std::endl;
 		}
 		*codigo>>valor;
@@ -676,8 +681,9 @@ void Parser::setFlag(std::string valor) {
 	if(valor == "_AddSlots:") {
 		flag = ADD_SLOTS;
 	} else if (valor == "_RemoveSlots:") {
-		std::cout<<"Entre al flag"<<std::endl;
 		flag = REMOVE_SLOTS;
+	} else if (valor == "Error") {
+		flag = ERROR;
 	} else {
 		flag = NOT_SET;
 	}

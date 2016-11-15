@@ -24,7 +24,6 @@ Slot* Linker::get_slot(int pos) {
 }
 
 void Linker::create_unary_message(std::string msg) {
-	std::cout<<"Aca entro.asdasdasds.."<<std::endl;
 	Slot* slot = vm->unary_message(get_slot(get_last_created_pos()), msg);
 	slots.push_back(slot);
 }
@@ -65,7 +64,7 @@ void Linker::create_keyword_message(std::string obj, std::string lower_key) {
 	vm->keyword_message(X0, lower_key, get_slot(get_last_created_pos()));
 }
 
-void Linker::remove_slots(std::string context, std::string slot) {
+bool Linker::remove_slots(std::string context, std::string slot) {
 	Slot* X0 = vm->search_obj(context);
 	Slot* X1 = vm->create_object();
 	Slot* X2 = vm->create_object();
@@ -73,6 +72,13 @@ void Linker::remove_slots(std::string context, std::string slot) {
 	vm->add_slot(X2, slot, X3);
 	vm->add_slot(X1, "", X2);
 	slots.push_back(vm->keyword_message(X0, "_RemoveSlots:", X1));
+
+	if(slots.at(get_last_created_pos()) == NULL) {
+		return false;
+	} else {
+		return true;
+	}
+
 }
 
 void Linker::create_slot(std::string slot) {
