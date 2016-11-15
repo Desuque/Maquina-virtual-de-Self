@@ -120,8 +120,9 @@ void Server::listen(){
 
 					std::cout << "devolucion: " << result << std::endl;
 					
-					proxy.enviarSlots(result);
-
+					if(flag != 0) {
+						proxy.enviarSlots(result);
+					}
 					break;
 				}
 				default:
