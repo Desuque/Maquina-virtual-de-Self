@@ -50,7 +50,11 @@ void VM::collect(){
 }
 
 string VM::get_slots(Slot* sl){
-	return sl -> get_value() -> get_json_slots();
+        string json = sl -> get_value() -> get_json_slots();        
+        if ( json != "{\"slots\":[]}" )
+                return json;
+        
+	return sl -> json();
 }
 
 string VM::get_slot(Slot* sl){
@@ -201,8 +205,8 @@ Slot* VM::unary_message(Slot* sl_recv, string msg){
 	Slot* sl_ret = search_and_execute_msg(sl_recv, msg, args);
 	if (!sl_ret){
 		if (msg == "print"){
-			sl_recv -> get_value() -> print(*this);
-			return  sl_recv;
+			Slot* res = sl_recv -> get_value() -> print(*this);
+			return  res;
 		}
 		throw NotFound(msg);
 	}

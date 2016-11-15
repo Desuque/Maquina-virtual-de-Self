@@ -36,17 +36,17 @@ void Linker::create_unary_message(std::string name, std::string msg) {
 }
 
 void Linker::create_int(std::string number) {
-	Slot* X0 = vm->create_object();
+	//Slot* X0 = vm->create_object();
 	Slot* X1 = vm->create_int(atoi(number.c_str()));
-	vm->add_slot(X0, number, X1);
-	slots.push_back(X0);
+	//vm->add_slot(X0, number, X1);
+	slots.push_back(X1); // slots.push_back(X0);
 }
 
 void Linker::create_string(std::string string) {
-	Slot* X0 = vm->create_object();
+	//Slot* X0 = vm->create_object();
 	Slot* X1 = vm->create_string(string);
-	vm->add_slot(X0, string, X1);
-	slots.push_back(X0);
+	//vm->add_slot(X0, string, X1);
+	slots.push_back(X1);// slots.push_back(X0);
 }
 
 void Linker::create_binary_message(std::string op) {
