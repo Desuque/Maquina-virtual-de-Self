@@ -4,7 +4,6 @@
 #include <iostream>
 
 Linker::Linker() : vm(NULL), id("-1") {
-	//vm->checkpoint();
 }
 
 void Linker::setVM(VM* vm) {
@@ -50,17 +49,13 @@ bool Linker::create_unary_message(std::string name, std::string msg) {
 }
 
 void Linker::create_int(std::string number) {
-	//Slot* X0 = vm->create_object();
 	Slot* X1 = vm->create_int(atoi(number.c_str()));
-	//vm->add_slot(X0, number, X1);
-	slots.push_back(X1); // slots.push_back(X0);
+	slots.push_back(X1);
 }
 
 void Linker::create_string(std::string string) {
-	//Slot* X0 = vm->create_object();
 	Slot* X1 = vm->create_string(string);
-	//vm->add_slot(X0, string, X1);
-	slots.push_back(X1);// slots.push_back(X0);
+	slots.push_back(X1);
 }
 
 void Linker::create_binary_message(std::string op) {
@@ -69,13 +64,8 @@ void Linker::create_binary_message(std::string op) {
 }
 
 void Linker::create_keyword_message(std::string obj, std::string lower_key) {
-	//lobby _AddSlots: (| y <- 8. |).
 	Slot* X0 = vm->search_obj(obj);
-
 	Slot* X1 = vm->create_object();
-	//Slot* X2 = vm.create_object();
-	//Slot* X2 = vm.create_int(8);
-	//vm.add_slot(X1, "y", X2);
 
 	vm->add_slot(X1, "", get_slot(get_last_created_pos())); 
 	vm->keyword_message(X0, lower_key, X1);
@@ -106,5 +96,4 @@ void Linker::create_slot(std::string slot) {
 }
 
 Linker::~Linker() {
-	// TODO Auto-generated destructor stub
 }

@@ -74,15 +74,12 @@ bool Parser::text(std::stringstream* codigo, int* posicion) {
 			if (c == inicial.at(0)) {
 				valido = false;
 			}
-			//*posicion = posicionOriginal+(i+1);
 			auxiliar += c;
 			i++;
 		}
 	}
 	if(valido == false) {
 		if(auxiliar.at(auxiliar.size()-1) == inicial.at(0)) {
-			//std::cout<<"Texto: "<<auxiliar<<std::endl;
-			//std::cout<<"Posicion: "<<*posicion<<std::endl;
 			*posicion = posFinal;
 			linker.create_string(auxiliar);
 			return true;
@@ -402,12 +399,11 @@ bool Parser::removeSlots(std::stringstream* codigo, int* posicion, std::string c
 	if(valor == "(|") {
 		*posicion = codigo->tellg();
 		if(name(codigo, posicion)) {
-				std::string slot = get_msg();
-				erase = linker.remove_slots(context, slot);
-				if(erase == false) {
-					setFlag("Error");
-				}
-				std::cout<<"Name a borrar: "<<slot<<std::endl;
+			std::string slot = get_msg();
+			erase = linker.remove_slots(context, slot);
+			if(erase == false) {
+				setFlag("Error");
+			}
 		}
 		*codigo>>valor;
 
@@ -465,7 +461,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 				} else if(lower_key == "_RemoveSlots:") {
 					std::string contexto = msg;
 					if(removeSlots(codigo, posicion, contexto)) {
-						std::cout<<"Aca estoy por remover!"<<std::endl;
 						return true;
 					}
 				}
@@ -633,9 +628,8 @@ Slot* Parser::parsear(std::string codigo) {
 
 	scripts.seekp(posicion, std::ios::beg);
 	if(script(&scripts, &posicion)) {
-		std::cout<<"Era un script hecho y derecho!"<<std::endl;
+		//TODO Mensaje de error si no cumple con el script
 	}
-	std::cout<<"ESto devuelvo: "<<linker.get_last_slot()<<std::endl;
 	return linker.get_last_slot();
 }
 
