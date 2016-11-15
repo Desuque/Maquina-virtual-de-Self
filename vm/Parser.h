@@ -18,6 +18,7 @@ public:
 	void setVM(VM* vm);
 	int getFlag();
 	Slot* parsear(std::string codigo);
+	Slot* parsear(std::string codigo, std::string id);
 	virtual ~Parser();
 private:
 	bool script(std::stringstream* codigo, int* posicion);

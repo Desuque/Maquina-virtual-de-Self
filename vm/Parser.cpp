@@ -659,6 +659,13 @@ Slot* Parser::parsear(std::string codigo) {
 	return linker.get_last_slot();
 }
 
+Slot* Parser::parsear(std::string codigo, std::string id) {
+	//Seteo el ID del contexto donde se va a trabajar
+	linker.setID(id);
+	//Parseo como un script comun
+	parsear(codigo);
+}
+
 void Parser::set_msg(std::string msg) {
 	this->msg = msg;
 }

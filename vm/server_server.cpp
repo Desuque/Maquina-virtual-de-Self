@@ -36,7 +36,7 @@ string Server::execute(string msg){
 	string json = "";
 
 	Slot* res = NULL;
-	res = parser.parsear(code);
+	res = parser.parsear(code, id);
 	json = vm->get_slots(res);
 	
 	return json;

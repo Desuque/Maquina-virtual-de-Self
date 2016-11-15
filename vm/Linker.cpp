@@ -3,12 +3,16 @@
 #include "server_virtual_machine.h"
 #include <iostream>
 
-Linker::Linker() : vm(NULL) {
+Linker::Linker() : vm(NULL), id("-1") {
 	//vm->checkpoint();
 }
 
 void Linker::setVM(VM* vm) {
 	this->vm = vm;
+}
+
+void Linker::setID(std::string id) {
+	this->id = id;
 }
 
 Slot* Linker::get_last_slot() {
@@ -28,8 +32,14 @@ void Linker::create_unary_message(std::string msg) {
 	slots.push_back(slot);
 }
 
+Slot* Linker::get_object_by_name(std::string name, int id) {
+	return vm->search_obj_by_name(name, id);
+}
+
 void Linker::create_unary_message(std::string name, std::string msg) {
-	Slot* slot = get_object_by_name(name);
+	//Slot* slot = get_object_by_name(name);
+	Slot* slot = get_object_by_name(name, atoi(id.c_str()));
+
 	Slot* last_slot = vm->unary_message(slot, msg);
 	slots.push_back(last_slot);
 }
@@ -89,9 +99,6 @@ void Linker::create_slot(std::string slot) {
 	vm->add_slot(X1, slot, X2);
 }
 
-Slot* Linker::get_object_by_name(std::string name) {
-	return vm->search_obj(name);
-}
 
 
 

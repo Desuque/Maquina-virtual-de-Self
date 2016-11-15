@@ -8,11 +8,13 @@
 class Linker {
 private:
 	VM* vm;
+	std::string id;
 	std::vector<Slot*> slots;
 
 public:
 	Linker();
 	void setVM(VM* vm);
+	void setID(std::string id);
 	Slot* get_last_slot();
 	void create_unary_message(std::string msg);
 	void create_unary_message(std::string name, std::string msg);
@@ -22,7 +24,7 @@ public:
 	void create_int(std::string number);
 
 	void create_slot(std::string slot);
-	Slot* get_object_by_name(std::string name);
+	Slot* get_object_by_name(std::string name, int id);
 	bool remove_slots(std::string context, std::string slot);
 
 
