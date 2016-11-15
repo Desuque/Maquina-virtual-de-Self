@@ -26,4 +26,6 @@ Ejecucion:
   y otra en el directorio root/interfaz.
   Desde la primer consola lanzamos el server ./server
   Desde la segunda consola lanzamos el client ./client_self
+
+Manual: https://docs.google.com/document/d/14r_t-iPO6fAU6HOkm93Y6b_OxCNUwZtQVQs2WfcBTVU/edit
   
