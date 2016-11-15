@@ -67,6 +67,34 @@ Morph::Morph(std::string nombreObjeto, int id, double posX, double posY,
 	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
 }
 
+Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) :
+	m_TextView(m_TextView), textViewCodigoAsociado(codigoAsociado) {
+	this->posX = unSlot->posX + unSlot->width + 20;
+	this->posY = unSlot->posY+4;
+	this->id = unSlot->id;
+	if(unSlot->code){
+		this->nombreObjeto = unSlot->name;
+	}else{
+		this->nombreObjeto = unSlot->value;
+	}
+
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	auto layout = create_pango_layout(this->nombreObjeto);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->width = 2*text_width;
+	this->height = 2*text_height;
+
+	refTextViewConsola = Gtk::TextBuffer::create();
+	refTextViewConsola->set_text("");
+	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+	refTextViewCodigoAsociado->set_text("");
+} 
+
 Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int height) 
 	: m_TextView(nullptr) {
 	Pango::FontDescription font;
@@ -126,7 +154,6 @@ void Morph::agregarSlot(std::string nombreSlot){
 void Morph::actualizarAlturaMorph(size_t alturaDeSlot){
 	this->height += alturaDeSlot;
 }
-
 
 void Morph::agregarSlot(InterfaceSlot* interface_slot){
 	Slot* slot = new Slot(interface_slot,this->posX, (this->posY)+(this->height), this->width, this->height);
@@ -205,6 +232,12 @@ Morph* Morph::clickEnReferenciaAMorph(int posX,int posY){
 	return nullptr;
 }
 
+bool Morph::tieneElMismoIdQueEsteSlot(Slot* unSlot){
+	return (unSlot->id == this->id);
+}
+
+
+
 void Morph::mostrarDescripcionMorph(){
 	//Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;
 	//m_refTextBuffer1 = Gtk::TextBuffer::create();
@@ -252,6 +285,10 @@ void Morph::actualizar_posicion(double x, double y){
 	}*/
 	this->posX = x;
 	this->posY = y;		
+}
+
+void Morph::agregarReferencia(Referencia* unaReferencia){
+	this->referencias.push_back(unaReferencia);
 }
 
 

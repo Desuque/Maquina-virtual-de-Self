@@ -30,7 +30,6 @@ protected:
   Referencia* refenciaActual = nullptr;
   std::vector<Referencia*> referencias;
 
-  // Used to memorize last mouse coordinates
   int offXMouse, offYMouse;
 
   ProxyServer proxyServer;
@@ -38,6 +37,7 @@ protected:
 public:
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder, bool warning);
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+  MyArea();
   // Override mouse events
   bool on_button_press_event(GdkEventButton *event);
   bool on_button_release_event(GdkEventButton *event);
@@ -49,20 +49,15 @@ public:
   void close_event();
   void do_it_event();
   void agregarSlot_event();
-  //void botonGuardarNuevoSlotEvent();
   void botonGuardarNuevoSlotEvent();
-  MyArea();
   void liberarMemoria();
+  
   virtual ~MyArea();
 
 protected:
   //Override default signal handler:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-
-private:
-  void draw_rectangle(const Cairo::RefPtr<Cairo::Context>& cr, int width, int height);
-  void draw_text(const Cairo::RefPtr<Cairo::Context>& cr, int rectangle_width, int rectangle_height);
-
+  
 };
 
 #endif // GTKMM_EXAMPLE_MYAREA_H

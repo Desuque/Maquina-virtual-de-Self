@@ -22,16 +22,6 @@ public:
 	Slot(){}
 	
 	Slot(InterfaceSlot* interfaceSlot, double posX, double posY, int width, int height){
-		/*Pango::FontDescription font;
-		font.set_family("Monospace");
-		font.set_weight(Pango::WEIGHT_LIGHT);
-		// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
-		auto layout = create_pango_layout(this->name);
-		layout->set_font_description(font);
-		int text_width;
-		int text_height;
-		layout->get_pixel_size(text_width, text_height);
-		std::cout << text_height << std::endl;*/
 		this->dibujadoComoMorph=false;
 		this->width = width;
 		this->height = 18;
@@ -63,6 +53,10 @@ public:
 		/*refTextViewConsola = Gtk::TextBuffer::create();
 		refTextViewConsola->set_text("");*/
 		//referencia = new Morph(posX-8,posY,8,8,m_TextView);
+	}
+
+	int get_id(){
+		return this->id;
 	}
 
 	bool estaDibujadoComoMorph(){
