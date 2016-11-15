@@ -154,12 +154,12 @@ void test_example(VM* vm){
 	Slot* X39 = vm->search_obj("punto1");
 	vm->unary_message(X39, "square_norm");
 	
-	//(punto y) print.
+        //(punto y) print.
 	Slot* X40 = vm->search_obj("punto");
 	Slot* X41 = vm->unary_message(X40, "y");
 	vm->unary_message(X41, "print");
 	
-	//(punto1 y) print.
+        //(punto1 y) print.
 	Slot* X42 = vm->search_obj("punto1");
 	Slot* X43 = vm->unary_message(X42, "y");
 	vm->unary_message(X43, "print");
@@ -193,7 +193,14 @@ void test_example(VM* vm){
 	vm->add_slot(X97, "", X100);
         vm->keyword_message(X96, "_RemoveSlots:", X97);
         
+        Slot* y = vm->search_obj_by_name("y",116);
+        Slot* print_res = vm->unary_message(y, "print");
+	
+        std::cout << vm -> get_slots(print_res) << std::endl;
         
+        Slot* y2 = vm->search_obj_by_name("y",494);
+	
+        std::cout <<  y2 << std::endl; // Is null because id number 494 (punto11) has two parents with slot called y
 	vm->revert();
         vm->collect();
 }

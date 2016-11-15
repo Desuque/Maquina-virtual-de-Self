@@ -61,7 +61,7 @@ void Object::look_up(string name, p_slots& results){
 	Slot* sl = get_slot(name);
 	if (sl){
 	    results.push_back(sl);
-	    return;
+	    //return;
 	}
 	
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){

@@ -45,6 +45,7 @@ class VM{
 		Slot* unary_message(Slot* sl_recv, string msg);
 		Slot* binary_message(Slot* sl_recv, string msg, Slot* sl);
 		Slot* keyword_message(Slot* sl_recv, string obj_id, Slot* sl);
+                Slot* search_obj_by_name(string name, int context); 
 		~VM();
 		
 	private:

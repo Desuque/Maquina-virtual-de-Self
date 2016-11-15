@@ -184,7 +184,10 @@ void VM::add_basic_slots(Slot* sl, string name){
 }
 
 Slot* VM::search_msg(Slot* sl_recv, string msg){
-	p_slots results;
+	Slot* my_slot = sl_recv -> get_value() -> get_slot(msg);
+        if (my_slot)
+                return my_slot;
+        p_slots results;
 	sl_recv -> get_value() -> look_up(msg, results);
 	if (results.size() == 1)
 		return results[0];
@@ -292,6 +295,19 @@ int VM::get_id_slots(){
 
 Slot* VM::search_obj_id(int id){
 	return slots[id];
+}
+
+Slot* VM::search_obj_by_name(string name, int context){
+        Slot* sl_context = search_obj_id(context);
+        Slot* my_slot = sl_context -> get_value() -> get_slot(name);
+        if (my_slot)
+                return my_slot;
+        p_slots results;
+	sl_context -> get_value() -> look_up(name, results);
+        std::cout << "Cantidad " << results.size() << std::endl;
+	if (results.size() != 1)
+		return NULL;
+	return results[0];
 }
 
 VM::~VM(){
