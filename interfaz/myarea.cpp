@@ -190,6 +190,12 @@ void MyArea::get_it_event(){
   morphs.push_back(actual); 
   actual -> mostrarDescripcionMorph();*/
   std::string textoAEnviar = actual->get_it();
+  
+  if (textoAEnviar == ""){
+    std::cout << "Eror ingresar Codigo" << std::endl;
+    return;
+  }
+
   uint32_t codigoMensaje = proxyServer.enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
   
   std::cout << codigoMensaje << std::endl;
@@ -266,6 +272,11 @@ void MyArea::do_it_event(){
 
   std::string textoAEnviar = actual -> do_it();
 
+  if (textoAEnviar==""){
+    std::cout << "Eror ingresar Codigo" << std::endl;
+    return;
+  }
+
   /* descomentar cuando se saque esto de server_server
   JsonWriter writer;
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
@@ -335,22 +346,27 @@ void MyArea::do_it_event(){
 }
 
 void MyArea::close_event(){
-  if (actual == nullptr) return;
+  if (actual == nullptr){
+    std::cout << "Eror: seleccione el Morph que desea borrar\n";
+    return;
+  }  
   for (int i =0; i < morphs.size() ; ++i){
       if(*(morphs[i]) == *actual){
-        for (int j=0; j < (morphs[i]->slots).size(); ++j){
-          borrarSlot(morphs[i],(morphs[i]->slots)[j]->get_id(),referencias);
-        }
-        for (int j=0; j < morphs[i]->referencias.size(); ++j){
-          for (int v=0; v<referencias.size(); ++v){
+        //for (int j=0; j < (morphs[i]->slots).size(); ++j){
+        //  borrarSlot(morphs[i],(morphs[i]->slots)[j]->get_id(),referencias);
+        //}
+        std::cout << morphs[i]->referencias.size() << std::endl;
+        for (int v=0; v<referencias.size(); ++v){
+          for (int j=0; j < morphs[i]->referencias.size(); ++j){
             if ((morphs[i]->referencias)[j] == referencias[v]){
               std::cout << "elimine referencia de myarea" << std::endl;
               referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
+              //delete referencias[v];
+              // este delete se hace dentro del 
+              // destructor de morph.
               referencias.erase(referencias.begin()+v);
             }
           }
-          delete (morphs[i]->referencias)[j];
-          (morphs[i]->referencias).erase(morphs[i]->referencias.begin()+j);
         }
         delete morphs[i];
         morphs.erase(morphs.begin()+i);
