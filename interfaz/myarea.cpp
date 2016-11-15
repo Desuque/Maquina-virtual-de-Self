@@ -387,25 +387,29 @@ bool MyArea::on_button_release_event(GdkEventButton *event)
 }
 
 // Mouse button pressed : process mouse button event
-bool MyArea::on_button_press_event(GdkEventButton *event) {
+bool MyArea::on_button_press_event(GdkEventButton *event)
+{
   // Check if the event is a left button click.
   if (event->button == 1)
   {
     for (int i =0; i < morphs.size() ; ++i){
+     //draw_text(cr, morphs[i].first, morphs[i].second);
       if(*(morphs[i]) == Morph(event->x,event->y)){
         actual = morphs[i];
         refenciaActual=nullptr;
-        Slot* slot = actual->obtenerSlot(event->x,event->y);
-        if (slot){
-          slot->setEstaDibujadoComoMorph(true);
+        Morph* morphDeSlot = actual->clikEnObtenerSlot(event->x,event->y);
+        if (morphDeSlot){
+          Slot* slot = actual-> obtenerSlot(event->x,event->y);
+          if (!slot){
+            std::cout << "error obtenerSlot devolvio null" << std::endl;
+          }
           for (int j = 0; j < morphs.size() ; ++j){
-            if(morphs[j]->tieneElMismoIdQueEsteSlot(slot)){
-              std::cout << "hay un slot con ese id" << std::endl;
+            if (morphs[j]->id == morphDeSlot->id){
+              std::cout << " ya hay un morph con ese ID" << std::endl;
               Referencia* referenciaNueva = new Referencia(morphs[j],slot);
+              morphs[j]->referencias.push_back(referenciaNueva);
               referencias.push_back(referenciaNueva);
-              morphs[j]->agregarReferencia(referenciaNueva);
-
-              // preparo para actualizar la visual
+              delete morphDeSlot;
               offXMouse = actual->posX - event->x;
               offYMouse = actual->posY - event->y;
               // Start moving the view
@@ -414,17 +418,10 @@ bool MyArea::on_button_press_event(GdkEventButton *event) {
               lNombreObjeto->set_text(actual->nombreObjeto);
               actual -> mostrarDescripcionMorph();
               // Event has been handled
-              return true;   
+              return true;                  
             }
           }
-          Morph* nuevoMorph = new Morph(slot, m_TextView, textViewCodAsociado);
-          morphs.push_back(nuevoMorph);
-          Referencia* nuevaReferencia = new Referencia(nuevoMorph,slot);
-          nuevoMorph->agregarReferencia(nuevaReferencia);
-          referencias.push_back(nuevaReferencia);
-          
-          //consultar con el grupo para ver como resolver esto.
-          // pregunto si es object por que si no lo es no puede tener slot.
+          std::string infoSlots="";
           if (slot->value == "object"){
             std::string infoSlots = proxyServer.recibirSlotsDe(slot->get_id_to_string());
 
@@ -436,8 +433,16 @@ bool MyArea::on_button_press_event(GdkEventButton *event) {
             int size = i_slots.size();
             for (int i = 0; i < size ; i++){
               i_slots[i] -> print_attr();
-              nuevoMorph->agregarSlot(i_slots[i]);
+              morphDeSlot->agregarSlot(i_slots[i]);
             }
+          }
+          morphs.push_back(morphDeSlot); 
+          /*if (morphDeSlot->referencia){ 
+           referencias.push_back(morphDeSlot->referencia);
+          }*/
+          std::vector<Referencia*> refs = morphDeSlot->referencias;
+          for (int i=0; i < refs.size(); ++i){
+            referencias.push_back(refs[i]);
           }
         }
         offXMouse = actual->posX - event->x;
@@ -481,6 +486,8 @@ bool MyArea::on_button_press_event(GdkEventButton *event) {
   // Event has not been handled
   return false;
 }
+
+
 
 bool MyArea::on_motion_notify_event(GdkEventMotion*event)
 {
