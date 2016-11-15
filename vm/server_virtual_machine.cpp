@@ -246,6 +246,7 @@ Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
                 for (int i = 0; i < size; i++){
                         sl_recv -> add_slot(v_slots[i]);
                 }
+                ret = v_slots[0];
         } else if (msg == "_RemoveSlots:"){
                 Slot* rm_slots = create_object();
                 p_slots v_slots = sl -> get_value() -> get_slots();
@@ -304,8 +305,7 @@ Slot* VM::search_obj_by_name(string name, int context){
                 return my_slot;
         p_slots results;
 	sl_context -> get_value() -> look_up(name, results);
-        std::cout << "Cantidad " << results.size() << std::endl;
-	if (results.size() != 1)
+        if (results.size() != 1)
 		return NULL;
 	return results[0];
 }

@@ -51,9 +51,10 @@ void test_example(VM* vm){
 	vm->immutable_object(X2);
 	vm->add_slot(X1, "y", X2);
         vm->add_slot(cont, "", X1);
-	vm->keyword_message(X0, "_AddSlots:", cont);
+	Slot* la = vm->keyword_message(X0, "_AddSlots:", cont);
 	vm->collect();
-	
+        std::cout << vm -> get_slots(la) << std::endl;
+
         //y print.
 	Slot* X4 = vm->search_obj("y");
 	vm->unary_message(X4, "print");
@@ -178,8 +179,9 @@ void test_example(VM* vm){
         vm->add_slot(X94, "prueba2", X95);
         vm->add_slot(X91, "", X92);
 	vm->add_slot(X91, "", X94);
-        vm->keyword_message(X90, "_AddSlots:", X91);
+        Slot* sl_add = vm->keyword_message(X90, "_AddSlots:", X91);
         
+        std::cout << vm -> get_slots(sl_add) << std::endl;
         //lobby _RemoveSlots: (| prueba1. prueba2. |).
 	Slot* X96 = vm->search_obj("lobby");
 	Slot* X97 = vm->create_object();
