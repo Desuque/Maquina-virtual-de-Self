@@ -151,8 +151,8 @@ int Server::execute_file(string file_name){
 		file_contents += str;
 		file_contents.push_back('\n');
 	}  
-	std::cout<<"Aca llamo al parser?"<<std::endl;
-	return 0;
+        parser.parsear(file_contents);	
+        return 0;
 }
 
 Server::~Server(){
