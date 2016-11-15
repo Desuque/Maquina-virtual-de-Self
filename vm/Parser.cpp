@@ -66,7 +66,6 @@ bool Parser::text(std::stringstream* codigo, int* posicion) {
 	bool valido = true;
 	unsigned int i = 0;
 	if(valor.at(i) == inicial.at(0)) {
-		std::cout<<"Entro aca"<<std::endl;
 		auxiliar += valor.at(i);
 		i++;
     	*posicion = posicionOriginal+1;
@@ -112,10 +111,11 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 				nextSlot = slot_list(codigo, posicion);
 				//TODO CARGAR LOS SLOTS LISTS DESDE EL LINKER!
 			}
+			int posAux = codigo->tellg();
 			*codigo>>valor;
 			//El script puede ser parte o no del objeto
 			if((valor.at(0) == '|') && (valor.at(1) == ')')) {
-				*posicion = codigo->tellg();
+				*posicion = posAux + 3;
 				return true;
 			} else if((valor.at(0) == '|') && (valor.at(1) != ')')) {
 				*posicion = *posicion + 1;
