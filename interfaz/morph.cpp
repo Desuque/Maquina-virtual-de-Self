@@ -74,6 +74,8 @@ Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsoci
 	this->id = unSlot->id;
 	if(unSlot->code){
 		this->nombreObjeto = unSlot->name;
+		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+		refTextViewCodigoAsociado->set_text(unSlot->value);
 	}else{
 		this->nombreObjeto = unSlot->value;
 	}
@@ -91,8 +93,7 @@ Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsoci
 
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
-	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
-	refTextViewCodigoAsociado->set_text("");
+
 } 
 
 Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int height) 
