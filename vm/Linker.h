@@ -23,7 +23,7 @@ public:
 
 	void create_slot(std::string slot);
 	Slot* get_object_by_name(std::string name);
-	void remove_slots(std::string context, std::string slot);
+	bool remove_slots(std::string context, std::string slot);
 
 
 private:
