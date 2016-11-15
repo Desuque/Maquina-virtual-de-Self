@@ -17,8 +17,8 @@ int main(int argc, char** argv){
 		example();
 	}else{
 		if (!strcmp(argv[1],"-p")){
-			test_example(server.get_vm());
-                        server.bind(atoi(argv[2]));
+			//test_example(server.get_vm());
+            server.bind(atoi(argv[2]));
 			server.listen();
 		}else if(!strcmp(argv[1],"-f")){
 			string file = argv[2];
@@ -53,7 +53,7 @@ void test_example(VM* vm){
         vm->add_slot(cont, "", X1);
 	vm->keyword_message(X0, "_AddSlots:", cont);
 	vm->collect();
-        /*
+      /*
         //y print.
 	Slot* X4 = vm->search_obj("y");
 	vm->unary_message(X4, "print");*/

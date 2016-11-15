@@ -82,7 +82,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     actual -> mostrarDescripcionMorph();
     morphs.push_back(lobby);
 
-    int size = i_slots.size();
+    /*int size = i_slots.size();
     for (int i = 0; i < size ; i++){
       i_slots[i] -> print_attr();
       actual->agregarSlot(i_slots[i]);
@@ -91,7 +91,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
       delete* it;  
       it = i_slots.erase(it);
-    }
+    }*/
 
   } catch (const std::exception &e) {
     Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView,textViewCodAsociado);
@@ -121,17 +121,42 @@ MyArea::~MyArea()
 }
 
 void MyArea::botonGuardarNuevoSlotEvent(){
-  std::cout << "guardar slot" << std::endl;
+  
+  if (actual->nombreObjeto != "lobby"){
+    std::cout << "Error: solo puedes agregar slots a lobby de esa forma. \n"
+              << "Prueba de esta forma por la consola del obejto:  \n"
+              << "\t   <nombre del objeto> _AddSlots: (| a <- 8 . |) .";
+    sigcButtonGuardar.disconnect();
+    return;
+  }
 
   Gtk::TextView* textSlot = nullptr;
   m_builder-> Gtk::Builder::get_widget("textview3", textSlot);
   if (textSlot == nullptr) std::cout << "error" << std::endl;
-  std::string textoAEnviar = textSlot->get_buffer()->get_text();
-  actual -> agregarSlot(textoAEnviar);
-  //proxyServer.agregarSlotA(actual->get_id_to_string(), textoAEnviar);
-  // enviar esto al server.
-  std::cout << actual->nombreObjeto << " _AddSlots:(|"
-            << textoAEnviar << "|)."  << std::endl;
+  std::string textoDeSlot = textSlot->get_buffer()->get_text();
+
+  std::string textoAEnviar =  "lobby _AddSlots: (| ";
+  textoAEnviar += textoDeSlot;
+  textoAEnviar += " |) .";
+
+  std::cout << textoAEnviar << std::endl;
+  //std::cout << "lobby _AddSlots: (| a <- 8 . |) ." << std::endl;
+
+  uint32_t codigoMensaje = proxyServer.enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+
+  uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
+  std::string json = proxyServer.recibir(tamMensaje);
+  std::cout << json << std::endl;
+  std::vector<InterfaceSlot*> i_slots;
+  JsonReader slots_reader;
+  slots_reader.read(i_slots, json);
+
+  int size = 1;
+  //int size = i_slots.size();
+  for (int i = 0; i < size ; i++){
+    i_slots[i] -> print_attr();
+    actual->agregarSlot(i_slots[i]);
+  }
 
   sigcButtonGuardar.disconnect();
   queue_draw();
