@@ -8,6 +8,7 @@ static const char* global_obj = "lobby";
 static const char* name_slot = "_Name";
 static const char* self_slot = "_Self";
 static const char* obj_name = "object";
+static const char* empty_string = "";
 static const char* num_slots[] = {"+", "*", "-", "/", "==", "!="};
 static const int idx_global = 0;
 
@@ -50,6 +51,8 @@ void VM::collect(){
 }
 
 string VM::get_slots(Slot* sl){
+        if (!sl)
+            return empty_string;
         string json = sl -> get_value() -> get_json_slots();        
         if ( json != "{\"slots\":[]}" )
                 return json;
