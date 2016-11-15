@@ -330,23 +330,6 @@ void MyArea::do_it_event(){
       break;
     }
   }
-  /*std::string respuesta = proxyServer.recibirRespuesta();
-
-  std::cout << respuesta << std::endl;
-  
-  std::vector<InterfaceSlot*> i_slots;
-  JsonReader slots_reader;
-  slots_reader.read(i_slots, respuesta);*/
-
-
-  /*int size = 1;
-  //int size = i_slots.size();
-  for (int i = 0; i < size ; i++){
-    i_slots[i] -> print_attr();
-    actual->agregarSlot(i_slots[i]);
-  }*/
-  // borrar slot
-  //borrarSlot(actual, referencias);
   
   queue_draw();    
 }
@@ -414,6 +397,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event) {
         refenciaActual=nullptr;
         Slot* slot = actual->obtenerSlot(event->x,event->y);
         if (slot){
+          slot->setEstaDibujadoComoMorph(true);
           for (int j = 0; j < morphs.size() ; ++j){
             if(morphs[j]->tieneElMismoIdQueEsteSlot(slot)){
               std::cout << "hay un slot con ese id" << std::endl;
