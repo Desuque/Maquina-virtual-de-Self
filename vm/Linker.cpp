@@ -2,6 +2,7 @@
 #include "Linker.h"
 #include "server_virtual_machine.h"
 #include <iostream>
+#include <sstream>
 
 Linker::Linker() : vm(NULL), id("-1") {
 }
@@ -46,6 +47,25 @@ bool Linker::create_unary_message(std::string name, std::string msg) {
 	Slot* last_slot = vm->unary_message(slot, msg);
 	slots.push_back(last_slot);	
 	return true;
+}
+
+void Linker::create_number(std::string number) {
+	std::size_t found = number.find(".");
+	
+	if(found != std::string::npos) {
+		create_float(number);
+	} else {
+		create_int(number);
+	}
+}
+
+void Linker::create_float(std::string number) {
+	std::stringstream buffer(number);
+ 	float temp;
+ 	buffer >> temp;
+
+	Slot* X1 = vm->create_float(temp);
+	slots.push_back(X1);	
 }
 
 void Linker::create_int(std::string number) {

@@ -25,7 +25,7 @@ bool Parser::number(std::stringstream* codigo, int* posicion) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 
-	int valor;
+	float valor;
 	codigo->seekg(*posicion, std::ios::beg);
 	*codigo>>valor;
 
@@ -38,7 +38,7 @@ bool Parser::number(std::stringstream* codigo, int* posicion) {
 		std::stringstream ss;
 		ss << valor;
 		std::string str = ss.str();
-		linker.create_int(str);
+		linker.create_number(str);
 		return true;
 	}
 
