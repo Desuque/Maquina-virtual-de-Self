@@ -148,24 +148,47 @@ bool Parser::pipe_without_script(std::stringstream* codigo, int* posicion) {
 	return false;
 }
 
+bool Parser::object_intro(std::stringstream* codigo, int* posicion) {
+	int posicionOriginal = *posicion;
+
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+
+	char c;
+	codigo->get(c);
+	if(c == '(') {
+		*posicion = codigo->tellg();
+
+		//Elimino posibles espacios
+		erase_white_spaces(codigo, posicion);
+
+		codigo->seekg(*posicion, std::ios::beg);
+		codigo->get(c);
+		if(c == '|') {
+			*posicion = codigo->tellg();
+			return true;
+		}
+	}
+
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
+
 bool Parser::object(std::stringstream* codigo, int* posicion) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 
-	//Leo todo el valor desde la posicion indicada
-	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-	*codigo>>valor;
-
-	if(valor == "(|") {
-		*posicion = codigo->tellg();
+	//Compruebo que efectivamente comienza con "(|"
+	if(object_intro(codigo, posicion)) {
 		if(slot_list(codigo, posicion)) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
 
 			bool nextSlot = true;
 			while(nextSlot) {
-
 				nextSlot = slot_list(codigo, posicion);
 			}
 			if (pipe_without_script(codigo, posicion)) {
@@ -543,7 +566,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 								codigo->seekg(*posicion, std::ios::beg);
 								codigo->get(c);
 								if(c == ':') {
-									std::cout<<"ESO ESTA MUY BIEN!"<<std::endl;
 									*posicion = codigo->tellg();
 									if(expressionCP(codigo, posicion)) {
 										isCap_keyword = true;
@@ -579,11 +601,22 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 
 bool Parser::operador(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
-
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
+
+	char c;
 	std::string valor;
-	*codigo>>valor;
+	while(codigo->get(c)) {
+		if ((c == '+')|| (c == '-') || (c == '*') ||
+				(c == '/') || (c == '!') || (c == '=')) {
+			valor += c;
+			*posicion = codigo->tellg();
+		} else {
+			break;
+		}
+	}
 
 	bool itsOperator = false;
 
@@ -607,7 +640,6 @@ bool Parser::operador(std::stringstream* codigo, int* posicion) {
 	}
 
 	if(itsOperator) {
-		*posicion = codigo->tellg();
 		set_op(valor);
 		return true;
 	}
