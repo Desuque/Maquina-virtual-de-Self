@@ -337,21 +337,57 @@ bool Parser::empty(std::stringstream* codigo, int* posicion) {
 	}
 }
 
+bool Parser::slot_operator(std::stringstream* codigo, int* posicion) {
+	int posicionOriginal = *posicion;
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+
+	char c;
+	std::string valor;
+	while(codigo->get(c)) {
+		if ((c == '=')|| (c == '<') || (c == '-')) {
+			valor += c;
+			*posicion = codigo->tellg();
+		} else {
+			break;
+		}
+	}
+
+	bool itsOperator = false;
+
+	if(valor == "=") {
+		itsOperator = true;
+	}
+	if(valor == "<-") {
+		itsOperator = true;
+	}
+
+	if(itsOperator) {
+		std::cout<<"Este es el operator que leo: "<<valor<<std::endl;
+		std::cout<<"En esta posicion lo dejo: "<<*posicion<<std::endl;
+		set_op(valor);
+		return true;
+	}
+
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
+
 bool Parser::slot_list(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
-	*codigo>>valor;
 
 	if(slot_name_extended(codigo, posicion)) {
 		std::string slot_name = get_msg();
 
-		codigo->seekg(*posicion, std::ios::beg);
-		*codigo>>valor;
-		if((valor == "=") || (valor == "<-")) {
-			*posicion = codigo->tellg();
+		if(slot_operator(codigo, posicion)) {
+			std::string op = get_op();
 			if(expression(codigo, posicion)) {
 				if(final(codigo, posicion)) {
 					linker.create_slot(slot_name);
