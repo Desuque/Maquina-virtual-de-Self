@@ -54,7 +54,6 @@ VM* App::get_vm(){
 void App::run(int* fin){
         test_example();
 	while (true){
-		// me solicitan los slots de lobby
 		try {
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
@@ -67,20 +66,8 @@ void App::run(int* fin){
 
 					string string_to_send = get_slots(nombreObjeto);
 
-					proxy->enviarSlots(string_to_send);
+					proxy->enviarJson(string_to_send);
 
-					std::vector<InterfaceSlot*> i_slots;
-					JsonReader slots_reader;
-					slots_reader.read(i_slots, string_to_send);
-
-					int size = i_slots.size();
-					for (int i = 0; i < size ; i++)
-						i_slots[i] -> print_attr();
-
-					for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
-						delete* it;  
-						it = i_slots.erase(it);
-					}	
 					break;
 				}
 				case 5:{
@@ -117,7 +104,7 @@ void App::run(int* fin){
 					std::cout << "devolucion: " << result << std::endl;
 					
 					if(flag != 0) {
-						proxy->enviarSlots(result);
+						proxy->enviarJson(result);
 					}
 					break;
 				}

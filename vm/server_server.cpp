@@ -1,10 +1,12 @@
 #include "server_server.h"
+#include "server_json_writer.h"
+#include "../interfaz/client_json_reader.h"
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
 
 static const int cod_create_vm = 1;
-static const int cod_get_apps_name = 10;
+static const int cod_get_apps_name = 999;
 static const int msg_size = 1;
 static const char* file_ext = ".dat";
 static const char* folder = "data/";
@@ -43,12 +45,21 @@ void Server::run(int* fin){
 		uint32_t codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
                 //Tengo que recibir mensaje para saber si crear o agregar a uno ya existente
                 if (codigoMensaje == cod_create_vm){
+                        //uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+                        //string app_name = proxy->recibir(tamMensaje);
                         //Verificar si nombre nuevo existe
                         App* new_app = new App(proxy);
                         apps.insert (std::pair<string,App*>("vm", new_app));
                         new_app -> start();
-                }//else if (codigoMensaje == cod_get_apps_name){
-                //}
+                }else if (codigoMensaje == cod_get_apps_name){
+                              string json = get_json_apps_name();
+                              proxy->enviarJson(json);
+                              //VA EN EL CLIENTE PARA DECODIFICAR LOS NOMBRES 
+                              //std::vector<string> names;
+                              //JsonReader reader;
+                              //reader.read_names(json, names);
+                              
+                }
                 join_threads();
         }
 }
@@ -65,6 +76,15 @@ void Server::join_threads(){
                         it++;
                 }
         }
+}
+
+string Server::get_json_apps_name(){
+        std::vector<string> names;
+        for(map_apps::iterator it = apps.begin(); it != apps.end(); ++it)
+                names.push_back(it->first);
+        
+        JsonWriter writer;
+        return writer.write_files_name(names);
 }
 
 int Server::execute_file(string file_name){

@@ -77,3 +77,21 @@ string JsonWriter::write_code(string id, string code){
 	writer.EndObject();
 	return s.GetString();
 }
+
+string JsonWriter::write_files_name(v_strings names){
+        StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("lobbies");
+	writer.StartArray();
+	int size = names.size();
+        for (int i = 0; i < size; i++){
+                writer.StartObject();
+                writer.Key("name");
+                writer.String(names[i].c_str());
+                writer.EndObject();
+        }
+	writer.EndArray();
+	writer.EndObject();
+	return s.GetString();
+}

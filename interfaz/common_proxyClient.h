@@ -16,7 +16,7 @@ class ProxyClient : public Proxy {
                 void aceptarCliente(ProxyClient* proxy);
                 void set_socket(Socket& socket);
 		void cerrarConexion();
-		void enviarSlots(std::string slots);
+		void enviarJson(std::string json);
 		//void enviar(std::string mensaje, size_t cantidad);
 		void enviar(uint32_t entero, size_t cantidad);
 		std::string recibir(size_t cantidad);

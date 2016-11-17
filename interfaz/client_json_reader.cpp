@@ -28,3 +28,15 @@ void JsonReader::read_code(string json, string& id, string& code){
 	id = document["id"].GetString();
 	code = document["code"].GetString();
 }
+
+void JsonReader::read_names(string json, v_strings& names){
+        Document document;
+	document.Parse(json.c_str());
+	const Value& lobbies = document["lobbies"];
+	assert(lobbies.IsArray());
+	for (Value::ConstValueIterator itr = lobbies.Begin(); itr != lobbies.End(); ++itr) {
+		string name = (*itr)["name"].GetString();
+		names.push_back(name);
+	}
+}
+

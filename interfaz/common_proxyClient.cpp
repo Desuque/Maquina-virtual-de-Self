@@ -22,15 +22,15 @@ ProxyClient& ProxyClient::operator=(ProxyClient&& other) {
 	return *this;
 }
 
-void ProxyClient::enviarSlots(std::string slots){
-	uint32_t tamMensaje = slots.length();
+void ProxyClient::enviarJson(std::string json){
+	uint32_t tamMensaje = json.length();
 	char buff[5];
 	bzero(buff,5);
 	tamMensaje = htonl(tamMensaje);
 	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
 	
 	server.send(buff,sizeof(uint32_t));
-	server.send(slots.c_str(), slots.length());
+	server.send(json.c_str(), json.length());
 }
 
 
