@@ -23,10 +23,11 @@ string App::get_slots(string id){
 	return obj_str;
 }
 
-string App::save_vm(){
+string App::save_vm(string name){
 	std::ofstream file;
         system("mkdir -p data");
-	file.open ("data/vm.dat");
+        string file_name = "data/"+name+".dat";
+	file.open (file_name);
 	string data = vm.save();
 	file << data << std::endl;
 	file.close();

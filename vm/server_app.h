@@ -19,7 +19,7 @@ class App : public Thread{
 		App(ProxyClient* proxy);
 		VM* get_vm();
 		string get_slots(string id);
-		string save_vm();
+		string save_vm(string name);
 		string execute(string msg);
 		int execute_file(string file_name);
                 void run(int* fin);

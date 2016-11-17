@@ -3,37 +3,63 @@
 #include <cstdlib>
 #include <fstream>
 
+static const int cod_create_vm = 1;
+static const int cod_get_apps_name = 10;
+static const int msg_size = 1;
+static const char* file_ext = ".dat";
+static const char* folder = "data/";
+
+Server::Server(){
+        load_file_names();
+}
+
+void Server::load_file_names(){
+        DIR *dir;
+        struct dirent *ent;
+        if ((dir = opendir (folder)) != NULL) {
+            while ((ent = readdir (dir)) != NULL) {
+                string file_name = ent->d_name;
+                string name = file_name.substr(0, file_name.find(file_ext));
+                if (name != file_name)
+                        apps.insert (std::pair<string,App*>(name, NULL));
+            }
+            closedir (dir);
+        }
+}
+
 void Server::bind(int port){
 	this -> proxyClient.bindAndListen(port);
 }
 
 void Server::run(int* fin){
         ProxyClient* proxy = new ProxyClient();
-        bool start = 1;
 	while (true){
                 try{
                         proxyClient.aceptarCliente(proxy);
                 }catch (const std::exception e){
 			break;
 		}
+		
+		uint32_t codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
                 //Tengo que recibir mensaje para saber si crear o agregar a uno ya existente
-                if (start){
-                        start = 0;
-                        int id = 1;
+                if (codigoMensaje == cod_create_vm){
+                        //Verificar si nombre nuevo existe
                         App* new_app = new App(proxy);
-                        apps.insert (std::pair<int,App*>(id, new_app));
+                        apps.insert (std::pair<string,App*>("vm", new_app));
                         new_app -> start();
-                }
+                }//else if (codigoMensaje == cod_get_apps_name){
+                //}
                 join_threads();
         }
 }
 
 void Server::join_threads(){
         for(map_apps::iterator it = apps.begin(); it!=apps.end(); ) {
-                if ((it->second)-> termino_thread()){
-                        (it->second) -> save_vm();
-                        (it -> second) ->  join();
-                        delete  it->second;
+                App* app = it->second;
+                if ( (app != NULL) && (app -> termino_thread()) ){
+                        app -> save_vm(it->first);
+                        app ->  join();
+                        delete  app;
                         it = apps.erase(it);
                 }else{
                         it++;
