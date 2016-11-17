@@ -155,7 +155,7 @@ void App::test_example(){
 	vm.immutable_object(X2);
 	vm.add_slot(X1, "y", X2);
         vm.add_slot(cont, "", X1);
-	vm.keyword_message(X0, "_AddSlots:", cont);
+	vm.keyword_message(X0, "_AddSlots", cont);
 	vm.collect();
       /*
         //y print.
@@ -171,7 +171,7 @@ void App::test_example(){
 	vm.add_slot(X8, "y", X9);
 	vm.add_slot(X7, "punto1", X8);
         vm.add_slot(cont1, "", X7);
-	vm.keyword_message(X6, "_AddSlots:", cont1);
+	vm.keyword_message(X6, "_AddSlots", cont1);
 	/*
 	//(punto1 y) print.
 	Slot* X10 = vm.search_obj("punto1");
@@ -200,7 +200,7 @@ void App::test_example(){
 	Slot* X22 = vm.create_string("hello");
 	vm.add_slot(X21, "str", X22);
 	vm.add_slot(cont2,"",X21);
-        vm.keyword_message(X20, "_AddSlots:", cont2);
+        vm.keyword_message(X20, "_AddSlots", cont2);
 	/*
 	//str print.
 	Slot* X23 = vm.search_obj("str");
@@ -218,7 +218,7 @@ void App::test_example(){
 	vm.add_parent(X27, "padre", X26);
 	vm.add_slot(X25, "punto11", X27);
         vm.add_slot(cont3,"",X25);
-	vm.keyword_message(X24, "_AddSlots:", cont3);
+	vm.keyword_message(X24, "_AddSlots", cont3);
 	/*
 	//(punto11 y) print.
 	Slot* X29 = vm.search_obj("punto11");
@@ -244,7 +244,7 @@ void App::test_example(){
 	vm.add_slot(X33, "y", X3Y);
 	vm.add_slot(X32, "punto", X33);
         vm.add_slot(cont4,"",X32);
-	vm.keyword_message(X31, "_AddSlots:", cont4);
+	vm.keyword_message(X31, "_AddSlots", cont4);
 	/*
 	//punto print.   #Print Method Object
 	Slot* X36 = vm.search_obj("punto");
@@ -294,7 +294,7 @@ void App::test_example(){
         vm.add_slot(X100, "prueba2", X101);
         vm.add_slot(X97, "", X98);
 	vm.add_slot(X97, "", X100);
-        vm.keyword_message(X96, "_RemoveSlots:", X97);
+        vm.keyword_message(X96, "_RemoveSlots", X97);
         /*
         Slot* y = vm.search_obj_by_name("y",116);
         vm.unary_message(y, "print");
