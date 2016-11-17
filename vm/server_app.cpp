@@ -283,6 +283,7 @@ void App::test_example(){
         vm.add_slot(X94, "prueba2", X95);
         vm.add_slot(X91, "", X92);
 	vm.add_slot(X91, "", X94);
+        vm.keyword_message(X90, "_AddSlots", X91);
         
         //lobby _RemoveSlots: (| prueba1. prueba2. |).
 	Slot* X96 = vm.search_obj("lobby");
@@ -296,6 +297,7 @@ void App::test_example(){
         vm.add_slot(X97, "", X98);
 	vm.add_slot(X97, "", X100);
         vm.keyword_message(X96, "_RemoveSlots", X97);
+        
         /*
         Slot* y = vm.search_obj_by_name("y",116);
         vm.unary_message(y, "print");

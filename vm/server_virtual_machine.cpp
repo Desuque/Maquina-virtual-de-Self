@@ -7,8 +7,13 @@
 static const char* global_obj = "lobby";
 static const char* name_slot = "_Name";
 static const char* self_slot = "_Self";
+static const char* print = "print";
 static const char* obj_name = "object";
+static const char* add_slots_msg = "_AddSlots";
+static const char* rm_slots_msg = "_RemoveSlots";
+static const char* start_msg = "lobby _AddSlots: ";
 static const char* empty_string = "";
+static const char* empty_slot = "{\"slots\":[]}";
 static const char* num_slots[] = {"+", "*", "-", "/", "==", "!="};
 static const int idx_global = 0;
 
@@ -44,7 +49,7 @@ void VM::garbage_collector(){
 }
 
 void VM::collect(){
-	Slot* lobby = search_obj("lobby");	
+	Slot* lobby = search_obj(global_obj);	
 	unmark_slots();
 	lobby -> get_value() -> mark_slots();
 	garbage_collector();
@@ -54,7 +59,7 @@ string VM::get_slots(Slot* sl){
         if (!sl)
             return empty_string;
         string json = sl -> get_value() -> get_json_slots();        
-        if ( json != "{\"slots\":[]}" )
+        if ( json != empty_slot )
                 return json;
         
 	return sl -> json();
@@ -110,11 +115,6 @@ Slot* VM::add_slot(Slot* sl_recv, string sl_recv_id, Slot* sl){
 }
 
 Slot* VM::add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl){
-	/*Slot* sl_clone = sl  -> get_value() -> clone(*this);
-	sl_clone -> set_name(sl_recv_id);
-	sl_clone -> set_parent(true, sl -> get_name());
-	sl_recv -> add_slot(sl_clone);
-	return sl_recv;*/
 	Slot* sl_p = new Slot(get_id_slots(), sl_recv_id);
 	sl_p -> set_value(sl->get_value());
 	add_basic_slots(sl_p, sl_recv_id);
@@ -210,7 +210,7 @@ Slot* VM::unary_message(Slot* sl_recv, string msg){
 	args.push_back(sl_recv -> get_value());
 	Slot* sl_ret = search_and_execute_msg(sl_recv, msg, args);
 	if (!sl_ret){
-		if (msg == "print"){
+		if (msg == print){
 			Slot* res = sl_recv -> get_value() -> print(*this);
 			return  res;
 		}
@@ -237,17 +237,17 @@ Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 }
 
 Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
-	//Slot* sl_lobby = sl -> get_value() -> as_slot();
-	//sl_recv -> add_slot(sl_lobby);
-        Slot* ret = sl_recv;
-        if (msg == "_AddSlots"){
+	Slot* ret = sl_recv;
+        if (msg == add_slots_msg){
+                Slot* add_slots = create_object();
                 p_slots v_slots = sl -> get_value() -> get_slots();
                 int size = v_slots.size();
                 for (int i = 0; i < size; i++){
                         sl_recv -> add_slot(v_slots[i]);
+                        add_slots -> add_slot(v_slots[i]);
                 }
-                ret = v_slots[0];
-        } else if (msg == "_RemoveSlots"){
+                ret = add_slots;
+        } else if (msg == rm_slots_msg){
                 Slot* rm_slots = create_object();
                 p_slots v_slots = sl -> get_value() -> get_slots();
                 int size = v_slots.size();
@@ -284,7 +284,7 @@ void VM::add_default_self_slot(Slot* sl_recv){
 
 string VM::save(){
 	Slot* lobby = search_obj(global_obj);
-	string vm_slots = "lobby _AddSlots: "; 
+	string vm_slots = start_msg; 
 	lobby -> get_value() -> get_self_slots(vm_slots);
 	return vm_slots;
 }
