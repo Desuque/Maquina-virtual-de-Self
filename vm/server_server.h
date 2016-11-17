@@ -3,27 +3,26 @@
 
 #include <vector>
 #include <string>
-#include "server_virtual_machine.h"
+#include "server_app.h"
+#include "common_thread.h"
 #include "../interfaz/common_proxyClient.h"
-#include "server_parser.h"
 
-class Server{
+typedef std::map<int, App*> map_apps;
+
+class Server : public Thread{ 
 	private:
-		VM* vm;
-		Parser parser;
-		ProxyClient proxyClient;
+		map_apps apps;
+                ProxyClient proxyClient;
 		
 	public:
-		Server();
-		void recv_messages();
-		VM* get_vm();
-		string get_slots(string id);
-		string save_vm();
-		string execute(string msg);
-		int execute_file(string file_name);
 		void bind(int port);
+                int execute_file(string file_name);
 		void listen();
-		~Server();
+                void run(int* fin);
+                void shutdown();
+
+	private:
+		void join_threads();
 };
 
 #endif
