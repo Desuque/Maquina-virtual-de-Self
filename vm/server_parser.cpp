@@ -29,6 +29,8 @@ bool Parser::number(std::stringstream* codigo, int* posicion) {
 	codigo->seekg(*posicion, std::ios::beg);
 	*codigo>>valor;
 
+	std::cout<<"Entro al numero!: "<<valor<<std::endl;
+
 	if(codigo->fail()){
 		codigo->clear();
 		*posicion = posicionOriginal;
@@ -353,10 +355,13 @@ bool Parser::expressionP(std::stringstream* codigo, int* posicion) {
 
 	if(c == '(') {
 		*posicion = codigo->tellg();
+		codigo->seekg(*posicion, std::ios::beg);
 		if(expression(codigo, posicion)) {
 			//Elimino posibles espacios
 			erase_white_spaces(codigo, posicion);
+			codigo->seekg(*posicion, std::ios::beg);
 			codigo->get(c);
+			std::cout<<"Ultimo caracter: "<<c<<std::endl;
 			if(c == ')') {
 				*posicion = codigo->tellg();
 				return true;
@@ -613,10 +618,12 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
 	if(receiver(codigo, posicion)) {
-
+		std::cout<<"Entro al receiver del binary"<<std::endl;
 		if(operador(codigo, posicion)) {
+			std::cout<<"Entro al operador del binary"<<std::endl;
 
 			if(expressionCP(codigo, posicion)) {
+				std::cout<<"Entro al cp"<<std::endl;
 				std::string op = get_op();
 				linker.create_binary_message(op);
 				return true;
