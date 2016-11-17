@@ -19,13 +19,14 @@ class Server : public Thread{
 	public:
 		Server();
 		void bind(int port);
-                int execute_file(string file_name);
-		void listen();
+                void listen();
                 void run(int* fin);
                 void shutdown();
-
+                int execute(string file_name);
+                
 	private:
-		void load_file_names();
+		int execute_file(App* app, string file_name);
+                void load_file_names();
                 string get_json_apps_name();
 		void join_threads();
 };
