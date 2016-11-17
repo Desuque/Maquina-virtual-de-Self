@@ -29,8 +29,6 @@ bool Parser::number(std::stringstream* codigo, int* posicion) {
 	codigo->seekg(*posicion, std::ios::beg);
 	*codigo>>valor;
 
-	std::cout<<"Entro al numero!: "<<valor<<std::endl;
-
 	if(codigo->fail()){
 		codigo->clear();
 		*posicion = posicionOriginal;
@@ -104,18 +102,16 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion) {
 	char c;
 	std::string script;
 	codigo->get(c);
-	std::cout<<"VALOR DEL C con script: "<<c<<std::endl;
 	if(c == '|') {
-		std::cout<<"Encontre un pipe adentro de script!"<<std::endl;
 		//Elimino posibles espacios
 		erase_white_spaces(codigo, posicion);
+		codigo->seekg(*posicion, std::ios::beg);
 		while(codigo->get(c)) {
 			if(c == ')') {
 				break;
 			}
 			script+= c;
 		}
-		std::cout<<"SCRIPT QUE CARGASTE PAPA: "<<script<<std::endl;
 		*posicion = codigo->tellg();
 		return true;
 	}
@@ -136,14 +132,12 @@ bool Parser::pipe_without_script(std::stringstream* codigo, int* posicion) {
 
 	char c;
 	codigo->get(c);
-	std::cout<<"VALOR DEL C: "<<c<<std::endl;
 	if(c == '|') {
-		std::cout<<"Encontre un pipe!"<<std::endl;
 		//Elimino posibles espacios
 		erase_white_spaces(codigo, posicion);
+		codigo->seekg(*posicion, std::ios::beg);
 		codigo->get(c);
 		if(c == ')') {
-			std::cout<<"Encontre el parentesis que me faltana!"<<std::endl;
 			*posicion = codigo->tellg();
 			return true;
 		}
@@ -164,10 +158,8 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 	*codigo>>valor;
 
 	if(valor == "(|") {
-		std::cout<<"Valor: "<<valor<<std::endl;
 		*posicion = codigo->tellg();
 		if(slot_list(codigo, posicion)) {
-			std::cout<<"Pasa el slot list"<<std::endl;
 			//TODO MAS DE UN SLOT_LIST
 			//bool nextSlot = true;
 			//while(nextSlot) {
@@ -184,25 +176,6 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 				//Se guarda el script sin comprobar su sintaxis
 				return true;
 			}
-/**
-			int posAux = codigo->tellg();
-			*codigo>>valor;
-			std::cout<<"Valor: "<<valor<<std::endl;
-			//El script puede ser parte o no del objeto
-			if((valor.at(0) == '|') && (valor.at(1) == ')')) {
-				*posicion = posAux + 3;
-				return true;
-			} else if((valor.at(0) == '|') && (valor.at(1) != ')')) {
-				*posicion = *posicion + 1;
-				if(script(codigo, posicion)) {
-					*codigo>>valor;
-					if(valor == ")") {
-						//Actualizo la posicion en el codigo original
-						*posicion = codigo->tellg();
-						return true;
-					}
-				}
-			}**/
 		}
 	}
 
@@ -231,12 +204,8 @@ bool Parser::nil(std::stringstream* codigo, int* posicion) {
 }
 
 void Parser::erase_white_spaces(std::stringstream* codigo, int* posicion) {
-	int posicionOriginal = *posicion;
-
-	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 	char c;
-	bool exit = false;
 	while( codigo->get(c) && isspace(c) ) {
 		*posicion = codigo->tellg();
 	}
@@ -324,7 +293,6 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion) {
 		std::string slot = get_msg();
 		codigo->seekg(*posicion, std::ios::beg);
 		*codigo>>valor;
-		std::cout<<"Valor del slot: "<<valor<<std::endl;
 		if((valor == "=") || (valor == "<-")) {
 			*posicion = codigo->tellg();
 			if(expression(codigo, posicion)) {
@@ -347,11 +315,8 @@ bool Parser::expressionP(std::stringstream* codigo, int* posicion) {
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 
-	std::cout<<"Entro en expresP: "<<std::endl;
-
 	char c;
 	codigo->get(c);
-	std::cout<<"Entro en expresP: "<<c<<std::endl;
 
 	if(c == '(') {
 		*posicion = codigo->tellg();
@@ -361,7 +326,6 @@ bool Parser::expressionP(std::stringstream* codigo, int* posicion) {
 			erase_white_spaces(codigo, posicion);
 			codigo->seekg(*posicion, std::ios::beg);
 			codigo->get(c);
-			std::cout<<"Ultimo caracter: "<<c<<std::endl;
 			if(c == ')') {
 				*posicion = codigo->tellg();
 				return true;
@@ -618,12 +582,8 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
 	if(receiver(codigo, posicion)) {
-		std::cout<<"Entro al receiver del binary"<<std::endl;
 		if(operador(codigo, posicion)) {
-			std::cout<<"Entro al operador del binary"<<std::endl;
-
 			if(expressionCP(codigo, posicion)) {
-				std::cout<<"Entro al cp"<<std::endl;
 				std::string op = get_op();
 				linker.create_binary_message(op);
 				return true;
@@ -704,10 +664,8 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
-	std::cout<<"Posicion: "<<*posicion<<std::endl;
 	char c;
 	codigo->get(c);
-	std::cout<<"VALOR DE C EN FINAL: "<<c<<std::endl;
 	if(c == '.') {
 		*posicion = codigo->tellg();
 		return true;
