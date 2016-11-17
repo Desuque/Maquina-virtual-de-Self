@@ -1,0 +1,1 @@
+lobby _AddSlots: (| punto = (| print = (|| print x ). square_norm = (|| ((x*x)+(y*y)) ). y = 7. |). punto1 = (| padre* = padre. y = 4. |). punto11 = (| padre* = padre. x = 5. |). str = 'hello'. |). 
