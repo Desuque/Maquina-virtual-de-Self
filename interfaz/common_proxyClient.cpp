@@ -34,10 +34,13 @@ void ProxyClient::enviarSlots(std::string slots){
 }
 
 
-ProxyClient ProxyClient::aceptarCliente(){
+void ProxyClient::aceptarCliente(ProxyClient* proxy){
 	Socket socket = server.accept();
-	ProxyClient proxyClientAceptado(socket);
-	return proxyClientAceptado;
+        proxy -> set_socket(socket);
+}
+
+void ProxyClient::set_socket(Socket& socket){
+        this -> server = std::move(socket);
 }
 
 void ProxyClient::cerrarConexion(){

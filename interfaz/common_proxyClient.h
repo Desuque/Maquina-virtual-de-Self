@@ -13,7 +13,8 @@ class ProxyClient : public Proxy {
 		explicit ProxyClient(const unsigned int puerto);
 		explicit ProxyClient(Socket& socket);
 		void bindAndListen(const unsigned int puerto);
-		ProxyClient aceptarCliente();
+                void aceptarCliente(ProxyClient* proxy);
+                void set_socket(Socket& socket);
 		void cerrarConexion();
 		void enviarSlots(std::string slots);
 		//void enviar(std::string mensaje, size_t cantidad);
