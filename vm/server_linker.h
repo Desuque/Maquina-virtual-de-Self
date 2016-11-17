@@ -10,6 +10,7 @@ private:
 	VM* vm;
 	std::string id;
 	std::vector<Slot*> slots;
+	std::vector<Slot*> slots_names;
 
 public:
 	Linker();

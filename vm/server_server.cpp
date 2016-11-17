@@ -5,8 +5,9 @@
 #include <cstdlib>
 #include <fstream>
 
-static const int cod_create_vm = 1;
+static const int cod_create_app = 1;
 static const int cod_get_apps_name = 999;
+static const int cod_load_app = 1000;
 static const int msg_size = 1;
 static const char* file_ext = ".dat";
 static const char* folder = "data/";
@@ -44,21 +45,41 @@ void Server::run(int* fin){
 		
 		uint32_t codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
                 //Tengo que recibir mensaje para saber si crear o agregar a uno ya existente
-                if (codigoMensaje == cod_create_vm){
+                if (codigoMensaje == cod_create_app){
                         //uint32_t tamMensaje = proxy->recibirTamMensaje(4);
                         //string app_name = proxy->recibir(tamMensaje);
                         //Verificar si nombre nuevo existe
+                        /*if ( apps.find(app_name) == apps.end() ) {
+                                // not found
+                                App* new_app = new App(proxy);
+                                apps.insert (std::pair<string,App*>("vm", new_app));
+                                new_app -> start();
+                        } else {
+                                //Enviar Error, ese nombre ya existe
+                        }*/
                         App* new_app = new App(proxy);
-                        apps.insert (std::pair<string,App*>("vm", new_app));
+                        //apps.insert (std::pair<string,App*>("vm", new_app));
+                        apps.at("vm") = new_app;
                         new_app -> start();
                 }else if (codigoMensaje == cod_get_apps_name){
-                              string json = get_json_apps_name();
-                              proxy->enviarJson(json);
-                              //VA EN EL CLIENTE PARA DECODIFICAR LOS NOMBRES 
-                              //std::vector<string> names;
-                              //JsonReader reader;
-                              //reader.read_names(json, names);
-                              
+                        string json = get_json_apps_name();
+                        proxy->enviarJson(json);
+                        //VA EN EL CLIENTE PARA DECODIFICAR LOS NOMBRES 
+                        //std::vector<string> names;
+                        //JsonReader reader;
+                        //reader.read_names(json, names);
+                }else if (codigoMensaje == cod_load_app){
+                        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+                        string app_name = proxy->recibir(tamMensaje);
+                        App* app_load = apps.at(app_name);
+                        if (app_load){
+                                std::cout << "Agregar al existente " << std::endl;
+                                //app_load -> add_proxy(proxy);
+                        }else{
+                                app_load = new App(proxy);
+                                execute_file(app_load, app_name);
+                                app_load -> start();
+                        }
                 }
                 join_threads();
         }
@@ -87,7 +108,12 @@ string Server::get_json_apps_name(){
         return writer.write_files_name(names);
 }
 
-int Server::execute_file(string file_name){
+int Server::execute(string file_name){
+        App app;
+        return execute_file(&app, file_name);
+}
+
+int Server::execute_file(App* app, string file_name){
 	std::ifstream file;
 	file.open(file_name, std::ifstream::in);
 	if (!file.is_open())
@@ -99,12 +125,11 @@ int Server::execute_file(string file_name){
 		file_contents += str;
 		file_contents.push_back('\n');
 	}
-	App app;
-        app.execute_file(file_contents);
+        app->execute_file(file_contents);
         return 0;
 }
 
 void Server::shutdown(){
-        this -> proxyClient.cerrarConexion();
         join_threads();
+        this -> proxyClient.cerrarConexion();
 }

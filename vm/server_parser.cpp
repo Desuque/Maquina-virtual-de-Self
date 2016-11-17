@@ -105,6 +105,7 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion) {
 	if(c == '|') {
 		//Elimino posibles espacios
 		erase_white_spaces(codigo, posicion);
+		*posicion = codigo->tellg();
 		codigo->seekg(*posicion, std::ios::beg);
 		while(codigo->get(c)) {
 			if(c == ')') {
@@ -119,7 +120,6 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion) {
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
-
 }
 
 bool Parser::pipe_without_script(std::stringstream* codigo, int* posicion) {
@@ -148,25 +148,49 @@ bool Parser::pipe_without_script(std::stringstream* codigo, int* posicion) {
 	return false;
 }
 
+bool Parser::object_intro(std::stringstream* codigo, int* posicion) {
+	int posicionOriginal = *posicion;
+
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+
+	char c;
+	codigo->get(c);
+	if(c == '(') {
+		*posicion = codigo->tellg();
+
+		//Elimino posibles espacios
+		erase_white_spaces(codigo, posicion);
+
+		codigo->seekg(*posicion, std::ios::beg);
+		codigo->get(c);
+		if(c == '|') {
+			*posicion = codigo->tellg();
+			return true;
+		}
+	}
+
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
+
 bool Parser::object(std::stringstream* codigo, int* posicion) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 
-	//Leo todo el valor desde la posicion indicada
-	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-	*codigo>>valor;
-
-	if(valor == "(|") {
-		*posicion = codigo->tellg();
+	//Compruebo que efectivamente comienza con "(|"
+	if(object_intro(codigo, posicion)) {
 		if(slot_list(codigo, posicion)) {
-			//TODO MAS DE UN SLOT_LIST
-			//bool nextSlot = true;
-			//while(nextSlot) {
-				//nextSlot = slot_list(codigo, posicion);
-				//TODO CARGAR LOS SLOTS LISTS DESDE EL LINKER!
-			//}
+			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
+			//En caso de no haber, se sigue parseando el objeto
 
+			bool nextSlot = true;
+			while(nextSlot) {
+				nextSlot = slot_list(codigo, posicion);
+			}
 			if (pipe_without_script(codigo, posicion)) {
 				//Quiere decir que se encontro una barra y un parentesis
 				return true;
@@ -176,6 +200,14 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 				//Se guarda el script sin comprobar su sintaxis
 				return true;
 			}
+
+			//TODO PENSAR EL EMPTY
+			//} else {
+			//Puede ser que slot_list sea empty (| | ... )
+			//*posicion = posicionOriginal;
+			//if (empty(codigo, posicion)){
+				//return true;
+			//}
 		}
 	}
 
@@ -282,27 +314,53 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 
 }
 
+/**
+ * Este metodo no modifica la posicion del puntero en el codigo ya que
+ * solo se quiere comprobar que el mismo representa un vacio
+ */
+bool Parser::empty(std::stringstream* codigo, int* posicion) {
+	int posicionOriginal = *posicion;
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+
+	char c;
+	codigo->get(c);
+
+	if(c == '|') {
+		*posicion = posicionOriginal;
+		return true;
+	} else {
+		*posicion = posicionOriginal;
+		return false;
+	}
+}
+
 bool Parser::slot_list(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
+	*codigo>>valor;
 
 	if(slot_name_extended(codigo, posicion)) {
-		std::string slot = get_msg();
+		std::string slot_name = get_msg();
+
 		codigo->seekg(*posicion, std::ios::beg);
 		*codigo>>valor;
 		if((valor == "=") || (valor == "<-")) {
 			*posicion = codigo->tellg();
 			if(expression(codigo, posicion)) {
 				if(final(codigo, posicion)) {
-					linker.create_slot(slot);
+					linker.create_slot(slot_name);
 					return true;
 				}
 			}
 		}
 	}
+
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -410,35 +468,33 @@ bool Parser::lower_keyword(std::stringstream* codigo, int* posicion) {
 
 bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
-
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-	*codigo>>valor;
 
-	unsigned int i=0;
+	char c;
 	std::string auxiliar;
-
-	while((valor.at(i) != ':') && (i<valor.size()-1)) {
-		auxiliar+=valor.at(i);
-		i++;
+	while(codigo->get(c)) {
+		if (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) ||
+				((c >= '0') && (c <= '9'))) {
+			auxiliar += c;
+			*posicion = codigo->tellg();
+		} else {
+			break;
+		}
 	}
-	int lengValor = valor.length();
-	int lengAux = auxiliar.length();
 
+	//Cualquier palabra alfanumerica que empiece con una letra en minusculas
 	std::regex rr(R"(([A-Z])[A-Z-a-z-0-9]*)");
 	if(regex_match(auxiliar,rr)) {
-		*posicion = codigo->tellg();
-		*posicion = *posicion - (lengValor - lengAux);
-		//*posicion = codigo->tellg();
-		//*posicion = *posicion - 1;
+		set_msg(auxiliar);
 		return true;
 	}
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
-
 }
 
 bool Parser::removeSlots(std::stringstream* codigo, int* posicion, std::string context) {
@@ -482,16 +538,11 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 
 	if(receiver(codigo, posicion)) {
 		std::string msg = get_msg();
-		//std::cout<<"Paso el receiver"<<std::endl;
 		if(lower_keyword(codigo, posicion)) {
-			//std::cout<<"Paso el lower"<<std::endl;
-
 			std::string lower_key = get_msg();
 			setFlag(lower_key);
-			//std::cout<<"Flag: "<<lower_key<<std::endl;
 			codigo->seekg(*posicion, std::ios::beg);
 			*codigo>>valor;
-			//std::cout<<"Lowert: "<<valor<<std::endl;
 			if(valor == ":") {
 				*posicion = codigo->tellg();
 				codigo->seekg(*posicion, std::ios::beg);
@@ -500,16 +551,21 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 				if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion)) {
 						linker.create_keyword_message(msg, lower_key);
+
 						/**
+						 * Puede haber o no cap_keyword
+						 */
 						bool isCap_keyword = true;
 						while(isCap_keyword) {
-							std::cout<<"Por ahora no rompe"<<std::endl;
 							if(cap_keyword(codigo, posicion)) {
-								std::cout<<"Pasa==="<<std::endl;
+								std::string cap_key = get_msg();
+								//Elimino posibles espacios en blanco
+								erase_white_spaces(codigo, posicion);
+
+								char c;
 								codigo->seekg(*posicion, std::ios::beg);
-								*codigo>>valor;
-								std::string lower_key = valor;
-								if((valor.at(valor.size()-1) == ':')) {
+								codigo->get(c);
+								if(c == ':') {
 									*posicion = codigo->tellg();
 									if(expressionCP(codigo, posicion)) {
 										isCap_keyword = true;
@@ -518,7 +574,12 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 							} else {
 								isCap_keyword = false;
 							}
-						}**/
+						}
+
+						/**
+						 * Fin carga de cap_keyword
+						 */
+
 						return true;
 					}
 				}
@@ -540,11 +601,22 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion) {
 
 bool Parser::operador(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
-
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
+
+	char c;
 	std::string valor;
-	*codigo>>valor;
+	while(codigo->get(c)) {
+		if ((c == '+')|| (c == '-') || (c == '*') ||
+				(c == '/') || (c == '!') || (c == '=')) {
+			valor += c;
+			*posicion = codigo->tellg();
+		} else {
+			break;
+		}
+	}
 
 	bool itsOperator = false;
 
@@ -568,7 +640,6 @@ bool Parser::operador(std::stringstream* codigo, int* posicion) {
 	}
 
 	if(itsOperator) {
-		*posicion = codigo->tellg();
 		set_op(valor);
 		return true;
 	}

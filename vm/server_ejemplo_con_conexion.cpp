@@ -29,8 +29,8 @@ int main(int argc, char** argv){
                         thread_server -> join();
 		}else if(!strcmp(argv[1],"-f")){
 			string file = argv[2];
-		if (server.execute_file(file))
-			std::cout << "Error: " << file << " no existe." << std::endl;
+                        if (server.execute(file))
+                                std::cout << "Error: " << file << " no existe." << std::endl;
 		}else{
 			std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
 			example();

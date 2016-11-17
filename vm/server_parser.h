@@ -32,6 +32,7 @@ private:
 	bool expressionP(std::stringstream* codigo, int* posicion);
 	bool number(std::stringstream* codigo, int* posicion);
 	bool text(std::stringstream* codigo, int* posicion);
+	bool object_intro(std::stringstream* codigo, int* posicion);
 	bool object(std::stringstream* codigo, int* posicion);
 	bool slot_list(std::stringstream* codigo, int* posicion);
 	bool slot_name_extended(std::stringstream* codigo, int* posicion);
@@ -43,6 +44,7 @@ private:
 	bool final(std::stringstream *codigo, int* posicion);
 
 
+	bool empty(std::stringstream* codigo, int* posicion);
 	bool pipe_without_script(std::stringstream* codigo, int* posicion);
 	bool pipe_with_script(std::stringstream* codigo, int* posicion);
 
