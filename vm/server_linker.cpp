@@ -24,7 +24,9 @@ int Linker::get_last_created_pos() {
 }
 
 Slot* Linker::get_slot(int pos) {
-	return slots.at(pos);
+	Slot* aux = slots.at(pos);
+	slots.erase(slots.begin()+pos-1);
+	return aux;
 }
 
 void Linker::create_unary_message(std::string msg) {
@@ -84,10 +86,14 @@ void Linker::create_binary_message(std::string op) {
 
 void Linker::create_keyword_message(std::string obj, std::string lower_key) {
 	Slot* X0 = vm->search_obj(obj);
-	Slot* X1 = vm->create_object();
 
-	vm->add_slot(X1, "", get_slot(get_last_created_pos())); 
-	vm->keyword_message(X0, lower_key, X1);
+	for(unsigned int i=0; i<slots_names.size(); i++) {
+		//Cargo al objeto todos los slots que se cargaron
+		Slot* X1 = vm->create_object();
+		vm->add_slot(X1, "", slots_names.at(i));
+		vm->keyword_message(X0, lower_key, X1);
+	}
+
 }
 
 bool Linker::remove_slots(std::string context, std::string slot) {
@@ -108,10 +114,26 @@ bool Linker::remove_slots(std::string context, std::string slot) {
 }
 
 void Linker::create_slot(std::string slot) {
+
+    //lobby _AddSlots: (| prueba1 = 'hello'. prueba2 = 'hello2'. |).
+	/**Slot* X90 = vm->search_obj("lobby");
+	Slot* X91 = vm->create_object();
+    Slot* X92 = vm->create_object();
+    Slot* X93 = vm->create_string("hello");
+    Slot* X94 = vm->create_object();
+    Slot* X95 = vm->create_string("hello2");
+    vm->add_slot(X92, "prueba1", X93);
+    vm->add_slot(X94, "prueba2", X95);
+    vm->add_slot(X91, "", X92);
+    vm->add_slot(X91, "", X94);
+**/
+
+
 	Slot* X1 = vm->create_object();
 	Slot* X2 = get_slot(get_last_created_pos());
+
 	vm->add_slot(X1, slot, X2);
-	slots.push_back(X1);
+	slots_names.push_back(X1);
 }
 
 Linker::~Linker() {

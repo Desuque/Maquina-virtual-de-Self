@@ -43,6 +43,7 @@ private:
 	bool final(std::stringstream *codigo, int* posicion);
 
 
+	bool empty(std::stringstream* codigo, int* posicion);
 	bool pipe_without_script(std::stringstream* codigo, int* posicion);
 	bool pipe_with_script(std::stringstream* codigo, int* posicion);
 
