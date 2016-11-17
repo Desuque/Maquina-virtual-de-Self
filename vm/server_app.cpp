@@ -119,7 +119,7 @@ void App::run(int* fin){
 			break;
 		}
 	}
-	*fin = 1;
+ 	*fin = 1;
 }
 
 int App::execute_file(string code){
