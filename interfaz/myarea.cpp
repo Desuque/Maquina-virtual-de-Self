@@ -39,22 +39,22 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   //m_Menu_Popup.accelerate(*this);
   
   m_builder-> Gtk::Builder::get_widget("LabelnombreObjeto", lNombreObjeto);
-  if (lNombreObjeto == NULL) std::cout << "error" << std::endl;
+  if (lNombreObjeto == nullptr) std::cout << "error" << std::endl;
 
   m_builder-> Gtk::Builder::get_widget("button1", m_pButton);
-  if (m_pButton == NULL) std::cout << "error" << std::endl;
+  if (m_pButton == nullptr) std::cout << "error" << std::endl;
   m_pButton->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::get_it_event));
 
   m_builder-> Gtk::Builder::get_widget("button2", m_pButton2);
-  if (m_pButton2 == NULL) std::cout << "error" << std::endl;
+  if (m_pButton2 == nullptr) std::cout << "error" << std::endl;
   m_pButton2->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::do_it_event));
 
   m_builder-> Gtk::Builder::get_widget("button3", m_pButton3);
-  if (m_pButton3 == NULL) std::cout << "error" << std::endl;
+  if (m_pButton3 == nullptr) std::cout << "error" << std::endl;
   m_pButton3->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::close_event));
 
   m_builder-> Gtk::Builder::get_widget("textview2", m_TextView);
-  if (m_TextView == NULL) std::cout << "error" << std::endl;
+  if (m_TextView == nullptr) std::cout << "error" << std::endl;
 
   m_builder-> Gtk::Builder::get_widget("textview1", textViewCodAsociado);
   if (textViewCodAsociado == nullptr) std::cout << "error" << std::endl; 
@@ -217,7 +217,7 @@ void MyArea::get_it_event(){
   std::string textoAEnviar = actual->get_it();
   
   if (textoAEnviar == ""){
-    std::cout << "Eror ingresar Codigo" << std::endl;
+    std::cout << "Error ingresar Codigo" << std::endl;
     return;
   }
 

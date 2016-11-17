@@ -6,8 +6,6 @@ class Referencia;
 #include <gtkmm.h>
 #include "client_interface_slot.h"
 #include "common_proxyServer.h"
-//#include "slot.h"
-//#include "referencia.h"
 
 class Morph : public Gtk::DrawingArea{
 	public:
