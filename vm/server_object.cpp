@@ -3,6 +3,7 @@
 #include "server_virtual_machine.h"
 #include "server_json_writer.h"
 #include "server_self_writer.h"
+#include "server_error_type.h"
 #include <iostream>
 
 static const char* class_name = "object";
@@ -28,7 +29,18 @@ bool Object::is_mark(){
 }
 
 void Object::add_slot(Slot* sl){
-	slots.insert({sl -> get_name(), sl});
+        Slot* sl_rep = get_slot(sl -> get_name());
+        if (!sl_rep){
+                slots.insert({sl -> get_name(), sl});
+        }else{
+            if (!sl_rep -> is_immutable()){
+                    rm_slot(sl -> get_name());
+                    slots.insert({sl -> get_name(), sl});
+            }else{
+                    //throw ErrorType(sl -> get_name());
+                    throw "Objeto NO MUTABLE";
+            }
+        }
 }
 
 Slot* Object::get_slot(string name){
