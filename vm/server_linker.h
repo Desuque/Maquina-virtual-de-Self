@@ -26,16 +26,11 @@ public:
 	Slot* get_object_by_name(std::string name, int id);
 	bool remove_slots(std::string context, std::string slot);
 
-
 private:
 	void create_float(std::string number);
 	void create_int(std::string number);
 	int get_last_created_pos();
 	Slot* get_slot(int pos);
-
-
-
-
 
 
 public:

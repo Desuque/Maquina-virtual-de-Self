@@ -2,7 +2,7 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
-#include "Linker.h"
+#include "server_linker.h"
 #include "server_virtual_machine.h"
 
 class Parser {
@@ -17,10 +17,10 @@ public:
 	Parser();
 	void setVM(VM* vm);
 	int getFlag();
-	Slot* parsear(std::string codigo);
 	Slot* parsear(std::string codigo, std::string id);
 	virtual ~Parser();
 private:
+	Slot* parsear(std::string codigo);
 	bool script(std::stringstream* codigo, int* posicion);
 	bool expression(std::stringstream* codigo, int* posicion);
 	bool keyword_message(std::stringstream* codigo, int* posicion);
@@ -42,12 +42,17 @@ private:
 	bool cap_keyword(std::stringstream* codigo, int* posicion);
 	bool final(std::stringstream *codigo, int* posicion);
 
+
+	bool pipe_without_script(std::stringstream* codigo, int* posicion);
+	bool pipe_with_script(std::stringstream* codigo, int* posicion);
+
 	bool removeSlots(std::stringstream* codigo, int* posicion, std::string context);
 	void setFlag(std::string valor);
 	void set_msg(std::string msg);
 	std::string get_msg();
 	void set_op(std::string op);
 	std::string get_op();
+	void erase_white_spaces(std::stringstream* codigo, int* posicion);
 };
 
 #endif /* PARSER_H_ */

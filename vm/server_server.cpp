@@ -151,7 +151,7 @@ int Server::execute_file(string file_name){
 		file_contents += str;
 		file_contents.push_back('\n');
 	}  
-        parser.parsear(file_contents);	
+        parser.parsear(file_contents, "0"); //Hardcodeo el lobby habria que definirlo	
         return 0;
 }
 

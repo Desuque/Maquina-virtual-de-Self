@@ -5,7 +5,7 @@
 #include <string>
 #include "server_virtual_machine.h"
 #include "../interfaz/common_proxyClient.h"
-#include "Parser.h"
+#include "server_parser.h"
 
 class Server{
 	private:

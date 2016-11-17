@@ -1,5 +1,5 @@
 
-#include "Linker.h"
+#include "server_linker.h"
 #include "server_virtual_machine.h"
 #include <iostream>
 #include <sstream>
@@ -51,7 +51,6 @@ bool Linker::create_unary_message(std::string name, std::string msg) {
 
 void Linker::create_number(std::string number) {
 	std::size_t found = number.find(".");
-	
 	if(found != std::string::npos) {
 		create_float(number);
 	} else {
@@ -65,7 +64,7 @@ void Linker::create_float(std::string number) {
  	buffer >> temp;
 
 	Slot* X1 = vm->create_float(temp);
-	slots.push_back(X1);	
+	slots.push_back(X1);
 }
 
 void Linker::create_int(std::string number) {
@@ -98,7 +97,7 @@ bool Linker::remove_slots(std::string context, std::string slot) {
 	Slot* X3 = vm->create_string(slot);
 	vm->add_slot(X2, slot, X3);
 	vm->add_slot(X1, "", X2);
-	slots.push_back(vm->keyword_message(X0, "_RemoveSlots:", X1));
+	slots.push_back(vm->keyword_message(X0, "_RemoveSlots", X1));
 
 	if(slots.at(get_last_created_pos()) == NULL) {
 		return false;
