@@ -35,9 +35,9 @@ void Server::bind(int port){
 }
 
 void Server::run(int* fin){
-        
+        ProxyClient* proxy;
 	while (true){
-                ProxyClient* proxy = new ProxyClient();
+                proxy = new ProxyClient();
                 try{
                         proxyClient.aceptarCliente(proxy);
                 }catch (const std::exception e){
@@ -85,6 +85,7 @@ void Server::run(int* fin){
                 }
                 join_threads();
         }
+        delete proxy;
 }
 
 void Server::join_threads(){

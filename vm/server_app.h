@@ -8,11 +8,13 @@
 #include "../interfaz/common_proxyClient.h"
 #include "server_parser.h"
 
+typedef std::vector<ProxyClient*> v_proxys;
+
 class App : public Thread{
 	private:
 		VM vm;
 		Parser parser;
-		ProxyClient* proxy;
+		v_proxys proxys;
 		
 	public:
                 App();

@@ -6,18 +6,15 @@
 #include <fstream>
 
 App::App(){
-        this -> proxy = NULL;
 	parser.setVM(&vm);
 }
 
 App::App(ProxyClient* proxy){
 	parser.setVM(&vm);
-        this -> proxy = proxy;
+        proxys.push_back(proxy);
 }
 
 string App::get_slots(string id){
-	//Slot* obj = call parser to get object
-	//Slot* obj = vm.search_obj(object);
 	Slot* obj = vm.search_obj_id(std::stoi(id));
 	string obj_str = vm.get_slots(obj); 
 	return obj_str;
@@ -54,31 +51,34 @@ VM* App::get_vm(){
 void App::run(int* fin){
         test_example();
 	while (true){
-		try {
-			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
+                
+                try {
+                    int size = proxys.size();
+                    for (int i = 0; i < size ; i++){    
+			uint32_t codigoMensaje = proxys[i]->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
 				case 2:{
-					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
 
-					std::string nombreObjeto = proxy->recibir(tamMensaje);
+					std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
 
 					std::cout << nombreObjeto << std::endl;
 
 					string string_to_send = get_slots(nombreObjeto);
 
-					proxy->enviarJson(string_to_send);
+					proxys[i]->enviarJson(string_to_send);
 
 					break;
 				}
 				case 5:{
-					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
 
-					std::string nombreObjeto = proxy->recibir(tamMensaje);
+					std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
 
 					std::cout << "id del objeto: " << nombreObjeto << std::endl;
 					
-					tamMensaje = proxy->recibirTamMensaje(4);
-					std::string codigoAEjecutar = proxy->recibir(tamMensaje);
+					tamMensaje = proxys[i]->recibirTamMensaje(4);
+					std::string codigoAEjecutar = proxys[i]->recibir(tamMensaje);
 					std::cout << "codigo A Ejecutar: " << codigoAEjecutar << std::endl;
 
 					JsonWriter writer;
@@ -91,20 +91,20 @@ void App::run(int* fin){
 
 					int flag = parser.getFlag();
 					if (flag == 0) {
-						proxy->enviar(flag, 1);
+						proxys[i]->enviar(flag, 1);
 					} else if (flag == 3) {
-				  		proxy->enviar(flag, 1);
+				  		proxys[i]->enviar(flag, 1);
 					} else if (flag == 4) {
-						proxy->enviar(flag, 1);
+						proxys[i]->enviar(flag, 1);
 					} else {
 						//hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
-						proxy->enviar(5, 1);
+						proxys[i]->enviar(5, 1);
 					}
 
 					std::cout << "devolucion: " << result << std::endl;
 					
 					if(flag != 0) {
-						proxy->enviarJson(result);
+						proxys[i]->enviarJson(result);
 					}
 					break;
 				}
@@ -114,7 +114,7 @@ void App::run(int* fin){
 
 					break;
 			}
-				
+                    }		
 		} catch (const std::exception e){ 
 			break;
 		}
@@ -128,8 +128,9 @@ int App::execute_file(string code){
 }
 
 App::~App(){
-        if (this -> proxy)
-            delete this -> proxy;
+        int size = proxys.size();
+        for (int i = 0; i < size ; i++)
+                delete proxys[i];
 }
 
 void App::test_example(){
