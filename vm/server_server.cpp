@@ -6,8 +6,8 @@
 #include <fstream>
 
 static const int cod_create_app = 1;
-static const int cod_get_apps_name = 999;
-static const int cod_load_app = 1000;
+static const int cod_get_apps_name = 6;
+static const int cod_load_app = 7;
 static const int msg_size = 1;
 static const char* file_ext = ".dat";
 static const char* folder = "data/";
@@ -57,6 +57,7 @@ void Server::run(int* fin){
                                 new_app -> start();
                         } else {
                                 //Enviar Error, ese nombre ya existe
+                                proxys[i]->enviar(cod_error, 1);
                         }*/
                         App* new_app = new App(proxy);
                         int v = rand() % 100000; 
@@ -75,8 +76,7 @@ void Server::run(int* fin){
                         string app_name = proxy->recibir(tamMensaje);
                         App* app_load = apps.at(app_name);
                         if (app_load){
-                                std::cout << "Agregar al existente " << std::endl;
-                                //app_load -> add_proxy(proxy);
+                                app_load -> add_proxy(proxy);
                         }else{
                                 app_load = new App(proxy);
                                 execute_file(app_load, app_name);

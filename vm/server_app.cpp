@@ -127,6 +127,10 @@ int App::execute_file(string code){
         return 0;
 }
 
+void App::add_proxy(ProxyClient* proxy){
+        proxys.push_back(proxy);
+}
+
 App::~App(){
         int size = proxys.size();
         for (int i = 0; i < size ; i++)

@@ -24,6 +24,7 @@ class App : public Thread{
 		string save_vm(string name);
 		string execute(string msg);
 		int execute_file(string file_name);
+                void add_proxy(ProxyClient* proxy);
                 void run(int* fin);
 		~App();
 
