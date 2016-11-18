@@ -63,22 +63,15 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   queue_draw();
   moveFlag=false;
 
-  try{
-    //proxyServer->connect("127.0.0.1",8080);
-    //proxyServer->enviar(CREAR_MAQUINA_VIRTUAL,sizeof(char));
-    //uint32_t lobbyId = proxyServer->recibirId(sizeof(uint32_t));
-    // cambiar recibirId por recibirTam
-    //uint32_t tamMensaje = proxyServer->recibirId(sizeof(uint32_t));
-    //std::cout << proxyServer->enviarString(nombreLobby) << std::endl;
+  /*try{
     std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
-    /***DECODIFICACION DEL JSON (CLIENTE)***/
     std::vector<InterfaceSlot*> i_slots;
     JsonReader slots_reader;
     slots_reader.read(i_slots, infoSlots);
     
-    Morph* lobby= new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
-    actual=lobby;
+    Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
+    actual = lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     actual -> mostrarDescripcionMorph();
     morphs.push_back(lobby);
@@ -99,9 +92,34 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     actual=lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     actual -> mostrarDescripcionMorph();
-    morphs.push_back(lobby);    
+    morphs.push_back(lobby);
+    std::cout << "error de socket" << std::endl;    
+  }*/
+}
+
+void MyArea::iniciar(){
+  std::string infoSlots = proxyServer->recibirSlotsDe("0");
+
+  std::vector<InterfaceSlot*> i_slots;
+  JsonReader slots_reader;
+  slots_reader.read(i_slots, infoSlots);
+
+  Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
+  actual = lobby;
+  lNombreObjeto -> set_text(actual->nombreObjeto);
+  actual -> mostrarDescripcionMorph();
+  morphs.push_back(lobby);
+
+  int size = i_slots.size();
+  for (int i = 0; i < size ; i++){
+    i_slots[i] -> print_attr();
+    actual->agregarSlot(i_slots[i]);
   }
 
+  for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+    delete* it;  
+    it = i_slots.erase(it);
+  }
 }
 
 MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder, bool warning)
@@ -432,10 +450,8 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
         //Morph* nuevoMorph = nullptr; 
         if (slot && !(slot->estaDibujadoComoMorph())){
           slot->setEstaDibujadoComoMorph(true);
-          std::cout << "me click en uno que no esta dibujado" << std::endl;
           for (int j = 0; j < morphs.size() ; ++j){
             if (morphs[j]->tieneElMismoIdQueEsteSlot(slot)){
-              std::cout << " ya hay un morph con ese ID" << std::endl;
               Referencia* referenciaNueva = new Referencia(morphs[j],slot);
               morphs[j]->referencias.push_back(referenciaNueva);
               referencias.push_back(referenciaNueva);

@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
 	MyArea* myArea = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 	myArea->setProxy(&proxy);
+	myArea->iniciar();
 
   	app->run(*window);
 	

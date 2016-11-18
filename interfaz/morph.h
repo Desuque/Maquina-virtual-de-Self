@@ -23,6 +23,7 @@ class Morph : public Gtk::DrawingArea{
 		int width;
 		int height;
 		int id;
+	
 	public:
 		Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
 		Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView);

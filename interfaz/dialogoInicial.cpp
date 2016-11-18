@@ -1,8 +1,11 @@
 #include "dialogoInicial.h"
-#include <iostream>
+#include "client_json_reader.h"
 
+#include <iostream>
+#include <vector>
 
 #define CREAR_MAQUINA_VIRTUAL 0x01
+#define CARGAR_MAQUINA_VIRTUAL 0x06
 
 DialogoInicial::DialogoInicial(){
 
@@ -41,6 +44,16 @@ void DialogoInicial::nuevoLobbyClick(){
 
 void DialogoInicial::cargarLobbyClick(){
     std::cout << "Click en cargar lobby" << std::endl;
+    proxy->enviar(CARGAR_MAQUINA_VIRTUAL,sizeof(char));
+    std::string json = proxy->recibirJson();
+	std::vector<string> names;
+	JsonReader reader;
+	reader.read_names(json, names);
+	
+	for(int i=0; i<names.size(); ++i){
+		std::cout << names[i] << std::endl;
+	}
+
 	hide();
 }
 

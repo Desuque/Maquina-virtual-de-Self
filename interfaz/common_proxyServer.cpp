@@ -144,6 +144,24 @@ std::string ProxyServer::agregarSlotA(std::string idObjeto, std::string textoAEn
 	return std::string(infoSlots);
 }
 
+std::string ProxyServer::recibirJson(){
+	char buff[5];
+	bzero(buff,5);
+	uint32_t tamMensaje = 0;
+	
+	sktCliente.receive(buff, sizeof(tamMensaje));
+	memcpy(&tamMensaje, buff,sizeof(tamMensaje));
+	tamMensaje = ntohl(tamMensaje);
+
+	/*char infoSlots[tamMensaje+1];
+	bzero(infoSlots,tamMensaje+1);*/
+	char infoSlots[1024];
+	bzero(infoSlots,1024);
+
+	sktCliente.receive(infoSlots, tamMensaje);
+
+	return std::string(infoSlots);
+}
 
 std::string ProxyServer::recibirSlotsDe(std::string objeto){
 	char buff[5];
@@ -156,7 +174,6 @@ std::string ProxyServer::recibirSlotsDe(std::string objeto){
     this->enviar(PEDIR_SLOTS,sizeof(char));
 
 	uint32_t tamMensaje = objeto.length();
-	bzero(buff,5);
 	tamMensaje = htonl(tamMensaje);
 	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
 	

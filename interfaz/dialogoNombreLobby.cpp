@@ -25,8 +25,13 @@ void DialogoNombreLobby::botonOkNombre(){
 	std::string nombreLobby = std::string(entryNombreLobby->get_text());
 	std::cout << nombreLobby << std::endl;
 	
+	uint32_t respuesta = proxy->enviarString(nombreLobby);
 	std::cout << "Respuesta de enviar nombreLobby: " 
-			  << proxy->enviarString(nombreLobby) << std::endl;
+			  << respuesta << std::endl;
+	if (respuesta == 0){
+		// el lobby ya existe lanzar un error y volver a pedir 
+		// el nombre.
+	}
 	hide();
 }
 
