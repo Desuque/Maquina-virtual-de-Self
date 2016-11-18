@@ -58,10 +58,8 @@ class Morph : public Gtk::DrawingArea{
 		void actualizar_posicion(double x, double y);
 
 		void draw(const Cairo::RefPtr<Cairo::Context>& cr);
-		void draw_slot(const Cairo::RefPtr<Cairo::Context>& cr);
 
 	    bool operator==(const Morph& rhs) const {
-	    	std::cout << "se comparan dos morphs\n";
 	    	if ((rhs.posX >= this->posX) && (rhs.posY >= this->posY)
 	    		&& (rhs.posX <= ((this->posX) + this->width)) 
 	    		&& (rhs.posY <= ((this->posY)+this->height))){
@@ -72,7 +70,6 @@ class Morph : public Gtk::DrawingArea{
 	    bool operator!=(const Morph& rhs) const { 
 	    	return !(*this==rhs);
 	    }
-
 	    bool tieneElMismoIdQueEsteSlot(Slot* unSlot);
 	    void agregarReferencia(Referencia* unaReferencia);
 

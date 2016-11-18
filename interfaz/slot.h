@@ -3,6 +3,8 @@
 #include "morph.h"
 #include "string.h"
 
+#define ALTURA_SLOT 18
+
 class Slot : public Morph{
 public:
 	//std::string name;
@@ -12,6 +14,7 @@ public:
 	int width;
 	int height;*/
 	bool dibujadoComoMorph;
+	Referencia* referencia;
 	/* interface Slot */
 	bool type;
 	bool code;
@@ -22,9 +25,10 @@ public:
 	Slot(){}
 	
 	Slot(InterfaceSlot* interfaceSlot, double posX, double posY, int width, int height){
-		this->dibujadoComoMorph=false;
+		this->dibujadoComoMorph = false;
+		this->referencia = nullptr;
 		this->width = width;
-		this->height = 18;
+		this->height = ALTURA_SLOT;
 		this->posX = posX;
 		this->posY = posY;
 		this->name = interfaceSlot->get_name();
@@ -50,6 +54,7 @@ public:
 		this->width = width;
 		this->name = name;
 		this->dibujadoComoMorph=false;
+		this->referencia = nullptr;
 		/*refTextViewConsola = Gtk::TextBuffer::create();
 		refTextViewConsola->set_text("");*/
 		//referencia = new Morph(posX-8,posY,8,8,m_TextView);

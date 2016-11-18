@@ -163,7 +163,7 @@ void Morph::agregarSlot(InterfaceSlot* interface_slot){
 }
 
 void Morph::resaltarMorph(const Cairo::RefPtr<Cairo::Context>& cr){
-	cr->set_source_rgba(0.0, 0.0, 0.5,0.5);
+	cr->set_source_rgba(0.0, 0.5, 0.5,0.5);
 	cr -> rectangle(this->posX, this -> posY,this->width, this->height);
 	cr-> fill();
 }

@@ -377,12 +377,11 @@ void MyArea::close_event(){
     std::cout << "Error: seleccione el Morph que desea borrar\n";
     return;
   }  
-  for (int i =0; i < morphs.size() ; ++i){
+  /*for (int i =0; i < morphs.size() ; ++i){
       if(*(morphs[i]) == *actual){
         //for (int j=0; j < (morphs[i]->slots).size(); ++j){
         //  borrarSlot(morphs[i],(morphs[i]->slots)[j]->get_id(),referencias);
         //}
-        std::cout << morphs[i]->referencias.size() << std::endl;
         for (int v=0; v<referencias.size(); ++v){
           for (int j=0; j < morphs[i]->referencias.size(); ++j){
             if ((morphs[i]->referencias)[j] == referencias[v]){
@@ -399,7 +398,33 @@ void MyArea::close_event(){
         morphs.erase(morphs.begin()+i);
         break;
       }
+  }*/
+  for (int v=0; v < referencias.size(); ++v){
+    for (int j=0; j < actual->referencias.size(); ++j){
+      if ((actual->referencias)[j] == referencias[v]){
+        referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
+        referencias.erase(referencias.begin()+v);
+      }
+    }
   }
+  for (int j=0; j < actual->slots.size(); ++j){
+    for (int v=0; v < referencias.size(); ++v){
+      if ((actual->slots)[j]->referencia != nullptr){    
+        if ((actual->slots)[j]->referencia == referencias[v]){
+          //referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
+          (actual->slots)[j]->setEstaDibujadoComoMorph(false);
+          referencias.erase(referencias.begin()+v);
+        }
+      }  
+    }
+  }
+  for (int i =0; i < morphs.size() ; ++i){
+    if(*(morphs[i]) == *actual){
+      delete morphs[i];
+      morphs.erase(morphs.begin()+i);
+      break;
+    }
+  }  
   actual = nullptr;
   queue_draw();
 }
@@ -415,6 +440,7 @@ bool MyArea::on_button_release_event(GdkEventButton *event)
         if(*(morphs[i]) == Morph(event->x,event->y)){
           refenciaActual->borrarReferenciaAnterior();
           refenciaActual->apuntaAEsteMorph(morphs[i]);
+          // hacer dentro de apuntaAEsteMorph
           morphs[i]->referencias.push_back(refenciaActual);
         }
       }
@@ -451,7 +477,8 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
               Referencia* referenciaNueva = new Referencia(morphs[j],slot);
               morphs[j]->referencias.push_back(referenciaNueva);
               referencias.push_back(referenciaNueva);
-              
+              slot->referencia = referenciaNueva;
+
               offXMouse = actual->posX - event->x;
               offYMouse = actual->posY - event->y;
               // Start moving the view
@@ -472,6 +499,8 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
           Referencia* referenciaNueva = new Referencia(nuevoMorph,slot);
           nuevoMorph->referencias.push_back(referenciaNueva);
           referencias.push_back(referenciaNueva);
+          slot->referencia = referenciaNueva;
+
 
           if (slot->value == "object"){
             std::string infoSlots = proxyServer.recibirSlotsDe(slot->get_id_to_string());
@@ -564,7 +593,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
     referencias[i]->draw(cr);
   }
   if(actual){
-    actual->resaltar(cr);
+    actual->resaltarMorph(cr);
   }
   return true;
 }
