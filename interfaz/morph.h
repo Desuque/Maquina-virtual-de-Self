@@ -30,7 +30,7 @@ class Morph : public Gtk::DrawingArea{
 		Morph(std::string nombreObjeto, double posX, double posY);
 		Morph(std::string nombreObjeto, int id, double posX, double posY, 
 			Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
-		
+		Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado);
 		void borrarReferencia(Referencia* referencia){
 			for (int i=0; i < referencias.size(); ++i){
 				if (referencias[i] == referencia){
@@ -44,14 +44,11 @@ class Morph : public Gtk::DrawingArea{
   		std::string get_it();
   		std::string do_it();
   		void actualizarAlturaMorph(size_t alturaDeSlot);
-  		void agregarSlot(std::string nombreSlot);
   		// decidir como hacer esto.
   		void agregarSlot(InterfaceSlot* nombreSlot);
 
   		Slot* obtenerSlot(int posX,int posY);
 
-  		Morph* clikEnObtenerSlot(int posX,int posY);
-  		Morph* clickEnReferenciaAMorph(int posX,int posY);
 		Morph(double posX, double posY);
 		Morph();
 		void mostrarDescripcionMorph();

@@ -45,7 +45,6 @@ public:
 	void borrarReferenciaAnterior(){
 		//std::vector<Referencia*> refs = this->apuntoAMorph->referencias;
 		this->apuntoAMorph->borrarReferencia(this);
-
 	}
 
 	//PREGUNTAR POR QUE NO ANDA EL OPERADOR DE MORPH

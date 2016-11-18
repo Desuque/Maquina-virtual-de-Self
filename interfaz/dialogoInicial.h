@@ -16,6 +16,7 @@ class DialogoInicial : public Gtk::Dialog {
 					bool is_glad);
 		void nuevoLobbyClick();
 		void cargarLobbyClick();
+		bool cerrarDialogoClick(GdkEventAny*);
 		virtual ~DialogoInicial();
 };
 

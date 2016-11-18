@@ -112,6 +112,10 @@ public:
 		layout->show_in_cairo_context(cr);
 	}
 
+	void setReferencia(Referencia* unaReferencia){
+		this->referencia = unaReferencia;
+	}
+
 	bool clikEnObtenerSlot(int posX,int posY){
 		return	(posX >= (this->posX) + (this->width) - 10) 
 				&& (posY >= (this->posY) + 2)

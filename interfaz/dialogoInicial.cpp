@@ -19,6 +19,7 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
   	if (botonCargarLobby == nullptr) std::cout << "error" << std::endl;
     botonCargarLobby->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::cargarLobbyClick));
 
+    this->signal_delete_event().connect(sigc::mem_fun(*this,&DialogoInicial::cerrarDialogoClick));
 }
 
 DialogoInicial::DialogoInicial(BaseObjectType* cobject, 
@@ -29,12 +30,21 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
 
 void DialogoInicial::nuevoLobbyClick(){
     std::cout << "Click en nuevo lobby" << std::endl;
+    //Gtk::Dialog dialogoNombreLobby = nullptr;
+	//m_builder->get_widget("dialog2", dialogoNombreLobby);
+
 	hide();
 }
 
 void DialogoInicial::cargarLobbyClick(){
     std::cout << "Click en cargar lobby" << std::endl;
 	hide();
+}
+
+bool DialogoInicial::cerrarDialogoClick(GdkEventAny*){
+    std::cout << "Click en cerrar dialogo" << std::endl;
+	hide();
+	return false;
 }
 
 DialogoInicial::~DialogoInicial(){

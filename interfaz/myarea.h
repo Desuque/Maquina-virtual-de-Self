@@ -32,7 +32,9 @@ protected:
 
   int offXMouse, offYMouse;
 
+  // sacar de aca
   ProxyServer proxyServer;
+  std::string nombreLobby;
 
 public:
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder, bool warning);
@@ -52,6 +54,12 @@ public:
   void botonGuardarNuevoSlotEvent();
   void liberarMemoria();
   
+  // PROVISORIO
+  void enviarNombreLobby(std::string nombreLobby){
+    //proxyServer.enviar
+    this->nombreLobby = nombreLobby;
+  }
+
   virtual ~MyArea();
 
 protected:

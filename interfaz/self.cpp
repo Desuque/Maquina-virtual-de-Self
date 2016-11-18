@@ -4,6 +4,23 @@
 #include "ventanaPrincipal.h"
 #include "dialogoInicial.h"
 
+static Gtk::Entry* entryNombreLobby;
+static MyArea* myArea;
+static Gtk::Dialog* dialogNombre;
+
+void on_click_button_ok(){
+
+	std::cout << " ok " << std::endl;
+	if(entryNombreLobby){
+		std::cout << entryNombreLobby->get_text() << std::endl;
+		myArea->enviarNombreLobby(entryNombreLobby->get_text());
+	}
+	if(dialogNombre){
+		dialogNombre->hide();
+	}
+
+}
+
 int main(int argc, char *argv[])
 {
 	auto app = Gtk::Application::create();
@@ -18,13 +35,19 @@ int main(int argc, char *argv[])
 	
 	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
 
-	MyArea* myArea = nullptr;
+	//MyArea* myArea = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 
 	DialogoInicial* dialogoInicial = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("dialog1", dialogoInicial);
-
 	dialogoInicial->run();
+
+	refBuilder->Gtk::Builder::get_widget("dialog2", dialogNombre);
+	Gtk::Button* buttonOk = nullptr; 
+	refBuilder->Gtk::Builder::get_widget("button10", buttonOk);
+	refBuilder->Gtk::Builder::get_widget("entry1", entryNombreLobby);
+	buttonOk->signal_clicked().connect(sigc::ptr_fun(&on_click_button_ok));
+	dialogNombre->run();
 
   	app->run(*window);
 	

@@ -96,6 +96,34 @@ Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsoci
 
 } 
 
+Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) :
+	m_TextView(m_TextView), textViewCodigoAsociado(codigoAsociado) {
+	this->posX = posX;
+	this->posY = posY;
+	this->id = unSlot->get_id();
+	this->nombreObjeto = unSlot->get_name();
+	if(unSlot->has_code()){
+		//this->nombreObjeto = unSlot->get_name();
+		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+		refTextViewCodigoAsociado->set_text(unSlot->get_value());
+	}/*else{
+		this->nombreObjeto = unSlot->get_value();
+	}*/
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	auto layout = create_pango_layout(this->nombreObjeto);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->width = 2*text_width;
+	this->height = 2*text_height;
+
+	refTextViewConsola = Gtk::TextBuffer::create();
+	refTextViewConsola->set_text("");
+} 
+
 Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int height) 
 	: m_TextView(nullptr) {
 	Pango::FontDescription font;
@@ -134,22 +162,9 @@ std::string Morph::get_it(){
 
 std::string Morph::do_it(){
 	if (!m_TextView) std::cout << "error" << std::endl;
-	//refTextViewConsola = m_TextView -> get_buffer();
 	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
 	std::cout << textoAEnviar << std::endl;
-	/*std::string respuesta = proxyServer.enviarCodigoAEjecutar(this->get_id_to_string(), textoAEnviar);	
-	std::cout << respuesta << std::endl;
-	return respuesta;*/
 	return textoAEnviar;
-}
-
-void Morph::agregarSlot(std::string nombreSlot){
-	//Morph* morph = new Morph(nombreSlot, this->posX, (this->posY)+(this->height), this->width, this->height);
-	Slot* slot = new Slot(nombreSlot, this->posX, (this->posY)+(this->height), this->width, this->height);
-	//this->height+=morph->height;
-	this->height+=slot->height;
-	slots.push_back(slot);
-	//slots.push_back(morph);
 }
 
 void Morph::actualizarAlturaMorph(size_t alturaDeSlot){
@@ -196,25 +211,6 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	layout->show_in_cairo_context(cr);
 }
 
-Morph* Morph::clikEnObtenerSlot(int posX,int posY){     
-	for (int i=0; i < slots.size(); ++i){       
-		if (slots[i]->clikEnObtenerSlot(posX,posY)
-			 && !(slots[i]->estaDibujadoComoMorph())) {   
-				slots[i]->setEstaDibujadoComoMorph(true);
-				Morph* morph = nullptr;
-				if(slots[i]->code){
-					morph = new Morph(slots[i]->name,slots[i]->id,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
-					morph -> refTextViewCodigoAsociado->set_text(slots[i]->value);
-				} else {
-					morph = new Morph(slots[i]->value,slots[i]->id,slots[i]->posX + slots[i]->width +20, slots[i]->posY+4,m_TextView,textViewCodigoAsociado);             
-				}
-				morph->referencias.push_back(new Referencia(morph, slots[i]));
-				return morph;         
-			}     
-		}     
-	return nullptr; 
-}
-
 Slot* Morph::obtenerSlot(int posX,int posY){     
 	for (int i=0; i < slots.size(); ++i){         
 		// guardar cuando agregue poli         
@@ -227,17 +223,6 @@ Slot* Morph::obtenerSlot(int posX,int posY){
 	return nullptr; 
 }
 
-Morph* Morph::clickEnReferenciaAMorph(int posX,int posY){
-		/*if ((posX >= this->posX) && (posY >= this->posY)
-	    		&& (posX <= ((this->posX)+8)) && (posY <= ((this->posY)+8)))
-		{
-			std::cout << " referencia a morph" << std::endl;		
-      		//Morph* morph = new Morph("",this->posX-8,this->posY,m_TextView);
-      		referencia=nullptr;
-      		return referencia;
-      	}*/
-	return nullptr;
-}
 
 bool Morph::tieneElMismoIdQueEsteSlot(Slot* unSlot){
 	return (unSlot->id == this->id);

@@ -69,14 +69,21 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     //uint32_t lobbyId = proxyServer.recibirId(sizeof(uint32_t));
     // cambiar recibirId por recibirTam
     //uint32_t tamMensaje = proxyServer.recibirId(sizeof(uint32_t));
+    std::cout << proxyServer.enviarString(nombreLobby) << std::endl;
     std::string infoSlots = proxyServer.recibirSlotsDe("0");
 
     /***DECODIFICACION DEL JSON (CLIENTE)***/
     std::vector<InterfaceSlot*> i_slots;
     JsonReader slots_reader;
     slots_reader.read(i_slots, infoSlots);
-
-    Morph* lobby= new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
+    
+    Morph* lobby= new Morph(i_slots[0],10.,10.,m_TextView, textViewCodAsociado);
+    actual=lobby;
+    lNombreObjeto -> set_text(actual->nombreObjeto);
+    actual -> mostrarDescripcionMorph();
+    morphs.push_back(lobby);
+    
+    /*Morph* lobby= new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
     actual=lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     actual -> mostrarDescripcionMorph();
@@ -91,7 +98,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
       delete* it;  
       it = i_slots.erase(it);
-    }
+    }*/
 
   } catch (const std::exception &e) {
     Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView,textViewCodAsociado);
@@ -109,9 +116,6 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 }
 
 void MyArea::liberarMemoria(){
-  std::cout << "libero memoria de morphs" << std::endl;
-  std::cout << morphs.size() << std::endl;
-
   for (int i=0; i < morphs.size(); ++i){  
     delete morphs[i];
   }
@@ -174,39 +178,25 @@ void MyArea::agregarSlot_event(){
 
 
 void borrarSlot(Morph* actual,int idSlot, std::vector<Referencia*>& referencias){
-    if (actual!= nullptr){
-    //std::vector<Slot*> listaSlots = ;
-      for (int i = 0; i < (actual->slots).size(); ++i){
-        if ((actual->slots)[i]->id == idSlot){         
-          if ((actual->slots)[i]->estaDibujadoComoMorph()){
-            // si esta dibujado borro la referencia al morph
-            // que apunta
-            std::cout << " esta dibujado como morph\n";
-            for (int j = 0; j < referencias.size(); ++j){
-              if ((actual->slots)[i]->id
-                   == referencias[j]->perteneceASlot->id ){
-                for (int v = 0; v < referencias[j]->apuntoAMorph->referencias.size(); ++v){
-                  // la comparacion se hace por referencias de memoria
-                  if (referencias[j]->apuntoAMorph->referencias[v]
-                      == referencias[j]){
-                    std::cout << " borro ref de lista de ref de morph\n";
-                    referencias[j]->apuntoAMorph->referencias.
-                              erase(referencias[j]->apuntoAMorph->referencias.begin()+v);
-                  }
-                }
-                delete referencias[j];
-                std::cout << referencias.size() << std::endl;
+  if (actual!= nullptr){
+  //std::vector<Slot*> listaSlots = ;
+    for (int i = 0; i < (actual->slots).size(); ++i){
+      if ((actual->slots)[i]->id == idSlot){         
+        if ((actual->slots)[i]->estaDibujadoComoMorph()){
+          // si esta dibujado borro la referencia al morph
+          // que apunta
+          for (int j = 0; j < referencias.size(); ++j){
+              if ((actual->slots)[i]->referencia == referencias[j]){
                 referencias.erase(referencias.begin()+j);
-                std::cout << referencias.size() << std::endl;
-
               }
-            }
           }
-          std::cout << "elimine slot" << std::endl;
-          delete (actual->slots)[i];
-          (actual->slots).erase((actual->slots).begin()+i);
+          (actual->slots)[i]->referencia->borrarReferenciaAnterior();
         }
+        std::cout << "elimine slot" << std::endl;
+        delete (actual->slots)[i];
+        (actual->slots).erase((actual->slots).begin()+i);
       }
+    }
   }
 }
 
@@ -377,28 +367,6 @@ void MyArea::close_event(){
     std::cout << "Error: seleccione el Morph que desea borrar\n";
     return;
   }  
-  /*for (int i =0; i < morphs.size() ; ++i){
-      if(*(morphs[i]) == *actual){
-        //for (int j=0; j < (morphs[i]->slots).size(); ++j){
-        //  borrarSlot(morphs[i],(morphs[i]->slots)[j]->get_id(),referencias);
-        //}
-        for (int v=0; v<referencias.size(); ++v){
-          for (int j=0; j < morphs[i]->referencias.size(); ++j){
-            if ((morphs[i]->referencias)[j] == referencias[v]){
-              std::cout << "elimine referencia de myarea" << std::endl;
-              referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
-              //delete referencias[v];
-              // este delete se hace dentro del 
-              // destructor de morph.
-              referencias.erase(referencias.begin()+v);
-            }
-          }
-        }
-        delete morphs[i];
-        morphs.erase(morphs.begin()+i);
-        break;
-      }
-  }*/
   for (int v=0; v < referencias.size(); ++v){
     for (int j=0; j < actual->referencias.size(); ++j){
       if ((actual->referencias)[j] == referencias[v]){
@@ -472,12 +440,12 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
           slot->setEstaDibujadoComoMorph(true);
           std::cout << "me click en uno que no esta dibujado" << std::endl;
           for (int j = 0; j < morphs.size() ; ++j){
-            if (morphs[j]->id == slot->id){
+            if (morphs[j]->tieneElMismoIdQueEsteSlot(slot)){
               std::cout << " ya hay un morph con ese ID" << std::endl;
               Referencia* referenciaNueva = new Referencia(morphs[j],slot);
               morphs[j]->referencias.push_back(referenciaNueva);
               referencias.push_back(referenciaNueva);
-              slot->referencia = referenciaNueva;
+              slot->setReferencia(referenciaNueva);
 
               offXMouse = actual->posX - event->x;
               offYMouse = actual->posY - event->y;
@@ -492,15 +460,10 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
           }
           Morph* nuevoMorph = new Morph(slot, m_TextView, textViewCodAsociado);
           morphs.push_back(nuevoMorph); 
-          /*std::vector<Referencia*> refs = nuevoMorph->referencias;
-          for (int i=0; i < refs.size(); ++i){
-            referencias.push_back(refs[i]);
-          }*/
           Referencia* referenciaNueva = new Referencia(nuevoMorph,slot);
           nuevoMorph->referencias.push_back(referenciaNueva);
           referencias.push_back(referenciaNueva);
-          slot->referencia = referenciaNueva;
-
+          slot->setReferencia(referenciaNueva);
 
           if (slot->value == "object"){
             std::string infoSlots = proxyServer.recibirSlotsDe(slot->get_id_to_string());
