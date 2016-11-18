@@ -77,13 +77,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     JsonReader slots_reader;
     slots_reader.read(i_slots, infoSlots);
     
-    Morph* lobby= new Morph(i_slots[0],10.,10.,m_TextView, textViewCodAsociado);
-    actual=lobby;
-    lNombreObjeto -> set_text(actual->nombreObjeto);
-    actual -> mostrarDescripcionMorph();
-    morphs.push_back(lobby);
-    
-    /*Morph* lobby= new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
+    Morph* lobby= new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
     actual=lobby;
     lNombreObjeto -> set_text(actual->nombreObjeto);
     actual -> mostrarDescripcionMorph();
@@ -98,7 +92,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
       delete* it;  
       it = i_slots.erase(it);
-    }*/
+    }
 
   } catch (const std::exception &e) {
     Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView,textViewCodAsociado);
