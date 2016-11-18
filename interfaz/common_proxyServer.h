@@ -13,7 +13,7 @@ class ProxyServer : public Proxy {
 		void connect(const char* hostname, const unsigned int puerto);
 		std::string recibir(size_t cantidad);
 		uint32_t recibirId(size_t cantidad);
-		void enviarString(std::string textoAEnviar);
+		uint32_t enviarString(std::string textoAEnviar);
 
 		void enviar(uint32_t entero, size_t cantidad);
 		uint32_t recibirCodigoRespuesta(size_t cantidad);
