@@ -49,11 +49,14 @@ void Server::run(int* fin){
                 if (codigoMensaje == cod_create_app){
                         //uint32_t tamMensaje = proxy->recibirTamMensaje(4);
                         //string app_name = proxy->recibir(tamMensaje);
+                        //std::cout << app_name << std::endl;
                         //Verificar si nombre nuevo existe
                         /*if ( apps.find(app_name) == apps.end() ) {
                                 // not found
                                 App* new_app = new App(proxy);
                                 apps.insert (std::pair<string,App*>("vm", new_app));
+                                // enviame cod_create_app para saber si esta todo bien.
+                                // proxys[i]->enviar(cod_create_app, 1);
                                 new_app -> start();
                         } else {
                                 //Enviar Error, ese nombre ya existe

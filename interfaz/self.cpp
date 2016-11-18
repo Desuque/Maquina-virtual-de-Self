@@ -12,8 +12,9 @@ void on_click_button_ok(){
 
 	std::cout << " ok " << std::endl;
 	if(entryNombreLobby){
-		std::cout << entryNombreLobby->get_text() << std::endl;
-		myArea->enviarNombreLobby(entryNombreLobby->get_text());
+		std::string nombreLobby = std::string(entryNombreLobby->get_text());
+		std::cout << nombreLobby << std::endl;
+		//myArea->enviarNombreLobby(nombreLobby);
 	}
 	if(dialogNombre){
 		dialogNombre->hide();
@@ -35,8 +36,6 @@ int main(int argc, char *argv[])
 	
 	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
 
-	//MyArea* myArea = nullptr;
-	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 
 	DialogoInicial* dialogoInicial = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("dialog1", dialogoInicial);
@@ -49,6 +48,8 @@ int main(int argc, char *argv[])
 	buttonOk->signal_clicked().connect(sigc::ptr_fun(&on_click_button_ok));
 	dialogNombre->run();
 
+	//MyArea* myArea = nullptr;
+	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 
   	app->run(*window);
 	
