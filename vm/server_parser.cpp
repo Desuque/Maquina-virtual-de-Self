@@ -48,42 +48,34 @@ bool Parser::number(std::stringstream* codigo, int* posicion) {
 }
 
 bool Parser::text(std::stringstream* codigo, int* posicion) {
-	codigo->clear();
 	int posicionOriginal = *posicion;
-
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-	*codigo>>valor;
 
-	int posFinal = codigo->tellg();
-	//Vuelvo el puntero para atras y comparo valor a valor, si se cumple
-	//la condicion, avanzo el puntero en el stream
-	codigo->seekg(posicionOriginal, std::ios::beg);
-
-	std::string inicial = "'";
+	char c;
+	bool found_text = false;
 	std::string auxiliar;
-	bool valido = true;
-	unsigned int i = 0;
-	if(valor.at(i) == inicial.at(0)) {
-		auxiliar += valor.at(i);
-		i++;
-    	*posicion = posicionOriginal+1;
-		while(valido && i<valor.size()) {
-			char c = valor.at(i);
-			if (c == inicial.at(0)) {
-				valido = false;
-			}
+	std::string c_str;
+	codigo->get(c);
+	auxiliar = c;
+	if(auxiliar == "'") {
+		while(codigo->get(c)) {
 			auxiliar += c;
-			i++;
+			*posicion = codigo->tellg();
+
+			c_str = c;
+			if(c_str == "'") {
+				found_text = true;
+				break;
+			}
 		}
 	}
-	if(valido == false) {
-		if(auxiliar.at(auxiliar.size()-1) == inicial.at(0)) {
-			*posicion = posFinal;
-			linker.create_string(auxiliar);
-			return true;
-		}
+
+	if(found_text) {
+		linker.create_string(auxiliar);
+		return true;
 	}
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -365,8 +357,6 @@ bool Parser::slot_operator(std::stringstream* codigo, int* posicion) {
 	}
 
 	if(itsOperator) {
-		std::cout<<"Este es el operator que leo: "<<valor<<std::endl;
-		std::cout<<"En esta posicion lo dejo: "<<*posicion<<std::endl;
 		set_op(valor);
 		return true;
 	}
