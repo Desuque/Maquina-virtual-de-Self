@@ -3,10 +3,9 @@
 #include "myarea.h"
 #include "ventanaPrincipal.h"
 #include "dialogoInicial.h"
-#include "manejadorVista.h"
 #include "dialogoNombreLobby.h"
 
-static Gtk::Entry* entryNombreLobby;
+/*static Gtk::Entry* entryNombreLobby;
 static MyArea* myArea;
 static DialogoNombreLobby* dialogNombre;
 
@@ -22,7 +21,7 @@ void on_click_button_ok(){
 		dialogNombre->hide();
 	}
 
-}
+}*/
 
 int main(int argc, char *argv[])
 {
@@ -41,16 +40,39 @@ int main(int argc, char *argv[])
 	ProxyServer proxy;
 	proxy.connect("127.0.0.1",8080);
 
+	/*if (argc != 3){
+		printf("Error: La cantidad de parametros necesarios es 2.\n");
+		example();
+	}else{
+		if (!strcmp(argv[1],"-p")){
+                        server.bind(atoi(argv[2]));
+                        Thread* thread_server = &server;
+                        thread_server -> start();
+                        read_exit();
+                        server.shutdown();
+                        thread_server -> join();
+		}else if(!strcmp(argv[1],"-f")){
+			string file = argv[2];
+                        if (server.execute(file))
+                                std::cout << "Error: " << file << " no existe." << std::endl;
+		}else{
+			std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
+			example();
+		}
+	}*/
+
+
 	DialogoInicial* dialogoInicial = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("dialog1", dialogoInicial);
 	dialogoInicial->setProxy(&proxy);
 	dialogoInicial->run();
 
+	DialogoNombreLobby* dialogNombre = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("dialog2", dialogNombre);
 	dialogNombre->setProxy(&proxy);
 	dialogNombre->run();
 
-	//MyArea* myArea = nullptr;
+	MyArea* myArea = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 	myArea->setProxy(&proxy);
 
