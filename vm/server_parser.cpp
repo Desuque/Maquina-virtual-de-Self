@@ -175,7 +175,16 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
-		if(slot_list(codigo, posicion)) {
+		//TODO PENSAR EL EMPTY
+
+		//Puede ser que slot_list sea empty (| | ... )
+		//*posicion = posicionOriginal;
+		//if (empty(codigo, posicion)){
+			//std::cout<<"Era un objeto vacio!"<<std::endl;
+			//return true;
+		//}
+
+		if(slot_list(codigo, posicion) || (empty(codigo, posicion))) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
 
@@ -192,14 +201,6 @@ bool Parser::object(std::stringstream* codigo, int* posicion) {
 				//Se guarda el script sin comprobar su sintaxis
 				return true;
 			}
-
-			//TODO PENSAR EL EMPTY
-			//} else {
-			//Puede ser que slot_list sea empty (| | ... )
-			//*posicion = posicionOriginal;
-			//if (empty(codigo, posicion)){
-				//return true;
-			//}
 		}
 	}
 
