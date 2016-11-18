@@ -33,6 +33,7 @@ private:
 	bool number(std::stringstream* codigo, int* posicion);
 	bool text(std::stringstream* codigo, int* posicion);
 	bool object_intro(std::stringstream* codigo, int* posicion);
+	bool object_end(std::stringstream* codigo, int* posicion);
 	bool object(std::stringstream* codigo, int* posicion);
 	bool slot_operator(std::stringstream* codigo, int* posicion);
 	bool slot_list(std::stringstream* codigo, int* posicion);

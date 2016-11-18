@@ -140,6 +140,36 @@ bool Parser::pipe_without_script(std::stringstream* codigo, int* posicion) {
 	return false;
 }
 
+bool Parser::object_end(std::stringstream* codigo, int* posicion) {
+	int posicionOriginal = *posicion;
+
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+
+	char c;
+	codigo->get(c);
+	if(c == '|') {
+		*posicion = codigo->tellg();
+
+		//Elimino posibles espacios
+		erase_white_spaces(codigo, posicion);
+
+		codigo->seekg(*posicion, std::ios::beg);
+		codigo->get(c);
+		if(c == ')') {
+			*posicion = codigo->tellg();
+			return true;
+		}
+	}
+
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+
+}
+
 bool Parser::object_intro(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 
@@ -530,22 +560,19 @@ bool Parser::removeSlots(std::stringstream* codigo, int* posicion, std::string c
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
-	*codigo>>valor;
 
 	bool erase;
-	if(valor == "(|") {
-		*posicion = codigo->tellg();
+	if(object_intro(codigo, posicion)) {
 		if(name(codigo, posicion)) {
-			std::string slot = get_msg();
-			erase = linker.remove_slots(context, slot);
-			if(erase == false) {
-				setFlag("Error");
+			if(final(codigo, posicion)) {
+				std::string slot = get_msg();
+				erase = linker.remove_slots(context, slot);
+				if(erase == false) {
+					setFlag("Error");
+				}
 			}
 		}
-		*codigo>>valor;
-
-		if((valor.at(0) == '|') && (valor.at(1) == ')')) {
-			*posicion = codigo->tellg();
+		if(object_end(codigo, posicion)) {
 			return true;
 		}
 	}
