@@ -69,7 +69,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     //uint32_t lobbyId = proxyServer.recibirId(sizeof(uint32_t));
     // cambiar recibirId por recibirTam
     //uint32_t tamMensaje = proxyServer.recibirId(sizeof(uint32_t));
-    std::cout << proxyServer.enviarString(nombreLobby) << std::endl;
+    //std::cout << proxyServer.enviarString(nombreLobby) << std::endl;
     std::string infoSlots = proxyServer.recibirSlotsDe("0");
 
     /***DECODIFICACION DEL JSON (CLIENTE)***/

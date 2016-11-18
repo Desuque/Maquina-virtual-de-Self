@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 	buttonOk->signal_clicked().connect(sigc::ptr_fun(&on_click_button_ok));
 	dialogNombre->run();
 
+
   	app->run(*window);
 	
 	return 0;
