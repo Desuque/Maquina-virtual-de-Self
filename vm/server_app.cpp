@@ -119,8 +119,15 @@ void App::run(int* fin){
 			break;
 		}
 	}
-	//Slot* gar =  vm.collect();
-        //std::cout << vm.get_slots(gar) << std::endl;
+	/*Slot* gar =  vm.collect();
+        string json = vm.get_slots(gar);
+        // LA DECODIFICACION DEBE IR EN EL CLIENTE
+        JsonReader reader;
+        v_ids vec;
+        reader.read_garbage_ids(json, vec);
+        int size = vec.size();
+        for (int i = 0; i< size; i++)
+                std::cout << vec[i] << std::endl;*/
  	*fin = 1;
 }
 

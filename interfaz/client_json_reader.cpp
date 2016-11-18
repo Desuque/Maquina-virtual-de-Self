@@ -40,3 +40,15 @@ void JsonReader::read_names(string json, v_strings& names){
 	}
 }
 
+void JsonReader::read_garbage_ids(string json, v_ints& gar_ids){
+        Document document;
+	document.Parse(json.c_str());
+	const Value& ids = document["ids"];
+	assert(ids.IsArray());
+	for (Value::ConstValueIterator itr = ids.Begin(); itr != ids.End(); ++itr) {
+		int id = (*itr)["id"].GetInt();
+		gar_ids.push_back(id);
+	}
+}
+
+
