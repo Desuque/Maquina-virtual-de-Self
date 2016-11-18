@@ -35,8 +35,9 @@ void Server::bind(int port){
 }
 
 void Server::run(int* fin){
-        ProxyClient* proxy = new ProxyClient();
+        
 	while (true){
+                ProxyClient* proxy = new ProxyClient();
                 try{
                         proxyClient.aceptarCliente(proxy);
                 }catch (const std::exception e){
@@ -58,8 +59,9 @@ void Server::run(int* fin){
                                 //Enviar Error, ese nombre ya existe
                         }*/
                         App* new_app = new App(proxy);
-                        //apps.insert (std::pair<string,App*>("vm", new_app));
-                        apps.at("vm") = new_app;
+                        int v = rand() % 100000; 
+                        apps.insert (std::pair<string,App*>(std::to_string(v), new_app));
+                        //apps.at("vm") = new_app;
                         new_app -> start();
                 }else if (codigoMensaje == cod_get_apps_name){
                         string json = get_json_apps_name();
