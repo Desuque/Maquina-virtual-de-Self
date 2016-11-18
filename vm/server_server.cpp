@@ -17,6 +17,7 @@ Server::Server(){
 }
 
 void Server::load_file_names(){
+        system("rm -r data");
         DIR *dir;
         struct dirent *ent;
         if ((dir = opendir (folder)) != NULL) {
@@ -45,28 +46,26 @@ void Server::run(int* fin){
 		}
 		
 		uint32_t codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
-                //Tengo que recibir mensaje para saber si crear o agregar a uno ya existente
                 if (codigoMensaje == cod_create_app){
-                        //uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-                        //string app_name = proxy->recibir(tamMensaje);
-                        //std::cout << app_name << std::endl;
+                        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+                        string app_name = proxy->recibir(tamMensaje);
+                        std::cout << app_name << std::endl;
                         //Verificar si nombre nuevo existe
-                        /*if ( apps.find(app_name) == apps.end() ) {
-                                // not found
+                        proxy->enviar(cod_create_app, 1);
+                        std::cout << "Ya le envie codigo" << std::endl;
+                        if ( apps.find(app_name) == apps.end()){
                                 App* new_app = new App(proxy);
-                                apps.insert (std::pair<string,App*>("vm", new_app));
-                                // enviame cod_create_app para saber si esta todo bien.
-                                // proxys[i]->enviar(cod_create_app, 1);
+                                apps.insert (std::pair<string,App*>(app_name, new_app));
                                 new_app -> start();
-                        } else {
+                        }/* else {
                                 //Enviar Error, ese nombre ya existe
                                 proxys[i]->enviar(cod_error, 1);
-                        }*/
+                        }
                         App* new_app = new App(proxy);
                         int v = rand() % 100000; 
                         apps.insert (std::pair<string,App*>(std::to_string(v), new_app));
                         //apps.at("vm") = new_app;
-                        new_app -> start();
+                        new_app -> start();*/
                 }else if (codigoMensaje == cod_get_apps_name){
                         string json = get_json_apps_name();
                         proxy->enviarJson(json);
