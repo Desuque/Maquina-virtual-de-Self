@@ -110,6 +110,8 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 
 void MyArea::liberarMemoria(){
   std::cout << "libero memoria de morphs" << std::endl;
+  std::cout << morphs.size() << std::endl;
+
   for (int i=0; i < morphs.size(); ++i){  
     delete morphs[i];
   }
@@ -125,7 +127,7 @@ void MyArea::botonGuardarNuevoSlotEvent(){
   if (actual->nombreObjeto != "lobby"){
     std::cout << "Error: solo puedes agregar slots a lobby de esa forma. \n"
               << "Prueba de esta forma por la consola del obejto:  \n"
-              << "\t   <nombre del objeto> _AddSlots: (| a <- 8 . |) .";
+              << "   <nombre del objeto> _AddSlots: (| a <- 8 . |) .";
     sigcButtonGuardar.disconnect();
     return;
   }
@@ -298,7 +300,7 @@ void MyArea::do_it_event(){
   std::string textoAEnviar = actual -> do_it();
 
   if (textoAEnviar==""){
-    std::cout << "Eror ingresar Codigo" << std::endl;
+    std::cout << "Error ingresar Codigo" << std::endl;
     return;
   }
 
@@ -372,7 +374,7 @@ void MyArea::do_it_event(){
 
 void MyArea::close_event(){
   if (actual == nullptr){
-    std::cout << "Eror: seleccione el Morph que desea borrar\n";
+    std::cout << "Error: seleccione el Morph que desea borrar\n";
     return;
   }  
   for (int i =0; i < morphs.size() ; ++i){
@@ -560,6 +562,9 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
   }
   for (int i =0; i < referencias.size() ; ++i){
     referencias[i]->draw(cr);
+  }
+  if(actual){
+    actual->resaltar(cr);
   }
   return true;
 }

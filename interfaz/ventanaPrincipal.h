@@ -8,7 +8,6 @@ class VentanaPrincipal : public Gtk::Window {
 	protected:
 		Glib::RefPtr<Gtk::Builder> m_builder;
 
-
 	public:
 		VentanaPrincipal(BaseObjectType* cobject, 	
 						const Glib::RefPtr<Gtk::Builder>& refGlade);
@@ -16,7 +15,8 @@ class VentanaPrincipal : public Gtk::Window {
 						const Glib::RefPtr<Gtk::Builder>& refGlade,
 						bool is_glad);
 		VentanaPrincipal();
-		
+		bool onWindowDelete(GdkEventAny*);
+		void on_button_close();
 		virtual ~VentanaPrincipal();
 };
 

@@ -40,7 +40,7 @@ class Morph : public Gtk::DrawingArea{
 		}
 		std::string get_id_to_string();
 		
-
+		void resaltarMorph(const Cairo::RefPtr<Cairo::Context>& cr);
   		std::string get_it();
   		std::string do_it();
   		void actualizarAlturaMorph(size_t alturaDeSlot);
