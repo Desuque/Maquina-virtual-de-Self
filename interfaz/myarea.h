@@ -32,7 +32,6 @@ protected:
 
   int offXMouse, offYMouse;
 
-  // sacar de aca
   ProxyServer* proxyServer;
 
 public:
@@ -42,8 +41,6 @@ public:
   // Override mouse events
   bool on_button_press_event(GdkEventButton *event);
   bool on_button_release_event(GdkEventButton *event);
-  void fitImage(int winWidth,int winHeight, int imgWidth, int imgHeight);
-  void displayTarget(const Cairo::RefPtr<Cairo::Context>& cr,double x, double y);
   // Signal handlers (run when a popup item is clicked)
   bool on_motion_notify_event (GdkEventMotion*event);
   void get_it_event();
@@ -56,7 +53,7 @@ public:
   void setProxy(ProxyServer* proxy){
     this->proxyServer = proxy;
   }
-  
+
   virtual ~MyArea();
 
 protected:

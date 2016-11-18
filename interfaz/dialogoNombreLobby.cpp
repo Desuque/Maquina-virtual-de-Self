@@ -25,8 +25,8 @@ void DialogoNombreLobby::botonOkNombre(){
 	std::string nombreLobby = std::string(entryNombreLobby->get_text());
 	std::cout << nombreLobby << std::endl;
 	
-	proxy->enviarString(nombreLobby);
-	
+	std::cout << "Respuesta de enviar nombreLobby: " 
+			  << proxy->enviarString(nombreLobby) << std::endl;
 	hide();
 }
 
