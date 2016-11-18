@@ -119,6 +119,8 @@ void App::run(int* fin){
 			break;
 		}
 	}
+	//Slot* gar =  vm.collect();
+        //std::cout << vm.get_slots(gar) << std::endl;
  	*fin = 1;
 }
 
@@ -138,7 +140,7 @@ App::~App(){
 }
 
 void App::test_example(){
-	vm.checkpoint();
+	//vm.checkpoint();
 	
 	//lobby _AddSlots: (| y <- 8. |).
 	Slot* X0 = vm.search_obj("lobby");
@@ -184,7 +186,7 @@ void App::test_example(){
 	Slot* X18 = vm.search_obj("y");
 	Slot* X19 = vm.binary_message(X17,"!=",X18);
 	vm.unary_message(X19, "print");*/
-	vm.collect();
+	//vm.collect();
         
 	//lobby _AddSlots: (| str = 'hello'. |).
 	Slot* X20 = vm.search_obj("lobby");
@@ -217,7 +219,7 @@ void App::test_example(){
 	Slot* X29 = vm.search_obj("punto11");
 	Slot* X30 = vm.unary_message(X29, "y");
 	vm.unary_message(X30, "print");*/
-	vm.collect();
+	//vm.collect();
 	//lobby _AddSlots: (| punto = (| square_norm = (| | ((x*x)+(y*y))).
 	//				 print = (| | print x.).
 	//				 y <- 7.	    
@@ -297,6 +299,6 @@ void App::test_example(){
         
         vm.search_obj_by_name("y",494);
 	*/
-	vm.revert();
+	//vm.revert();
         vm.collect();
 }

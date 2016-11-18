@@ -12,6 +12,7 @@ typedef std::vector<Slot*> p_slots;
 typedef std::vector<Object*> p_objects;
 typedef std::string string;
 typedef std::stack<Slot*> stack_slots;
+typedef std::vector<int> v_ids;
 
 class VM{
 	private:
@@ -24,13 +25,13 @@ class VM{
 		void push_slot(Slot* sl);
 		void revert();
 		void checkpoint();
-		void collect();
 		int get_id_slots();
 		Slot* immutable_object(Slot* sl);
 		string save();
 		string get_slots(Slot* sl);
 		string get_slot(Slot* sl);
 		Slot* pop_slot();
+                Slot* collect();
 		Slot* search_obj(string name);
 		Slot* search_obj_id(int id);
 		Slot* create_object();
@@ -53,11 +54,12 @@ class VM{
 		Slot* execute_msg(Slot* msg, Slot* sl_invoker, p_objects& args);
 		Slot* search_msg(Slot* sl_recv, string msg);
 		void unmark_slots();
-		void garbage_collector();
+		void garbage_collector(v_ids& ids);
 		void add_basic_slots(Slot* sl, string name);
 		void add_default_name_slot(Slot* sl, string name);
 		void add_default_self_slot(Slot* sl);
 		void add_default_numeric_slots(Slot* sl_recv);
+                Slot* create_garbage_slot(v_ids& ids);
 };
 
 #endif

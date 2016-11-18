@@ -95,3 +95,21 @@ string JsonWriter::write_files_name(v_strings names){
 	writer.EndObject();
 	return s.GetString();
 }
+
+string JsonWriter::write_garbage_ids(v_ids& ids){
+        StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("ids");
+	writer.StartArray();
+	int size = ids.size();
+        for (int i = 0; i < size; i++){
+                writer.StartObject();
+                writer.Key("id");
+                writer.Int(ids[i]);
+                writer.EndObject();
+        }
+	writer.EndArray();
+	writer.EndObject();
+	return s.GetString();
+}

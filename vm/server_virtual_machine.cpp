@@ -2,6 +2,8 @@
 #include "server_slot.h"
 #include "server_not_found.h"
 #include "server_check_point.h"
+#include "server_json_writer.h"
+#include "server_garbage_slot.h"
 #include <iostream>
 
 static const char* global_obj = "lobby";
@@ -9,6 +11,7 @@ static const char* name_slot = "_Name";
 static const char* self_slot = "_Self";
 static const char* print = "print";
 static const char* obj_name = "object";
+static const char* garbage_name = "garbage";
 static const char* add_slots_msg = "_AddSlots";
 static const char* rm_slots_msg = "_RemoveSlots";
 static const char* start_msg = "lobby _AddSlots: ";
@@ -36,11 +39,12 @@ void VM::unmark_slots(){
 		(it->second) -> get_value() -> set_mark(false);
 }
 
-void VM::garbage_collector(){
+void VM::garbage_collector(v_ids& ids){
 	map_slots::iterator itr = slots.begin();
 	while (itr != slots.end()) {
 		if (!(itr->second) -> is_mark()){
 			delete itr->second;
+                        ids.push_back(itr->first);
 			itr = slots.erase(itr);
 		}else{
 			++itr;
@@ -48,18 +52,30 @@ void VM::garbage_collector(){
 	}
 }
 
-void VM::collect(){
+Slot* VM::collect(){
 	Slot* lobby = search_obj(global_obj);	
 	unmark_slots();
 	lobby -> get_value() -> mark_slots();
-	garbage_collector();
+	v_ids collected_ids;
+        garbage_collector(collected_ids);
+        /*int size = collected_ids.size();
+        for (int i = 0; i< size ; i++)
+                std::cout << "Eliminado " << collected_ids[i] << std::endl;*/
+        return create_garbage_slot(collected_ids);
+}
+
+Slot* VM::create_garbage_slot(v_ids& ids){
+	Slot* sl = new GarbageSlot(get_id_slots(), garbage_name, ids);
+	sl -> set_obj_value(get_id_slots());
+	add_basic_slots(sl, garbage_name);
+	return sl;
 }
 
 string VM::get_slots(Slot* sl){
         if (!sl)
             return empty_string;
         string json = sl -> get_value() -> get_json_slots();        
-        if ( json != empty_slot )
+        if ( json != empty_slot &&  (sl -> get_name() != garbage_name))
                 return json;
         
 	return sl -> json();
@@ -311,6 +327,6 @@ Slot* VM::search_obj_by_name(string name, int context){
 }
 
 VM::~VM(){
-	for (map_slots::iterator it = slots.begin(); it != slots.end();++it)  
+	for (map_slots::iterator it = slots.begin(); it != slots.end();++it)
 		delete (it->second);
 }

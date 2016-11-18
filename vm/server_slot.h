@@ -42,7 +42,7 @@ class Slot: public Object{
 		bool is_code();
 		bool is_immutable();
 		int get_parent_id();
-		string json();
+		virtual string json();
 		Slot* execute(VM& vm, p_objects& args);
 		virtual bool is_check();
 		~Slot();
