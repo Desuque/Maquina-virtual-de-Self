@@ -64,13 +64,13 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   moveFlag=false;
 
   try{
-    proxyServer.connect("127.0.0.1",8080);
-    proxyServer.enviar(CREAR_MAQUINA_VIRTUAL,sizeof(char));
-    //uint32_t lobbyId = proxyServer.recibirId(sizeof(uint32_t));
+    //proxyServer->connect("127.0.0.1",8080);
+    //proxyServer->enviar(CREAR_MAQUINA_VIRTUAL,sizeof(char));
+    //uint32_t lobbyId = proxyServer->recibirId(sizeof(uint32_t));
     // cambiar recibirId por recibirTam
-    //uint32_t tamMensaje = proxyServer.recibirId(sizeof(uint32_t));
-    //std::cout << proxyServer.enviarString(nombreLobby) << std::endl;
-    std::string infoSlots = proxyServer.recibirSlotsDe("0");
+    //uint32_t tamMensaje = proxyServer->recibirId(sizeof(uint32_t));
+    //std::cout << proxyServer->enviarString(nombreLobby) << std::endl;
+    std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
     /***DECODIFICACION DEL JSON (CLIENTE)***/
     std::vector<InterfaceSlot*> i_slots;
@@ -142,10 +142,10 @@ void MyArea::botonGuardarNuevoSlotEvent(){
   std::cout << textoAEnviar << std::endl;
   //std::cout << "lobby _AddSlots: (| a <- 8 . |) ." << std::endl;
 
-  uint32_t codigoMensaje = proxyServer.enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
 
-  uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
-  std::string json = proxyServer.recibir(tamMensaje);
+  uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+  std::string json = proxyServer->recibir(tamMensaje);
   std::cout << json << std::endl;
   std::vector<InterfaceSlot*> i_slots;
   JsonReader slots_reader;
@@ -207,15 +207,15 @@ void MyArea::get_it_event(){
     return;
   }
 
-  uint32_t codigoMensaje = proxyServer.enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
   
   std::cout << codigoMensaje << std::endl;
 
   switch(codigoMensaje) {
     case 5: { 
-      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
       std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
-      std::string json = proxyServer.recibir(tamMensaje);
+      std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
@@ -228,8 +228,8 @@ void MyArea::get_it_event(){
     }
     case 3: {
       // recibe el tamanio del mensaje, cambiar nombre
-      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
-      std::string json = proxyServer.recibir(tamMensaje);
+      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
@@ -244,8 +244,8 @@ void MyArea::get_it_event(){
       break;
     }
     case 4: {
-      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
-      std::string json = proxyServer.recibir(tamMensaje);
+      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
@@ -293,15 +293,15 @@ void MyArea::do_it_event(){
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
   std::cout << "json a enviar: " << json << std::endl;*/
 
-  uint32_t codigoMensaje = proxyServer.enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
   
   std::cout << codigoMensaje << std::endl;
 
   switch(codigoMensaje) {
     case 5: { 
-      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
       std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
-      std::string json = proxyServer.recibir(tamMensaje);
+      std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
@@ -314,8 +314,8 @@ void MyArea::do_it_event(){
     }
     case 3: {
       // recibe el tamanio del mensaje, cambiar nombre
-      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
-      std::string json = proxyServer.recibir(tamMensaje);
+      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
@@ -330,8 +330,8 @@ void MyArea::do_it_event(){
       break;
     }
     case 4: {
-      uint32_t tamMensaje = proxyServer.recibirCodigoRespuesta(4);
-      std::string json = proxyServer.recibir(tamMensaje);
+      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
@@ -460,7 +460,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
           slot->setReferencia(referenciaNueva);
 
           if (slot->value == "object"){
-            std::string infoSlots = proxyServer.recibirSlotsDe(slot->get_id_to_string());
+            std::string infoSlots = proxyServer->recibirSlotsDe(slot->get_id_to_string());
 
             //DECODIFICACION DEL JSON (CLIENTE)
             std::vector<InterfaceSlot*> i_slots;

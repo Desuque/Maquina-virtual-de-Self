@@ -3,10 +3,12 @@
 #include "myarea.h"
 #include "ventanaPrincipal.h"
 #include "dialogoInicial.h"
+#include "manejadorVista.h"
+#include "dialogoNombreLobby.h"
 
 static Gtk::Entry* entryNombreLobby;
 static MyArea* myArea;
-static Gtk::Dialog* dialogNombre;
+static DialogoNombreLobby* dialogNombre;
 
 void on_click_button_ok(){
 
@@ -36,20 +38,21 @@ int main(int argc, char *argv[])
 	
 	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
 
+	ProxyServer proxy;
+	proxy.connect("127.0.0.1",8080);
 
 	DialogoInicial* dialogoInicial = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("dialog1", dialogoInicial);
+	dialogoInicial->setProxy(&proxy);
 	dialogoInicial->run();
 
-	refBuilder->Gtk::Builder::get_widget("dialog2", dialogNombre);
-	Gtk::Button* buttonOk = nullptr; 
-	refBuilder->Gtk::Builder::get_widget("button10", buttonOk);
-	refBuilder->Gtk::Builder::get_widget("entry1", entryNombreLobby);
-	buttonOk->signal_clicked().connect(sigc::ptr_fun(&on_click_button_ok));
+	refBuilder->Gtk::Builder::get_widget_derived("dialog2", dialogNombre);
+	dialogNombre->setProxy(&proxy);
 	dialogNombre->run();
 
 	//MyArea* myArea = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
+	myArea->setProxy(&proxy);
 
   	app->run(*window);
 	
