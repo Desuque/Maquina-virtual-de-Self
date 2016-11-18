@@ -5,23 +5,7 @@
 #include "dialogoInicial.h"
 #include "dialogoNombreLobby.h"
 
-/*static Gtk::Entry* entryNombreLobby;
-static MyArea* myArea;
-static DialogoNombreLobby* dialogNombre;
-
-void on_click_button_ok(){
-
-	std::cout << " ok " << std::endl;
-	if(entryNombreLobby){
-		std::string nombreLobby = std::string(entryNombreLobby->get_text());
-		std::cout << nombreLobby << std::endl;
-		//myArea->enviarNombreLobby(nombreLobby);
-	}
-	if(dialogNombre){
-		dialogNombre->hide();
-	}
-
-}*/
+void example();
 
 int main(int argc, char *argv[])
 {
@@ -38,29 +22,22 @@ int main(int argc, char *argv[])
 	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
 
 	ProxyServer proxy;
-	proxy.connect("127.0.0.1",8080);
-
-	/*if (argc != 3){
-		printf("Error: La cantidad de parametros necesarios es 2.\n");
+	
+	if (argc != 5){
+		printf("Error: La cantidad de parametros necesarios es 4.\n");
 		example();
+		return 0;
 	}else{
-		if (!strcmp(argv[1],"-p")){
-                        server.bind(atoi(argv[2]));
-                        Thread* thread_server = &server;
-                        thread_server -> start();
-                        read_exit();
-                        server.shutdown();
-                        thread_server -> join();
-		}else if(!strcmp(argv[1],"-f")){
-			string file = argv[2];
-                        if (server.execute(file))
-                                std::cout << "Error: " << file << " no existe." << std::endl;
+		if (!strcmp(argv[1],"-ip")){
+			if (!strcmp(argv[3],"-p")){
+				proxy.connect(argv[2], atoi(argv[4]));
+			}                        
 		}else{
 			std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
 			example();
+			return 0;
 		}
-	}*/
-
+	}
 
 	DialogoInicial* dialogoInicial = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("dialog1", dialogoInicial);
@@ -79,4 +56,10 @@ int main(int argc, char *argv[])
   	app->run(*window);
 	
 	return 0;
+}
+
+void example(){
+	printf("Ejemplos: \n");;
+	printf("\t ./client_self -p <port> -ip <direccion ip>\n");
+	printf("\t ./client_self -ip 127.0.0.1 -p 8080 \n");
 }
