@@ -10,6 +10,7 @@ class Referencia;
 class Morph : public Gtk::DrawingArea{
 	public:
 		std::string nombreObjeto;
+		std::string nombreParaMostrar;
 		Gtk::TextView* m_TextView;
 		Gtk::TextView* textViewCodigoAsociado;
 		//Glib::RefPtr<Gtk::Builder> m_builder;

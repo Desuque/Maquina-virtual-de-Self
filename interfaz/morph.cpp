@@ -44,8 +44,8 @@ Morph::Morph(std::string nombreObjeto, double posX, double posY) :
 // SE USA ESTE SIEMPRE VER LOS DEMAS ELIMINAR
 Morph::Morph(std::string nombreObjeto, int id, double posX, double posY, 
 		Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) : 
-		nombreObjeto(nombreObjeto), posX(posX), 
-		posY(posY), m_TextView(m_TextView),
+		nombreObjeto(nombreObjeto), nombreParaMostrar(nombreObjeto), 
+		posX(posX), posY(posY), m_TextView(m_TextView),
 		textViewCodigoAsociado(codigoAsociado)/*,
 		referencia(nullptr)*/ {
 	Pango::FontDescription font;
@@ -72,18 +72,22 @@ Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsoci
 	this->posX = unSlot->posX + unSlot->width + 20;
 	this->posY = unSlot->posY+4;
 	this->id = unSlot->id;
+	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+	refTextViewCodigoAsociado->set_text("");
 	if(unSlot->code){
 		this->nombreObjeto = unSlot->name;
+		this->nombreParaMostrar = unSlot->name;
 		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 		refTextViewCodigoAsociado->set_text(unSlot->value);
 	}else{
-		this->nombreObjeto = unSlot->value;
+		this->nombreObjeto = unSlot->name;
+		this->nombreParaMostrar = unSlot->value;
 	}
 
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
-	auto layout = create_pango_layout(this->nombreObjeto);
+	auto layout = create_pango_layout(this->nombreParaMostrar);
 	layout->set_font_description(font);
 	int text_width;
 	int text_height;
@@ -199,7 +203,7 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
-	auto layout = create_pango_layout(this->nombreObjeto);
+	auto layout = create_pango_layout(this->nombreParaMostrar);
 
 	int text_width;
 	int text_height;
@@ -245,7 +249,7 @@ void Morph::mostrarDescripcionMorph(){
 void Morph::actualizar_posicion(double x, double y){
 	
 	// para no dibujar fuera de la ventana
-	/*if (x + width > 400 || y + height > 800){
+	if (x + width > 400 || y + height > 800){
 		if (x + width > 400 ){
 			this->posX = 400;
 		} 
@@ -262,7 +266,7 @@ void Morph::actualizar_posicion(double x, double y){
 			this -> posY = 0;
 		}
 		return;
-	}*/
+	}
 	for (int i=0; i < slots.size(); ++i){
 		slots[i] -> posX = x;
 		slots[i] -> posY = y + (slots[i]->posY - this->posY);

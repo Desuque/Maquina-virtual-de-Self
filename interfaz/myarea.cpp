@@ -62,42 +62,10 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   resetFlag=true;
   queue_draw();
   moveFlag=false;
-
-  /*try{
-    std::string infoSlots = proxyServer->recibirSlotsDe("0");
-
-    std::vector<InterfaceSlot*> i_slots;
-    JsonReader slots_reader;
-    slots_reader.read(i_slots, infoSlots);
-    
-    Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
-    actual = lobby;
-    lNombreObjeto -> set_text(actual->nombreObjeto);
-    actual -> mostrarDescripcionMorph();
-    morphs.push_back(lobby);
-
-    int size = i_slots.size();
-    for (int i = 0; i < size ; i++){
-      i_slots[i] -> print_attr();
-      actual->agregarSlot(i_slots[i]);
-    }
-    
-    for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
-      delete* it;  
-      it = i_slots.erase(it);
-    }
-
-  } catch (const std::exception &e) {
-    Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView,textViewCodAsociado);
-    actual=lobby;
-    lNombreObjeto -> set_text(actual->nombreObjeto);
-    actual -> mostrarDescripcionMorph();
-    morphs.push_back(lobby);
-    std::cout << "error de socket" << std::endl;    
-  }*/
 }
 
 void MyArea::iniciar(){
+  if(!proxyServer) std::cout << "Error: el socket no fue seteado" << std::endl;
   std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
   std::vector<InterfaceSlot*> i_slots;
@@ -106,7 +74,7 @@ void MyArea::iniciar(){
 
   Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
   actual = lobby;
-  lNombreObjeto -> set_text(actual->nombreObjeto);
+  lNombreObjeto -> set_text(actual->nombreParaMostrar);
   actual -> mostrarDescripcionMorph();
   morphs.push_back(lobby);
 
@@ -462,7 +430,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
               // Start moving the view
               moveFlag=true;
               // va en el morph
-              lNombreObjeto->set_text(actual->nombreObjeto);
+              lNombreObjeto->set_text(actual->nombreParaMostrar);
               actual -> mostrarDescripcionMorph();
               // Event has been handled
               return true;                  
@@ -495,7 +463,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
         // Start moving the view
         moveFlag=true;
         // va en el morph
-        lNombreObjeto->set_text(actual->nombreObjeto);
+        lNombreObjeto->set_text(actual->nombreParaMostrar);
         actual -> mostrarDescripcionMorph();
         // Event has been handled
         return true;    
@@ -520,7 +488,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
     for (int i =0; i < morphs.size() ; ++i){      
       if(*(morphs[i]) == Morph(event->x,event->y)){
         actual = morphs[i];
-        lNombreObjeto->set_text(actual->nombreObjeto);
+        lNombreObjeto->set_text(actual->nombreParaMostrar);
         actual -> mostrarDescripcionMorph();
         m_Menu_Popup.popup(event->button, event->time);
         // Event has been handled
