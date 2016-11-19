@@ -51,63 +51,17 @@ VM* App::get_vm(){
 void App::run(int* fin){
         test_example();
 	while (true){
-                
                 try {
                     int size = proxys.size();
                     for (int i = 0; i < size ; i++){    
 			uint32_t codigoMensaje = proxys[i]->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
-				case 2:{
-					uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
-
-					std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
-
-					std::cout << nombreObjeto << std::endl;
-
-					string string_to_send = get_slots(nombreObjeto);
-
-					proxys[i]->enviarJson(string_to_send);
-
+				case 2:
+                                        rcv_msg_get_slots(i);
 					break;
-				}
-				case 5:{
-					uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
-
-					std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
-
-					std::cout << "id del objeto: " << nombreObjeto << std::endl;
-					
-					tamMensaje = proxys[i]->recibirTamMensaje(4);
-					std::string codigoAEjecutar = proxys[i]->recibir(tamMensaje);
-					std::cout << "codigo A Ejecutar: " << codigoAEjecutar << std::endl;
-
-					JsonWriter writer;
-					string json = writer.write_code(nombreObjeto, codigoAEjecutar);
-
-					string result = execute(json);
-
-					// ver como hacer con esto, mando mensaje "generic" pero 
-					// podria ser cualquier cosa, ejemplo : agregarSlot remove
-
-					int flag = parser.getFlag();
-					if (flag == 0) {
-						proxys[i]->enviar(flag, 1);
-					} else if (flag == 3) {
-				  		proxys[i]->enviar(flag, 1);
-					} else if (flag == 4) {
-						proxys[i]->enviar(flag, 1);
-					} else {
-						//hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
-						proxys[i]->enviar(5, 1);
-					}
-
-					std::cout << "devolucion: " << result << std::endl;
-					
-					if(flag != 0) {
-						proxys[i]->enviarJson(result);
-					}
+				case 5:
+                                        rcv_msg_generic(i);
 					break;
-				}
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
 					std::cout << "recibio: " << codigoMensaje << std::endl;
@@ -115,9 +69,7 @@ void App::run(int* fin){
 					break;
 			}
                     }		
-		} catch (const std::exception e){ 
-			break;
-		}
+		} catch (const std::exception e){ break;}
 	}
 	/*Slot* gar =  vm.collect();
         string json = vm.get_slots(gar);
@@ -129,6 +81,45 @@ void App::run(int* fin){
         for (int i = 0; i< size; i++)
                 std::cout << vec[i] << std::endl;*/
  	*fin = 1;
+}
+
+void App::rcv_msg_get_slots(int i){
+        uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
+        std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
+        std::cout << nombreObjeto << std::endl;
+        string string_to_send = get_slots(nombreObjeto);
+        proxys[i]->enviarJson(string_to_send);
+}
+
+void App::rcv_msg_generic(int i){
+   	uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
+        std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
+        std::cout << "id del objeto: " << nombreObjeto << std::endl;
+        tamMensaje = proxys[i]->recibirTamMensaje(4);
+        std::string codigoAEjecutar = proxys[i]->recibir(tamMensaje);
+        std::cout << "codigo A Ejecutar: " << codigoAEjecutar << std::endl;
+
+        JsonWriter writer;
+        string json = writer.write_code(nombreObjeto, codigoAEjecutar);
+        string result = execute(json);
+
+        // ver como hacer con esto, mando mensaje "generic" pero 
+        // podria ser cualquier cosa, ejemplo : agregarSlot remove
+        int flag = parser.getFlag();
+        if (flag == 0) {
+                proxys[i]->enviar(flag, 1);
+        } else if (flag == 3) {
+                proxys[i]->enviar(flag, 1);
+        } else if (flag == 4) {
+                proxys[i]->enviar(flag, 1);
+        } else {
+                //hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
+                proxys[i]->enviar(5, 1);
+        }
+	std::cout << "devolucion: " << result << std::endl;
+					
+	if(flag != 0)
+		proxys[i]->enviarJson(result);
 }
 
 int App::execute_file(string code){

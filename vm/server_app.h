@@ -29,6 +29,8 @@ class App : public Thread{
 		~App();
 
 	private:
+                void rcv_msg_get_slots(int i);
+                void rcv_msg_generic(int i);
 		void test_example();
 };
 
