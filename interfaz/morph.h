@@ -13,11 +13,9 @@ class Morph : public Gtk::DrawingArea{
 		std::string nombreParaMostrar;
 		Gtk::TextView* m_TextView;
 		Gtk::TextView* textViewCodigoAsociado;
-		//Glib::RefPtr<Gtk::Builder> m_builder;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
 		std::vector<Referencia*> referencias;
-		//std::vector<Morph*> slots;
 		std::vector<Slot*> slots;
 		int posX;
 		int posY;

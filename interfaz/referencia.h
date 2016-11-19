@@ -12,13 +12,13 @@ public:
 	int height;*/
 
 public:	
-	Referencia(Morph* apuntoAMorph, Slot* perteneceASlot){
-		this->apuntoAMorph = apuntoAMorph;
-		this->perteneceASlot = perteneceASlot;
+	Referencia(Morph* apuntoAMorph, Slot* perteneceASlot) {
 		this->posX = apuntoAMorph->posX-8;
 		this->posY = apuntoAMorph->posY;
 		this->width = 8;
 		this->height = 8;
+		this->apuntoAMorph = apuntoAMorph;
+		this->perteneceASlot = perteneceASlot;
 	}
 	//solo para comparar PREGUNTAR
 	Referencia(int posX, int posY) : Morph(posX,posY) {

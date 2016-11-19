@@ -46,8 +46,7 @@ Morph::Morph(std::string nombreObjeto, int id, double posX, double posY,
 		Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) : 
 		nombreObjeto(nombreObjeto), nombreParaMostrar(nombreObjeto), 
 		posX(posX), posY(posY), m_TextView(m_TextView),
-		textViewCodigoAsociado(codigoAsociado)/*,
-		referencia(nullptr)*/ {
+		textViewCodigoAsociado(codigoAsociado) {
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
@@ -64,26 +63,23 @@ Morph::Morph(std::string nombreObjeto, int id, double posX, double posY,
 	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 	refTextViewCodigoAsociado->set_text("");
 	this->id=id;
-	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
 }
 
 Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) :
 	m_TextView(m_TextView), textViewCodigoAsociado(codigoAsociado) {
 	this->posX = unSlot->posX + unSlot->width + 20;
 	this->posY = unSlot->posY+4;
-	this->id = unSlot->id;
+	this->id = unSlot->get_id();
 	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 	refTextViewCodigoAsociado->set_text("");
-	if(unSlot->code){
-		this->nombreObjeto = unSlot->name;
-		this->nombreParaMostrar = unSlot->name;
+	this->nombreObjeto = unSlot->get_name();
+	if(unSlot->has_code()){
+		this->nombreParaMostrar = unSlot->get_name();
 		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
-		refTextViewCodigoAsociado->set_text(unSlot->value);
+		refTextViewCodigoAsociado->set_text(unSlot->get_value());
 	}else{
-		this->nombreObjeto = unSlot->name;
-		this->nombreParaMostrar = unSlot->value;
+		this->nombreParaMostrar = unSlot->get_value();
 	}
-
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
@@ -97,7 +93,6 @@ Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsoci
 
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
-
 } 
 
 Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) :
@@ -105,14 +100,17 @@ Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_Te
 	this->posX = posX;
 	this->posY = posY;
 	this->id = unSlot->get_id();
+	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+	refTextViewCodigoAsociado->set_text("");
 	this->nombreObjeto = unSlot->get_name();
 	if(unSlot->has_code()){
-		//this->nombreObjeto = unSlot->get_name();
+		this->nombreParaMostrar = unSlot->get_name();
+		std::cout << unSlot->get_name() << std::endl;
 		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 		refTextViewCodigoAsociado->set_text(unSlot->get_value());
-	}/*else{
-		this->nombreObjeto = unSlot->get_value();
-	}*/
+	}else{
+		this->nombreParaMostrar = unSlot->get_value();
+	}
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
@@ -229,7 +227,7 @@ Slot* Morph::obtenerSlot(int posX,int posY){
 
 
 bool Morph::tieneElMismoIdQueEsteSlot(Slot* unSlot){
-	return (unSlot->id == this->id);
+	return (unSlot->get_id() == this->id);
 }
 
 

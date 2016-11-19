@@ -6,7 +6,7 @@
 #define ALTURA_SLOT 18
 
 class Slot : public Morph{
-public:
+protected:
 	//std::string name;
 	//Morph* morph;
 	/*int posX;
@@ -14,13 +14,15 @@ public:
 	int width;
 	int height;*/
 	bool dibujadoComoMorph;
-	Referencia* referencia;
 	/* interface Slot */
 	bool type;
 	bool code;
 	std::string name;
 	std::string value;
 	int id;
+public:	
+	Referencia* referencia;
+
 public:	
 	Slot(){}
 	
@@ -60,8 +62,20 @@ public:
 		//referencia = new Morph(posX-8,posY,8,8,m_TextView);
 	}
 
+	std::string get_name(){
+		return this->name;
+	}
+
 	int get_id(){
 		return this->id;
+	}
+
+	bool has_code(){
+		return this->code;
+	}
+
+	std::string get_value(){
+		return this->value;
 	}
 
 	bool estaDibujadoComoMorph(){
@@ -74,6 +88,10 @@ public:
 
 	std::string get_id_to_string(){
 		return std::to_string(this->id);
+	}
+
+	bool elValorEsPrimitivo(){
+		return (this->value != "object");
 	}
 
 	void draw(const Cairo::RefPtr<Cairo::Context>& cr){

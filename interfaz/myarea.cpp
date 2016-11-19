@@ -161,7 +161,7 @@ void borrarSlot(Morph* actual,int idSlot, std::vector<Referencia*>& referencias)
   if (actual!= nullptr){
   //std::vector<Slot*> listaSlots = ;
     for (int i = 0; i < (actual->slots).size(); ++i){
-      if ((actual->slots)[i]->id == idSlot){         
+      if ((actual->slots)[i]->get_id() == idSlot){         
         if ((actual->slots)[i]->estaDibujadoComoMorph()){
           // si esta dibujado borro la referencia al morph
           // que apunta
@@ -443,7 +443,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
           referencias.push_back(referenciaNueva);
           slot->setReferencia(referenciaNueva);
 
-          if (slot->value == "object"){
+          if (!(slot->elValorEsPrimitivo())){
             std::string infoSlots = proxyServer->recibirSlotsDe(slot->get_id_to_string());
 
             //DECODIFICACION DEL JSON (CLIENTE)

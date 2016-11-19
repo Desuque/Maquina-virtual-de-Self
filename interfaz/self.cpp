@@ -9,7 +9,6 @@ void example();
 
 int main(int argc, char *argv[])
 {
-
 	ProxyServer proxy;
 	try{
 		if (argc != 5){
@@ -28,7 +27,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	} catch (const std::exception &e){
-		
+
 	}
 	auto app = Gtk::Application::create();
 
