@@ -249,7 +249,7 @@ void Morph::mostrarDescripcionMorph(){
 void Morph::actualizar_posicion(double x, double y){
 	
 	// para no dibujar fuera de la ventana
-	if (x + width > 400 || y + height > 800){
+	/*if (x + width > 400 || y + height > 800){
 		if (x + width > 400 ){
 			this->posX = 400;
 		} 
@@ -266,7 +266,7 @@ void Morph::actualizar_posicion(double x, double y){
 			this -> posY = 0;
 		}
 		return;
-	}
+	}*/
 	for (int i=0; i < slots.size(); ++i){
 		slots[i] -> posX = x;
 		slots[i] -> posY = y + (slots[i]->posY - this->posY);
@@ -275,10 +275,6 @@ void Morph::actualizar_posicion(double x, double y){
 		referencias[i]->posX=x-8;
 		referencias[i]->posY=y;
 	}
-	/*if(referencia != nullptr){
-		referencia->posX=x-8;
-		referencia->posY=y;
-	}*/
 	this->posX = x;
 	this->posY = y;		
 }
