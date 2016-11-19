@@ -17,7 +17,7 @@ Server::Server(){
 }
 
 void Server::load_file_names(){
-        system("rm -r data");
+        system("rm -f -r data");
         DIR *dir;
         struct dirent *ent;
         if ((dir = opendir (folder)) != NULL) {
@@ -39,33 +39,24 @@ void Server::run(int* fin){
         ProxyClient* proxy;
 	while (true){
                 proxy = new ProxyClient();
-                try{
-                        proxyClient.aceptarCliente(proxy);
-                }catch (const std::exception e){
-			break;
-		}
+                try{ proxyClient.aceptarCliente(proxy);}
+                catch (const std::exception e){break;}
 		
 		uint32_t codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
                 if (codigoMensaje == cod_create_app){
+                        
                         uint32_t tamMensaje = proxy->recibirTamMensaje(4);
                         string app_name = proxy->recibir(tamMensaje);
-                        std::cout << app_name << std::endl;
-                        //Verificar si nombre nuevo existe
-                        proxy->enviar(cod_create_app, 1);
-                        std::cout << "Ya le envie codigo" << std::endl;
+                        
                         if ( apps.find(app_name) == apps.end()){
+                                proxy->enviar(cod_create_app, 1);
                                 App* new_app = new App(proxy);
                                 apps.insert (std::pair<string,App*>(app_name, new_app));
                                 new_app -> start();
                         }/* else {
                                 //Enviar Error, ese nombre ya existe
                                 proxys[i]->enviar(cod_error, 1);
-                        }
-                        App* new_app = new App(proxy);
-                        int v = rand() % 100000; 
-                        apps.insert (std::pair<string,App*>(std::to_string(v), new_app));
-                        //apps.at("vm") = new_app;
-                        new_app -> start();*/
+                        }*/
                 }else if (codigoMensaje == cod_get_apps_name){
                         string json = get_json_apps_name();
                         proxy->enviarJson(json);
