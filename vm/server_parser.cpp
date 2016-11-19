@@ -25,19 +25,49 @@ bool Parser::number(std::stringstream* codigo, int* posicion) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 
-	float valor;
+	int valor;
+	int decimales = 0;
+	bool its_num = false;
+	bool its_float = false;
 	codigo->seekg(*posicion, std::ios::beg);
 	*codigo>>valor;
 
-	if(codigo->fail()){
+	if(codigo->fail()) {
 		codigo->clear();
 		*posicion = posicionOriginal;
-		return false;
 	} else {
-		*posicion = codigo->tellg();
-		std::stringstream ss;
+		char c;
+		int posAux = codigo->tellg();
+		its_num = true;
+		codigo->get(c);
+		if(c != '.') {
+			//Si no hay un punto, estoy seguro de que es un int
+			codigo->unget();
+			*posicion = codigo->tellg();
+		} else {
+			//Puede ser o no un float
+			*codigo>>decimales;
+			if(codigo->fail()) {
+				//Despues del punto no hay numeros, no era un float
+				codigo->clear();
+				*posicion = posAux;
+			} else {
+				//Era un float
+				its_float = true;
+				*posicion = codigo->tellg();
+			}
+		}
+	}
+
+	std::stringstream ss;
+	if(its_float) {
+		ss << valor << "." << decimales;
+	} else {
 		ss << valor;
-		std::string str = ss.str();
+	}
+	std::string str = ss.str();
+
+	if(its_num) {
 		linker.create_number(str);
 		return true;
 	}

@@ -28,6 +28,7 @@ public:
 	bool remove_slots(std::string context, std::string slot);
 
 private:
+	bool collect(std::string obj, std::string msg);
 	void create_float(std::string number);
 	void create_int(std::string number);
 	int get_last_created_pos();

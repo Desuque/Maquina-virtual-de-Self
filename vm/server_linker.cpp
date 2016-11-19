@@ -38,17 +38,27 @@ Slot* Linker::get_object_by_name(std::string name, int id) {
 	return vm->search_obj_by_name(name, id);
 }
 
-bool Linker::create_unary_message(std::string name, std::string msg) {
-	Slot* slot = get_object_by_name(name, atoi(id.c_str()));
-
-	if(slot == NULL) {
-		slots.push_back(slot);
-		return false;	
+bool Linker::collect(std::string obj, std::string msg) {
+	if((obj == "lobby") && (msg == "collect")) {
+		vm->collect();
+		return true;
 	}
+	return false;
+}
 
-	Slot* last_slot = vm->unary_message(slot, msg);
-	slots.push_back(last_slot);	
-	return true;
+bool Linker::create_unary_message(std::string name, std::string msg) {
+	if(collect(name, msg)) {
+		return true;
+	} else {
+		Slot* slot = get_object_by_name(name, atoi(id.c_str()));
+		if(slot == NULL) {
+			slots.push_back(slot);
+			return false;
+		}
+		Slot* last_slot = vm->unary_message(slot, msg);
+		slots.push_back(last_slot);
+		return true;
+	}
 }
 
 void Linker::create_number(std::string number) {
