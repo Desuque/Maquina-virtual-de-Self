@@ -1,6 +1,7 @@
 #include "dialogoInicial.h"
 #include "client_json_reader.h"
-
+#include "dialogoNombreLobby.h"
+#include "dialogoSeleccionLobby.h"
 #include <iostream>
 #include <vector>
 
@@ -25,7 +26,7 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
 	m_builder-> Gtk::Builder::get_widget("button9", botonCargarLobby);
   	if (botonCargarLobby == nullptr) std::cout << "error" << std::endl;
     botonCargarLobby->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::cargarLobbyClick));
-    this->signal_delete_event().connect(sigc::mem_fun(*this,&DialogoInicial::cerrarDialogoClick));
+    //this->signal_delete_event().connect(sigc::mem_fun(*this,&DialogoInicial::cerrarDialogoClick));
 }
 
 DialogoInicial::DialogoInicial(BaseObjectType* cobject, 
@@ -40,21 +41,39 @@ void DialogoInicial::nuevoLobbyClick(){
 	//m_builder->get_widget("dialog2", dialogoNombreLobby);
     proxy->enviar(CREAR_MAQUINA_VIRTUAL,sizeof(char));
 	hide();
+
+	DialogoNombreLobby* dialogNombre = nullptr;
+	m_builder->Gtk::Builder::get_widget_derived("dialog2", dialogNombre);
+	dialogNombre->setProxy(proxy);
+	dialogNombre->run();
 }
 
 void DialogoInicial::cargarLobbyClick(){
     std::cout << "Click en cargar lobby" << std::endl;
-    proxy->enviar(CARGAR_MAQUINA_VIRTUAL,sizeof(char));
-    std::string json = proxy->recibirJson();
-	std::vector<string> names;
-	JsonReader reader;
-	reader.read_names(json, names);
-	
+    //proxy->enviar(CARGAR_MAQUINA_VIRTUAL,sizeof(char));
+    //std::string json = proxy->recibirJson();
+    //std::cout << json << std::endl;
+	//std::vector<string> names;
+	//JsonReader reader;
+	//reader.read_names(json, names);
+	// ejemplo de json
+	//"{"lobbies":[{"name":"lobby1"},{"name":"lobby2"}]}"
+    std::vector<string> names = {"lobby1","lobby2"};
 	for(int i=0; i<names.size(); ++i){
 		std::cout << names[i] << std::endl;
 	}
-
 	hide();
+
+	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
+	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
+	dSeleccionarLobby->run();
+
+	/*if(names.size()){
+		proxy->enviar(7, 1);
+		proxy->enviarString(names[0]);
+		std::cout << "envie"<<std::endl;
+	}*/
+	//dSeleccionarLobby->run();
 }
 
 bool DialogoInicial::cerrarDialogoClick(GdkEventAny*){

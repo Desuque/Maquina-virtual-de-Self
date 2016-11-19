@@ -9,6 +9,27 @@ void example();
 
 int main(int argc, char *argv[])
 {
+
+	ProxyServer proxy;
+	try{
+		if (argc != 5){
+			printf("Error: La cantidad de parametros necesarios es 4.\n");
+			example();
+			return 0;
+		}else{
+			if (!strcmp(argv[1],"-ip")){
+				if (!strcmp(argv[3],"-p")){
+					proxy.connect(argv[2], atoi(argv[4]));
+				}                        
+			}else{
+				std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
+				example();
+				return 0;
+			}
+		}
+	} catch (const std::exception &e){
+		
+	}
 	auto app = Gtk::Application::create();
 
   	auto refBuilder = Gtk::Builder::create();
@@ -21,33 +42,10 @@ int main(int argc, char *argv[])
 	
 	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
 
-	ProxyServer proxy;
-	
-	if (argc != 5){
-		printf("Error: La cantidad de parametros necesarios es 4.\n");
-		example();
-		return 0;
-	}else{
-		if (!strcmp(argv[1],"-ip")){
-			if (!strcmp(argv[3],"-p")){
-				proxy.connect(argv[2], atoi(argv[4]));
-			}                        
-		}else{
-			std::cout << "Opcion Incorrecta " << argv[1] << std::endl;
-			example();
-			return 0;
-		}
-	}
-
 	DialogoInicial* dialogoInicial = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("dialog1", dialogoInicial);
 	dialogoInicial->setProxy(&proxy);
 	dialogoInicial->run();
-
-	DialogoNombreLobby* dialogNombre = nullptr;
-	refBuilder->Gtk::Builder::get_widget_derived("dialog2", dialogNombre);
-	dialogNombre->setProxy(&proxy);
-	dialogNombre->run();
 
 	MyArea* myArea = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
