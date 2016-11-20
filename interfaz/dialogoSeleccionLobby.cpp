@@ -11,8 +11,7 @@ DialogoSeleccionLobby::DialogoSeleccionLobby(BaseObjectType* cobject,
 	m_builder->Gtk::Builder::get_widget("button12", buttonOk);
     buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&DialogoSeleccionLobby::botonOkLobby));
 
-    ListaDeLobbys* listaDeLobbys = nullptr; 
-	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
+   
     /*std::vector<std::string> names = {"lobby1", "lobby2"};
     ListaDeLobbys listaDeLobbys(names);*/
 }
@@ -24,7 +23,19 @@ DialogoSeleccionLobby::DialogoSeleccionLobby(BaseObjectType* cobject,
 
 void DialogoSeleccionLobby::botonOkLobby(){
 	std::cout << "Ok" << std::endl;
+	ListaDeLobbys* listaDeLobbys = nullptr; 
+	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
+	std::string seleccion = listaDeLobbys->obtenerLobbySeleccionado();
+	std::cout << seleccion << std::endl;
+	proxy -> enviar(7,1);
+	proxy->enviarString(seleccion);
 	hide();
+}
+
+void DialogoSeleccionLobby::setListaLobbys(std::vector<std::string> listaLobbys){
+	ListaDeLobbys* listaDeLobbys = nullptr; 
+	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
+	listaDeLobbys->setLista(listaLobbys);
 }
 
 

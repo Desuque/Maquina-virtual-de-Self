@@ -4,7 +4,7 @@
 #include "ventanaPrincipal.h"
 #include "dialogoInicial.h"
 #include "dialogoNombreLobby.h"
-
+#include "cliente.h"
 void example();
 
 int main(int argc, char *argv[])
@@ -29,6 +29,9 @@ int main(int argc, char *argv[])
 	} catch (const std::exception &e){
 
 	}
+	Cliente cliente(proxy);
+
+
 	auto app = Gtk::Application::create();
 
   	auto refBuilder = Gtk::Builder::create();

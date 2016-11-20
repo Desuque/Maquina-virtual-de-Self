@@ -206,7 +206,7 @@ std::string ProxyServer::recibir(size_t cantidad){
 	return Proxy::recibir(sktCliente,cantidad);
 }
 
-uint32_t ProxyServer::recibirCodigoRespuesta(size_t cantidad){
+uint32_t ProxyServer::recibirCodigo(size_t cantidad){
 	return Proxy::recibirCantidad(sktCliente,cantidad);
 }
 

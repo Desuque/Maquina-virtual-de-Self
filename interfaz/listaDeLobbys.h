@@ -16,6 +16,8 @@ public:
   
   virtual ~ListaDeLobbys();
   void on_button_ok();
+  void setLista(std::vector<std::string> listaLobbys);
+  std::string obtenerLobbySeleccionado();
 
 protected:
   //Tree model columns:

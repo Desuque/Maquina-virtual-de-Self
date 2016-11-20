@@ -16,7 +16,7 @@ class ProxyServer : public Proxy {
 		uint32_t enviarString(std::string textoAEnviar);
 		std::string recibirJson();
 		void enviar(uint32_t entero, size_t cantidad);
-		uint32_t recibirCodigoRespuesta(size_t cantidad);
+		uint32_t recibirCodigo(size_t cantidad);
 		std::string recibirSlotsDe(std::string lobbyId);
 		uint32_t recibirCodigoMensaje(size_t cantidad);
 		uint32_t enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar);

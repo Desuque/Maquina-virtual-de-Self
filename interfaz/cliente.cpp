@@ -1,11 +1,5 @@
-#ifndef Cliente_H
-#define Cliente_H
+#include "cliente.h"
 
-class Cliente {
+Cliente::Cliente(ProxyServer& proxy) : proxy(proxy) {}
 
-	public:	
-		Cliente(){}
-		virtual ~Cliente(){}
-};
-
-#endif
+Cliente::~Cliente(){}

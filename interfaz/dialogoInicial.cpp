@@ -50,15 +50,15 @@ void DialogoInicial::nuevoLobbyClick(){
 
 void DialogoInicial::cargarLobbyClick(){
     std::cout << "Click en cargar lobby" << std::endl;
-    //proxy->enviar(CARGAR_MAQUINA_VIRTUAL,sizeof(char));
-    //std::string json = proxy->recibirJson();
+    proxy->enviar(CARGAR_MAQUINA_VIRTUAL,sizeof(char));
+    std::string json = proxy->recibirJson();
     //std::cout << json << std::endl;
-	//std::vector<string> names;
-	//JsonReader reader;
-	//reader.read_names(json, names);
+	std::vector<string> names;
+	JsonReader reader;
+	reader.read_names(json, names);
 	// ejemplo de json
 	//"{"lobbies":[{"name":"lobby1"},{"name":"lobby2"}]}"
-    std::vector<string> names = {"lobby1","lobby2"};
+    //std::vector<string> names = {"lobby1","lobby2"};
 	for(int i=0; i<names.size(); ++i){
 		std::cout << names[i] << std::endl;
 	}
@@ -66,6 +66,8 @@ void DialogoInicial::cargarLobbyClick(){
 
 	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
+	dSeleccionarLobby->setListaLobbys(names);
+	dSeleccionarLobby->setProxy(proxy);
 	dSeleccionarLobby->run();
 
 	/*if(names.size()){

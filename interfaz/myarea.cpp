@@ -66,6 +66,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 
 void MyArea::iniciar(){
   if(!proxyServer) std::cout << "Error: el socket no fue seteado" << std::endl;
+  
   std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
   std::vector<InterfaceSlot*> i_slots;
@@ -130,7 +131,7 @@ void MyArea::botonGuardarNuevoSlotEvent(){
 
   uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
 
-  uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+  uint32_t tamMensaje = proxyServer->recibirCodigo(4);
   std::string json = proxyServer->recibir(tamMensaje);
   std::cout << json << std::endl;
   std::vector<InterfaceSlot*> i_slots;
@@ -199,7 +200,7 @@ void MyArea::get_it_event(){
 
   switch(codigoMensaje) {
     case 5: { 
-      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
       std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
       std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
@@ -214,7 +215,7 @@ void MyArea::get_it_event(){
     }
     case 3: {
       // recibe el tamanio del mensaje, cambiar nombre
-      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
       std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
@@ -230,7 +231,7 @@ void MyArea::get_it_event(){
       break;
     }
     case 4: {
-      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
       std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
@@ -285,7 +286,7 @@ void MyArea::do_it_event(){
 
   switch(codigoMensaje) {
     case 5: { 
-      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
       std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
       std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
@@ -300,7 +301,7 @@ void MyArea::do_it_event(){
     }
     case 3: {
       // recibe el tamanio del mensaje, cambiar nombre
-      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
       std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
@@ -316,7 +317,7 @@ void MyArea::do_it_event(){
       break;
     }
     case 4: {
-      uint32_t tamMensaje = proxyServer->recibirCodigoRespuesta(4);
+      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
       std::string json = proxyServer->recibir(tamMensaje);
       std::cout << json << std::endl;
       std::vector<InterfaceSlot*> i_slots;
