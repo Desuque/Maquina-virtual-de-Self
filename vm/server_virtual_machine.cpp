@@ -11,6 +11,7 @@ static const char* name_slot = "_Name";
 static const char* self_slot = "_Self";
 static const char* print = "print";
 static const char* obj_name = "object";
+static const char* obj_res  = "\"object\"";
 static const char* garbage_name = "garbage";
 static const char* add_slots_msg = "_AddSlots";
 static const char* rm_slots_msg = "_RemoveSlots";
@@ -74,11 +75,16 @@ Slot* VM::create_garbage_slot(v_ids& ids){
 string VM::get_slots(Slot* sl){
         if (!sl)
             return empty_string;
-        string json = sl -> get_value() -> get_json_slots();        
+        string json = sl -> get_value() -> get_json_slots();   
         if ( json != empty_slot &&  (sl -> get_name() != garbage_name))
                 return json;
         
-	return sl -> json();
+        json = sl -> json();
+        string name = json.substr(0, json.find(obj_res));
+        if (name != json)
+            return empty_slot;
+                
+	return json;
 }
 
 string VM::get_slot(Slot* sl){
