@@ -25,6 +25,6 @@ Slot* Float::clone(VM& vm){
 }
 
 void Float::get_self_slots(string& slots_self){
-	slots_self += as_string() + ".";
+	slots_self += " "+ as_string() + " .";
 }
 

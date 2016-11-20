@@ -69,6 +69,7 @@ void Server::run(int* fin){
                                         app_load -> add_proxy(proxy);
                                 }else{
                                         app_load = new App(proxy);
+                                        apps.at(app_name) = app_load;
                                         execute_file(app_load, app_name);
                                         app_load -> start();
                                 }
@@ -126,6 +127,6 @@ int Server::execute_file(App* app, string file_name){
 }
 
 void Server::shutdown(){
-        join_threads();
         this -> proxyClient.cerrarConexion();
+        join_threads();
 }

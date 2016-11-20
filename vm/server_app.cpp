@@ -21,10 +21,12 @@ string App::get_slots(string id){
 }
 
 string App::save_vm(string name){
-	std::ofstream file;
-        system("mkdir -p data");
         string file_name = "data/"+name+".dat";
-	file.open (file_name);
+        std::ofstream file;
+        string rm_msg = "rm -f " + file_name; 
+        system(rm_msg.c_str());
+        system("mkdir -p data");
+	file.open (file_name, std::ios::app);
 	string data = vm.save();
 	file << data << std::endl;
 	file.close();
