@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <fstream>
 
+static const int cod_error = 0;
 static const int cod_create_app = 1;
 static const int cod_get_apps_name = 6;
 static const int cod_load_app = 7;
@@ -17,7 +18,6 @@ Server::Server(){
 }
 
 void Server::load_file_names(){
-        system("rm -f -r data");
         DIR *dir;
         struct dirent *ent;
         if ((dir = opendir (folder)) != NULL) {
@@ -53,17 +53,13 @@ void Server::run(int* fin){
                                 App* new_app = new App(proxy);
                                 apps.insert (std::pair<string,App*>(app_name, new_app));
                                 new_app -> start();
-                        }/* else {
+                        } else {
                                 //Enviar Error, ese nombre ya existe
-                                proxys[i]->enviar(cod_error, 1);
-                        }*/
+                                proxy->enviar(cod_error, 1);
+                        }
                 }else if (codigoMensaje == cod_get_apps_name){
                         string json = get_json_apps_name();
                         proxy->enviarJson(json);
-                        //VA EN EL CLIENTE PARA DECODIFICAR LOS NOMBRES 
-                        //std::vector<string> names;
-                        //JsonReader reader;
-                        //reader.read_names(json, names);
                         codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
                         if (codigoMensaje == cod_load_app){
                                 uint32_t tamMensaje = proxy->recibirTamMensaje(4);
@@ -72,11 +68,11 @@ void Server::run(int* fin){
                                 if (app_load){
                                         proxy->enviar(cod_load_app, 1);
                                         app_load -> add_proxy(proxy);
-                                }/*else{
+                                }else{
                                         app_load = new App(proxy);
                                         execute_file(app_load, app_name);
                                         app_load -> start();
-                                }*/
+                                }
                         }
                 }
                 join_threads();
