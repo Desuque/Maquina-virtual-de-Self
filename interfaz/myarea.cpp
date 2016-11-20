@@ -67,17 +67,19 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 void MyArea::iniciar(){
   if(!proxyServer) std::cout << "Error: el socket no fue seteado" << std::endl;
   
-  std::string infoSlots = proxyServer->recibirSlotsDe("0");
-
-  std::vector<InterfaceSlot*> i_slots;
-  JsonReader slots_reader;
-  slots_reader.read(i_slots, infoSlots);
 
   Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
   actual = lobby;
   lNombreObjeto -> set_text(actual->nombreParaMostrar);
   actual -> mostrarDescripcionMorph();
   morphs.push_back(lobby);
+
+  std::string infoSlots = proxyServer->recibirSlotsDe("0");
+
+  std::vector<InterfaceSlot*> i_slots;
+  JsonReader slots_reader;
+  slots_reader.read(i_slots, infoSlots);
+
 
   int size = i_slots.size();
   for (int i = 0; i < size ; i++){
