@@ -19,6 +19,7 @@ class DialogoSeleccionLobby : public Gtk::Dialog {
 			this->proxy = proxy;
 		}
 		void botonOkLobby();
+		void setListaLobbys(std::vector<std::string> listaLobbys);
 		virtual ~DialogoSeleccionLobby();
 };
 
