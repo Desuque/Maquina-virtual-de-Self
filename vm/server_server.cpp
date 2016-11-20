@@ -66,13 +66,13 @@ void Server::run(int* fin){
                                 string app_name = proxy->recibir(tamMensaje);
                                 App* app_load = apps.at(app_name);
                                 if (app_load){
-                                        proxy->enviar(cod_load_app, 1);
                                         app_load -> add_proxy(proxy);
                                 }else{
                                         app_load = new App(proxy);
                                         execute_file(app_load, app_name);
                                         app_load -> start();
                                 }
+                                proxy->enviar(cod_load_app, 1);
                         }
                 }
                 join_threads();
