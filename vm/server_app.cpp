@@ -49,7 +49,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        test_example();
+        //test_example();
 	while (true){
                 try {
                     int size = proxys.size();
