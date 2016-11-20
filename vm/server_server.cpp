@@ -64,18 +64,20 @@ void Server::run(int* fin){
                         //std::vector<string> names;
                         //JsonReader reader;
                         //reader.read_names(json, names);
-                }else if (codigoMensaje == cod_load_app){
-                        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-                        string app_name = proxy->recibir(tamMensaje);
-                        App* app_load = apps.at(app_name);
-                        if (app_load){
-                                proxy->enviar(cod_load_app, 1);
-                                app_load -> add_proxy(proxy);
-                        }/*else{
-                                app_load = new App(proxy);
-                                execute_file(app_load, app_name);
-                                app_load -> start();
-                        }*/
+                        codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
+                        if (codigoMensaje == cod_load_app){
+                                uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+                                string app_name = proxy->recibir(tamMensaje);
+                                App* app_load = apps.at(app_name);
+                                if (app_load){
+                                        proxy->enviar(cod_load_app, 1);
+                                        app_load -> add_proxy(proxy);
+                                }/*else{
+                                        app_load = new App(proxy);
+                                        execute_file(app_load, app_name);
+                                        app_load -> start();
+                                }*/
+                        }
                 }
                 join_threads();
         }
