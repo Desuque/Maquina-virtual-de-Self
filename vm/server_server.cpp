@@ -50,7 +50,7 @@ void Server::run(int* fin){
                         
                         if ( apps.find(app_name) == apps.end()){
                                 proxy->enviar(cod_create_app, 1);
-                                App* new_app = new App(proxy);
+                                App* new_app = new App(app_name, this, proxy);
                                 apps.insert (std::pair<string,App*>(app_name, new_app));
                                 new_app -> start();
                         } else {
@@ -64,7 +64,11 @@ void Server::run(int* fin){
                         if (codigoMensaje == cod_load_app){
                                 uint32_t tamMensaje = proxy->recibirTamMensaje(4);
                                 string app_name = proxy->recibir(tamMensaje);
-                                App* app_load = apps.at(app_name);
+                                App* new_app = new App(app_name, this, proxy);
+                                apps.insert (std::pair<string,App*>(app_name, new_app));
+                                execute_file(new_app, app_name);
+                                new_app -> start();
+                                /*App* app_load = apps.at(app_name);
                                 if (app_load){
                                         app_load -> add_proxy(proxy);
                                 }else{
@@ -72,7 +76,7 @@ void Server::run(int* fin){
                                         apps.at(app_name) = app_load;
                                         execute_file(app_load, app_name);
                                         app_load -> start();
-                                }
+                                }*/
                                 proxy->enviar(cod_load_app, 1);
                         }
                 }
@@ -95,11 +99,21 @@ void Server::join_threads(){
         }
 }
 
+void Server::update_lobby_data(App* or_app, string json){
+        for (map_apps::iterator it = apps.begin(); it != apps.end(); ++it){
+                if ((or_app -> get_name() == it->first) && (!it -> second)){
+                        //UPDATE
+                        //ProxyClient* proxy = (it->second) -> get_proxy();
+                        //proxy -> enviarJson(json);
+                }
+        }
+}
+
 string Server::get_json_apps_name(){
         std::vector<string> names;
-        for(map_apps::iterator it = apps.begin(); it != apps.end(); ++it)
+        for (map_apps::iterator it = apps.begin(), end = apps.end(); it != end; it = apps.upper_bound(it->first)){
                 names.push_back(it->first);
-        
+        }
         JsonWriter writer;
         return writer.write_files_name(names);
 }

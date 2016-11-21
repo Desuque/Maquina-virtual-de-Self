@@ -1,6 +1,7 @@
 #include "server_app.h"
 #include "../interfaz/client_json_reader.h"
 #include "server_json_writer.h"
+#include "server_server.h"
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
@@ -9,9 +10,11 @@ App::App(){
 	parser.setVM(&vm);
 }
 
-App::App(ProxyClient* proxy){
+App::App(string name, Server* server, ProxyClient* proxy){
 	parser.setVM(&vm);
-        proxys.push_back(proxy);
+        this -> proxy = proxy;
+        this -> server = server;
+        this -> name = name;
 }
 
 string App::get_slots(string id){
@@ -53,16 +56,14 @@ VM* App::get_vm(){
 void App::run(int* fin){
         //test_example();
 	while (true){
-                try {
-                    int size = proxys.size();
-                    for (int i = 0; i < size ; i++){    
-			uint32_t codigoMensaje = proxys[i]->recibirCodigoMensaje(1);
+                try {    
+			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
 				case 2:
-                                        rcv_msg_get_slots(i);
+                                        rcv_msg_get_slots();
 					break;
 				case 5:
-                                        rcv_msg_generic(i);
+                                        rcv_msg_generic();
 					break;
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
@@ -70,7 +71,6 @@ void App::run(int* fin){
 
 					break;
 			}
-                    }		
 		} catch (const std::exception e){ break;}
 	}
 	/*Slot* gar =  vm.collect();
@@ -85,20 +85,21 @@ void App::run(int* fin){
  	*fin = 1;
 }
 
-void App::rcv_msg_get_slots(int i){
-        uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
-        std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
+void App::rcv_msg_get_slots(){
+        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+        std::string nombreObjeto = proxy->recibir(tamMensaje);
         std::cout << nombreObjeto << std::endl;
         string string_to_send = get_slots(nombreObjeto);
-        proxys[i]->enviarJson(string_to_send);
+        proxy -> enviarJson(string_to_send);
+        server -> update_lobby_data(this, string_to_send);
 }
 
-void App::rcv_msg_generic(int i){
-   	uint32_t tamMensaje = proxys[i]->recibirTamMensaje(4);
-        std::string nombreObjeto = proxys[i]->recibir(tamMensaje);
+void App::rcv_msg_generic(){
+   	uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+        std::string nombreObjeto = proxy->recibir(tamMensaje);
         std::cout << "id del objeto: " << nombreObjeto << std::endl;
-        tamMensaje = proxys[i]->recibirTamMensaje(4);
-        std::string codigoAEjecutar = proxys[i]->recibir(tamMensaje);
+        tamMensaje = proxy->recibirTamMensaje(4);
+        std::string codigoAEjecutar = proxy->recibir(tamMensaje);
         std::cout << "codigo A Ejecutar: " << codigoAEjecutar << std::endl;
 
         JsonWriter writer;
@@ -109,19 +110,28 @@ void App::rcv_msg_generic(int i){
         // podria ser cualquier cosa, ejemplo : agregarSlot remove
         int flag = parser.getFlag();
         if (flag == 0) {
-                proxys[i]->enviar(flag, 1);
+                proxy->enviar(flag, 1);
         } else if (flag == 3) {
-                proxys[i]->enviar(flag, 1);
+                proxy->enviar(flag, 1);
         } else if (flag == 4) {
-                proxys[i]->enviar(flag, 1);
+                proxy->enviar(flag, 1);
         } else {
                 //hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
-                proxys[i]->enviar(5, 1);
+                proxy->enviar(5, 1);
         }
 	std::cout << "devolucion: " << result << std::endl;
 					
 	if(flag != 0)
-		proxys[i]->enviarJson(result);
+		proxy->enviarJson(result);
+        server -> update_lobby_data(this, result);
+}
+
+void App::send_msg_get_slots(string json){
+        proxy->enviarJson(json);
+}
+
+ProxyClient* App::get_proxy(){
+        return proxy;
 }
 
 int App::execute_file(string code){
@@ -129,14 +139,12 @@ int App::execute_file(string code){
         return 0;
 }
 
-void App::add_proxy(ProxyClient* proxy){
-        proxys.push_back(proxy);
+string App::get_name(){
+        return name;
 }
 
 App::~App(){
-        int size = proxys.size();
-        for (int i = 0; i < size ; i++)
-                delete proxys[i];
+        delete proxy;
 }
 
 void App::test_example(){

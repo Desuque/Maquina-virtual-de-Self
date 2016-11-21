@@ -9,7 +9,7 @@
 #include <dirent.h>
 
 typedef std::string string;
-typedef std::map<string, App*> map_apps;
+typedef std::multimap<string, App*> map_apps;
 
 class Server : public Thread{ 
 	private:
@@ -23,6 +23,7 @@ class Server : public Thread{
                 void run(int* fin);
                 void shutdown();
                 int execute(string file_name);
+                void update_lobby_data(App* or_app, string json);
                 
 	private:
 		int execute_file(App* app, string file_name);
