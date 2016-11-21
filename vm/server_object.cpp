@@ -6,6 +6,7 @@
 #include "server_error_type.h"
 #include <iostream>
 
+static const int default_slots_size = 2;
 static const char* class_name = "object";
 static const char* name_slot = "_Name";
 static const char* self_slot = "_Self";
@@ -157,10 +158,14 @@ Slot* Object::as_slot(){
 }
 
 bool Object::is_container(){
+        if (slots.size() == default_slots_size)
+            return false;
+        
         for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
 		if ((it->second)->get_name() != "" && !is_base_slot(it->second))
 			return false;
 	}
+	
 	return true;
 }
 
