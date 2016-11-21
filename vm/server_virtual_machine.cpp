@@ -72,14 +72,14 @@ Slot* VM::create_garbage_slot(v_ids& ids){
 	return sl;
 }
 
-string VM::get_slots(Slot* sl){
+string VM::get_slots(int id_base, Slot* sl){
         if (!sl)
             return empty_string;
-        string json = sl -> get_value() -> get_json_slots();   
+        string json = sl -> get_value() -> get_json_slots(id_base);   
         if ( json != empty_slot &&  (sl -> get_name() != garbage_name))
                 return json;
         
-        json = sl -> json();
+        json = sl -> json(id_base);
         string name = json.substr(0, json.find(obj_res));
         if (name != json)
             return empty_slot;
@@ -87,8 +87,8 @@ string VM::get_slots(Slot* sl){
 	return json;
 }
 
-string VM::get_slot(Slot* sl){
-	return sl -> json();
+string VM::get_slot(int id_base, Slot* sl){
+	return sl -> json(id_base);
 }
 
 void VM::push_slot(Slot* sl){

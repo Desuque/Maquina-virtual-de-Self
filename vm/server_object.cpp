@@ -90,9 +90,9 @@ int Object::as_int(){
 	return 0;
 }
 
-string Object::get_json_slots(){
+string Object::get_json_slots(int id_base){
 	JsonWriter json_writer;
-	string json = json_writer.write(slots);
+	string json = json_writer.write(id_base, slots);
 	return json;
 }
 

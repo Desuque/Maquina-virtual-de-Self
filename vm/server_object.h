@@ -29,7 +29,7 @@ class Object{
 		void look_up(string name, p_slots& results);
 		void mark_slots();
 		void set_mark(bool val);
-		string get_json_slots();
+		string get_json_slots(int id_base);
 		int get_id();
 		bool is_mark();
 		bool is_base_slot(Slot* sl);

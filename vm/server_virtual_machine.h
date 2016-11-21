@@ -28,8 +28,8 @@ class VM{
 		int get_id_slots();
 		Slot* immutable_object(Slot* sl);
 		string save();
-		string get_slots(Slot* sl);
-		string get_slot(Slot* sl);
+		string get_slots(int id, Slot* sl);
+		string get_slot(int id_base, Slot* sl);
 		Slot* pop_slot();
                 Slot* collect();
 		Slot* search_obj(string name);

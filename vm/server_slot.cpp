@@ -142,9 +142,9 @@ int Slot::get_parent_id(){
 	return std::get<2>(this -> parent);
 }
 
-string Slot::json(){
+string Slot::json(int id_base){
 	JsonWriter json_writer;
-	string json = json_writer.write_slot(this);
+	string json = json_writer.write_slot(id_base, this);
 	return json;
 }
 

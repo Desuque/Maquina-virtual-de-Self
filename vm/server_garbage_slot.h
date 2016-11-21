@@ -13,7 +13,7 @@ class GarbageSlot: public Slot{
                 v_ids ids;
 	public:
 		GarbageSlot(int id, string name, v_ids& ids);
-                string json();
+                string json(int id_base);
 };
 
 #endif

@@ -8,16 +8,18 @@ InterfaceSlot::InterfaceSlot(){
 	this -> code = false;
 }
 
-InterfaceSlot::InterfaceSlot(string name, string value, bool code, bool type, int id){
+InterfaceSlot::InterfaceSlot(string name, string value, bool code, bool type, int id, int id_base){
 	this -> name = name;
 	this -> value = value;
 	this -> type = type;
 	this -> code = code;
 	this -> id = id;  
+        this -> id_base = id_base;
 }
 
 void InterfaceSlot::print_attr(){
-	std::cout << "ID " << this -> id
+	std::cout << "ID_Base " << this -> id_base
+                  << " ID " << this -> id
 		  << " Name " << this -> name
 		  << " Value " << this -> value
 		  << " Type " << this -> type

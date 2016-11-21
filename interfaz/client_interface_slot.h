@@ -13,10 +13,11 @@ class InterfaceSlot{
 		string name;
 		string value;
 		int id;
+                int id_base;
 		
 	public:
 		InterfaceSlot();
-		InterfaceSlot(string name, string value, bool code, bool type, int id);
+		InterfaceSlot(string name, string value, bool code, bool type, int id, int id_base);
 		void print_attr();
 		string get_name();
 		string get_value();

@@ -1,6 +1,6 @@
 #include "server_json_writer.h"
 
-string JsonWriter::write_slot(Slot* sl){
+string JsonWriter::write_slot(int id_base, Slot* sl){
 	StringBuffer s;
 	Writer<StringBuffer> writer(s);
 	writer.StartObject();
@@ -10,13 +10,13 @@ string JsonWriter::write_slot(Slot* sl){
 	bool type, code;
 	int id;
 	get_slot_attr(sl, name, value, type, code, id);
-	write_slot_attr(writer,name, value, type, code, id);
+	write_slot_attr(writer,name, value, type, code, id, id_base);
 	writer.EndArray();
 	writer.EndObject();
 	return s.GetString();
 }
 
-string JsonWriter::write(m_slots& slots){
+string JsonWriter::write(int id_base, m_slots& slots){
 	StringBuffer s;
 	Writer<StringBuffer> writer(s);
 	writer.StartObject();
@@ -30,7 +30,7 @@ string JsonWriter::write(m_slots& slots){
 			bool type, code;
 			int id;
 			get_slot_attr(sl, name, value, type, code, id);
-			write_slot_attr(writer,name, value, type, code, id);
+			write_slot_attr(writer,name, value, type, code, id, id_base);
 		}
 	}
 	
@@ -51,9 +51,11 @@ void JsonWriter::get_slot_attr(Slot* sl, string& name, string& value, bool& type
 	}
 }
 
-void JsonWriter::write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code, int& id){
+void JsonWriter::write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code, int& id, int& id_base){
 	writer.StartObject();
-	writer.Key("id");
+	writer.Key("id_base");
+	writer.Int(id_base);
+        writer.Key("id");
 	writer.Int(id);
 	writer.Key("name");
 	writer.String(name.c_str());

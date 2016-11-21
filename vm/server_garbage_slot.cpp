@@ -5,7 +5,7 @@ GarbageSlot::GarbageSlot(int id, string name, v_ids& ids):Slot(id, name){
         this -> ids = std::move(ids);
 }
 
-string GarbageSlot::json(){
+string GarbageSlot::json(int id_base){
         JsonWriter writer;
         return writer.write_garbage_ids(ids);
 }

@@ -19,7 +19,7 @@ App::App(string name, Server* server, ProxyClient* proxy){
 
 string App::get_slots(string id){
 	Slot* obj = vm.search_obj_id(std::stoi(id));
-	string obj_str = vm.get_slots(obj); 
+	string obj_str = vm.get_slots(std::stoi(id),obj); 
 	return obj_str;
 }
 
@@ -44,7 +44,7 @@ string App::execute(string msg){
 
 	Slot* res = NULL;
 	res = parser.parsear(code, id);
-	json = vm.get_slots(res);
+	json = vm.get_slots(std::stoi(id), res);
 	
 	return json;
 }
