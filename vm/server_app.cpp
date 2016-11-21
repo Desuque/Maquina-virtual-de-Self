@@ -71,6 +71,7 @@ void App::run(int* fin){
 
 					break;
 			}
+			save_vm(this->name);
 		} catch (const std::exception e){ break;}
 	}
 	/*Slot* gar =  vm.collect();
