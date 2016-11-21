@@ -15,6 +15,86 @@ void Linker::setID(std::string id) {
 	this->id = id;
 }
 
+Slot* Linker::create_number(std::string number) {
+	std::size_t found = number.find(".");
+	if(found != std::string::npos) {
+		return create_float(number);
+	} else {
+		return create_int(number);
+	}
+	return NULL;
+}
+
+Slot* Linker::create_float(std::string number) {
+	std::stringstream buffer(number);
+ 	float temp;
+ 	buffer >> temp;
+
+	Slot* X1 = vm->create_float(temp);
+	return X1;
+}
+
+Slot* Linker::create_int(std::string number) {
+	Slot* X1 = vm->create_int(atoi(number.c_str()));
+	return X1;
+}
+
+Slot* Linker::create_string(std::string string) {
+	Slot* X1 = vm->create_string(string);
+	return X1;
+}
+
+Slot* Linker::create_unary_message(Slot* receiver, std::string name) {
+	return vm->unary_message(receiver, name);
+}
+
+Slot* Linker::create_binary_message(Slot* receiver, std::string op, Slot* expCP) {
+	return vm->binary_message(receiver, op, expCP);
+}
+
+Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
+	return vm->keyword_message(receiver, lower_or_cap, expCP);
+}
+
+Slot* Linker::create_slot(std::string slot_name_extended, std::string op, Slot* exp) {
+
+	/**
+	lobby _AddSlots: (| y <- 8. |).
+	Slot* X0 = vm->search_obj("lobby");
+	
+	Slot* X1 = vm->create_object();
+	Slot* X2 = vm->create_int(8);
+	vm->immutable_object(X2);
+	vm->add_slot(X1, "y", X2);
+	vm->keyword_message(X0, "_AddSlots:", X1);
+	vm->collect();
+	//y print.
+	Slot* X4 = vm->search_obj("y");
+	vm->unary_message(X4, "print");
+**/
+	Slot* X1 = vm->create_object();
+	Slot* X2 = exp;
+	if(op == "<-") {
+		std::cout<<"Es inmutable!"<<std::endl;
+		vm->immutable_object(X2);
+	}
+	vm->add_slot(X1, slot_name_extended, X2);
+	std::cout<<"Se crea el slot!"<<std::endl;
+	return X1;
+}
+
+Slot* Linker::get_object_by_name(std::string name) {
+	return vm->search_obj_by_name(name, atoi(id.c_str()));
+}
+
+
+
+
+
+
+
+
+
 Slot* Linker::get_last_slot() {
 	return get_slot(get_last_created_pos());
 }
@@ -29,15 +109,6 @@ Slot* Linker::get_slot(int pos) {
 	return aux;
 }
 
-void Linker::create_unary_message(std::string msg) {
-	Slot* slot = vm->unary_message(get_slot(get_last_created_pos()), msg);
-	slots.push_back(slot);
-}
-
-Slot* Linker::get_object_by_name(std::string name, int id) {
-	return vm->search_obj_by_name(name, id);
-}
-
 bool Linker::collect(std::string obj, std::string msg) {
 	if((obj == "lobby") && (msg == "collect")) {
 		vm->collect();
@@ -46,6 +117,7 @@ bool Linker::collect(std::string obj, std::string msg) {
 	return false;
 }
 
+/**
 bool Linker::create_unary_message(std::string name, std::string msg) {
 	if(collect(name, msg)) {
 		return true;
@@ -60,51 +132,9 @@ bool Linker::create_unary_message(std::string name, std::string msg) {
 		return true;
 	}
 }
+**/
 
-void Linker::create_number(std::string number) {
-	std::size_t found = number.find(".");
-	if(found != std::string::npos) {
-		create_float(number);
-	} else {
-		create_int(number);
-	}
-}
 
-void Linker::create_float(std::string number) {
-	std::stringstream buffer(number);
- 	float temp;
- 	buffer >> temp;
-
-	Slot* X1 = vm->create_float(temp);
-	slots.push_back(X1);
-}
-
-void Linker::create_int(std::string number) {
-	Slot* X1 = vm->create_int(atoi(number.c_str()));
-	slots.push_back(X1);
-}
-
-void Linker::create_string(std::string string) {
-	Slot* X1 = vm->create_string(string);
-	slots.push_back(X1);
-}
-
-void Linker::create_binary_message(std::string op) {
-	Slot* slot = vm->binary_message(get_slot(get_last_created_pos()-1), op, get_slot(get_last_created_pos()));
-	slots.push_back(slot);
-}
-
-void Linker::create_keyword_message(std::string obj, std::string lower_key) {
-	Slot* X0 = vm->search_obj(obj);
-
-	for(unsigned int i=0; i<slots_names.size(); i++) {
-		//Cargo al objeto todos los slots que se cargaron
-		Slot* X1 = vm->create_object();
-		vm->add_slot(X1, "", slots_names.at(i));
-		vm->keyword_message(X0, lower_key, X1);
-	}
-
-}
 
 bool Linker::remove_slots(std::string context, std::string slot) {
 	Slot* X0 = vm->search_obj(context);
@@ -121,29 +151,6 @@ bool Linker::remove_slots(std::string context, std::string slot) {
 		return true;
 	}
 
-}
-
-void Linker::create_slot(std::string slot) {
-
-    //lobby _AddSlots: (| prueba1 = 'hello'. prueba2 = 'hello2'. |).
-	/**Slot* X90 = vm->search_obj("lobby");
-	Slot* X91 = vm->create_object();
-    Slot* X92 = vm->create_object();
-    Slot* X93 = vm->create_string("hello");
-    Slot* X94 = vm->create_object();
-    Slot* X95 = vm->create_string("hello2");
-    vm->add_slot(X92, "prueba1", X93);
-    vm->add_slot(X94, "prueba2", X95);
-    vm->add_slot(X91, "", X92);
-    vm->add_slot(X91, "", X94);
-**/
-
-
-	Slot* X1 = vm->create_object();
-	Slot* X2 = get_slot(get_last_created_pos());
-
-	vm->add_slot(X1, slot, X2);
-	slots_names.push_back(X1);
 }
 
 Linker::~Linker() {

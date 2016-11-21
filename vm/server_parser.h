@@ -4,6 +4,7 @@
 
 #include "server_linker.h"
 #include "server_virtual_machine.h"
+#include <vector>
 
 class Parser {
 private:
@@ -12,6 +13,7 @@ private:
 	std::string msg;
 	std::string op;
 	int flag;
+	std::vector<Slot*> slots_to_process;
 
 public:
 	Parser();
@@ -22,21 +24,35 @@ public:
 private:
 	Slot* parsear(std::string codigo);
 	bool script(std::stringstream* codigo, int* posicion);
-	bool expression(std::stringstream* codigo, int* posicion);
-	bool keyword_message(std::stringstream* codigo, int* posicion);
-	bool binary_message(std::stringstream* codigo, int* posicion);
-	bool unary_message(std::stringstream* codigo, int* posicion);
-	bool expressionCP(std::stringstream* codigo, int* posicion);
-	bool receiver(std::stringstream* codigo, int* posicion);
-	bool constant(std::stringstream* codigo, int* posicion);
-	bool expressionP(std::stringstream* codigo, int* posicion);
-	bool number(std::stringstream* codigo, int* posicion);
-	bool text(std::stringstream* codigo, int* posicion);
+	bool expression(std::stringstream* codigo, int* posicion, Slot** slot);
+
+	
+	Slot* process_unary_message(Slot* receiver, std::string name);
+	Slot* process_binary_message(Slot* receiver, std::string op, Slot* expCP);
+	Slot* process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP);
+	Slot* process_slot_list(std::string slot_name_extended, std::string op, Slot* exp);
+
+	bool unary_message(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool binary_message(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool keyword_message(std::stringstream* codigo, int* posicion, Slot** slot);
+
+
+	bool expressionCP(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool receiver(std::stringstream* codigo, int* posicion, Slot** slot);
+	
+	bool constant(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool expressionP(std::stringstream* codigo, int* posicion, Slot** slot);
+
+	bool number(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool text(std::stringstream* codigo, int* posicion, Slot** slot);
+
+
+
 	bool object_intro(std::stringstream* codigo, int* posicion);
 	bool object_end(std::stringstream* codigo, int* posicion);
-	bool object(std::stringstream* codigo, int* posicion);
+	bool object(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool slot_operator(std::stringstream* codigo, int* posicion);
-	bool slot_list(std::stringstream* codigo, int* posicion);
+	bool slot_list(std::stringstream* codigo, int* posicion, std::vector<Slot*>* slots_list);
 	bool slot_name_extended(std::stringstream* codigo, int* posicion);
 	bool nil(std::stringstream* codigo, int* posicion);
 	bool name(std::stringstream* codigo, int* posicion);

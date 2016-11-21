@@ -17,20 +17,22 @@ public:
 	void setVM(VM* vm);
 	void setID(std::string id);
 	Slot* get_last_slot();
-	void create_unary_message(std::string msg);
-	bool create_unary_message(std::string name, std::string msg);
-	void create_binary_message(std::string op);
-	void create_keyword_message(std::string obj, std::string lower_key);
-	void create_string(std::string string);
-	void create_number(std::string number);
-	void create_slot(std::string slot);
-	Slot* get_object_by_name(std::string name, int id);
+
+
+	Slot* create_number(std::string number);
+	Slot* create_string(std::string string);
+	Slot* create_unary_message(Slot* receiver, std::string name);
+	Slot* create_binary_message(Slot* receiver, std::string op, Slot* expCP);
+	Slot* create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP);
+	Slot* create_slot(std::string slot_name_extended, std::string op, Slot* exp);
+	
+	Slot* get_object_by_name(std::string name);
 	bool remove_slots(std::string context, std::string slot);
 
 private:
 	bool collect(std::string obj, std::string msg);
-	void create_float(std::string number);
-	void create_int(std::string number);
+	Slot* create_float(std::string number);
+	Slot* create_int(std::string number);
 	int get_last_created_pos();
 	Slot* get_slot(int pos);
 
