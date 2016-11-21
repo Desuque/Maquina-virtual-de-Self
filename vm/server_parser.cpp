@@ -230,30 +230,69 @@ bool Parser::object_intro(std::stringstream* codigo, int* posicion) {
 	return false;
 }
 
+Slot* Parser::process_slot_list(Slot** object, std::string slot_name_extended, std::string op, Slot* exp) {
+	if(exp != NULL) {
+		return linker.create_slot(*object, slot_name_extended, op, exp);
+	}
+	return NULL;
+}
+
+bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
+	int posicionOriginal = *posicion;
+
+	Slot* exp = NULL;
+
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+	std::string valor;
+
+	if(slot_name_extended(codigo, posicion)) {
+		std::string slot_name_extended = get_msg();
+		if(slot_operator(codigo, posicion)) {
+			std::string op = get_op();
+			if(expression(codigo, posicion, &exp)) {
+				if(final(codigo, posicion)) {
+					*slot = process_slot_list(slot, slot_name_extended, op, exp);
+					return true;
+				}
+			}
+		}
+	}
+
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
+
 bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 
-	std::vector<Slot*> slots_list;
+	Slot* object = linker.create_object();
 
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
 		
-		if(slot_list(codigo, posicion, &slots_list) || (empty(codigo, posicion))) {
+		if(slot_list(codigo, posicion, &object) || (empty(codigo, posicion))) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
 
 			bool nextSlot = true;
 			while(nextSlot) {
-				nextSlot = slot_list(codigo, posicion, &slots_list);
+				nextSlot = slot_list(codigo, posicion, &object);
 			}
+			std::cout<<"Aca llega"<<std::endl;
 			if (pipe_without_script(codigo, posicion)) {
 				//Quiere decir que se encontro una barra y un parentesis
+				std::cout<<"La direccion del object: "<<object<<std::endl;
+				*slot = object;
 				return true;
 			}
 			if (pipe_with_script(codigo, posicion)) {
 				//Se encontró que no hay un parentesis luego de la barra
 				//Se guarda el script sin comprobar su sintaxis
+				std::cout<<"No tendria que entrar aca"<<std::endl;
+				*slot = object;
 				return true;
 			}
 		}
@@ -415,40 +454,6 @@ bool Parser::slot_operator(std::stringstream* codigo, int* posicion) {
 	if(itsOperator) {
 		set_op(valor);
 		return true;
-	}
-
-	//Si no hay coincidencia, vuelvo el puntero a su posicion original
-	*posicion = posicionOriginal;
-	return false;
-}
-
-Slot* Parser::process_slot_list(std::string slot_name_extended, std::string op, Slot* exp) {
-	if(exp != NULL) {
-		return linker.create_slot(slot_name_extended, op, exp);
-	}
-	return NULL;
-}
-
-bool Parser::slot_list(std::stringstream* codigo, int* posicion, std::vector<Slot*>* slots_list) {
-	int posicionOriginal = *posicion;
-
-	Slot* exp = NULL;
-
-	//Leo todo el valor desde la posicion indicada
-	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-
-	if(slot_name_extended(codigo, posicion)) {
-		std::string slot_name_extended = get_msg();
-		if(slot_operator(codigo, posicion)) {
-			std::string op = get_op();
-			if(expression(codigo, posicion, &exp)) {
-				if(final(codigo, posicion)) {
-					slots_list->push_back(process_slot_list(slot_name_extended, op, exp));
-					return true;
-				}
-			}
-		}
 	}
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -668,6 +673,7 @@ bool Parser::operador(std::stringstream* codigo, int* posicion) {
 
 
 Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
+	std::cout<<"A ver cual de los dos, receiver: "<<receiver<<" y exp: "<<expCP<<std::endl;
 	if((receiver != NULL) && (expCP != NULL)) {
 		return linker.create_keyword_message(receiver, op, expCP);
 	}
@@ -689,8 +695,10 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 		//El receiver siempre es el contexto en un keyword_message, por ende
 		//obtengo el slot correspondiente usando el name cargado
 		std::string msg_receiver = get_msg();
+		std::cout<<"MENSAJE: "<<msg_receiver<<std::endl;
 		if(msg_receiver.size() != 0) {
 			slot_receiver = linker.get_object_by_name(msg_receiver);
+			std::cout<<"A ver el slot_receiver: "<<slot_receiver<<std::endl;
 		}
 
 		std::string msg = get_msg();
@@ -934,7 +942,8 @@ Slot* Parser::parsear(std::string codigo) {
 	scripts.seekp(posicion, std::ios::beg);
 	if(script(&scripts, &posicion)) {
 		std::cout<<"Se completa el script papa!"<<std::endl;
-		return slots_to_process.at(0); //HARDCODEADO, DEVUELVE SIEMPRE EL PRIMERO!!!
+		Slot* ret = slots_to_process.at(slots_to_process.size()-1);
+		return ret; //HARDCODEADO, DEVUELVE SIEMPRE EL PRIMERO!!!
 	} else {
 		std::cout<<"No es un script dog, lo siento"<<std::endl;
 		setFlag("Error");

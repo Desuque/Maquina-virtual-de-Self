@@ -53,10 +53,15 @@ Slot* Linker::create_binary_message(Slot* receiver, std::string op, Slot* expCP)
 }
 
 Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
+	std::cout<<"Devuelvo bien: "<<lower_or_cap<<std::endl;
 	return vm->keyword_message(receiver, lower_or_cap, expCP);
 }
 
-Slot* Linker::create_slot(std::string slot_name_extended, std::string op, Slot* exp) {
+Slot* Linker::create_object() {
+	return vm->create_object();
+}
+
+Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
 
 	/**
 	lobby _AddSlots: (| y <- 8. |).
@@ -72,18 +77,21 @@ Slot* Linker::create_slot(std::string slot_name_extended, std::string op, Slot* 
 	Slot* X4 = vm->search_obj("y");
 	vm->unary_message(X4, "print");
 **/
-	Slot* X1 = vm->create_object();
-	Slot* X2 = exp;
+	Slot* X1 = exp;
 	if(op == "<-") {
 		std::cout<<"Es inmutable!"<<std::endl;
-		vm->immutable_object(X2);
+		vm->immutable_object(X1);
 	}
-	vm->add_slot(X1, slot_name_extended, X2);
+	vm->add_slot(object, slot_name_extended, X1);
 	std::cout<<"Se crea el slot!"<<std::endl;
-	return X1;
+	return object;
 }
 
 Slot* Linker::get_object_by_name(std::string name) {
+	std::cout<<"Nombre que entra: "<<name<<" y dir: "<<vm->search_obj(name)<<std::endl;
+	return vm->search_obj(name);
+
+	//PREGUTAR A VIKEN POR QUE EL OBJ_BY_NAME NO ENCUENTRA AL LOBBY!!!!
 	return vm->search_obj_by_name(name, atoi(id.c_str()));
 }
 
