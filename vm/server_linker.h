@@ -9,15 +9,11 @@ class Linker {
 private:
 	VM* vm;
 	std::string id;
-	std::vector<Slot*> slots;
-	std::vector<Slot*> slots_names;
 
 public:
 	Linker();
 	void setVM(VM* vm);
 	void setID(std::string id);
-	Slot* get_last_slot();
-
 
 	Slot* create_number(std::string number);
 	Slot* create_string(std::string string);
@@ -29,18 +25,13 @@ public:
 
 	Slot* get_object_by_name(std::string name);
 	bool remove_slots(std::string context, std::string slot);
-
+	virtual ~Linker();
+	
 private:
 	bool collect(std::string obj, std::string msg);
 	Slot* create_float(std::string number);
 	Slot* create_int(std::string number);
-	int get_last_created_pos();
-	Slot* get_slot(int pos);
 
-
-public:
-	void unary_message(std::string message);
-	virtual ~Linker();
 };
 
 #endif /* LINKER_H_ */

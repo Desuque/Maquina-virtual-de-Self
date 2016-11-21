@@ -69,7 +69,6 @@ bool Parser::number(std::stringstream* codigo, int* posicion, Slot** slot) {
 
 	if(its_num) {
 		*slot = linker.create_number(str);
-		std::cout<<"Memoria: "<<slot<<" y entre: "<<str<<std::endl;
 		return true;
 	}
 
@@ -674,8 +673,9 @@ bool Parser::operador(std::stringstream* codigo, int* posicion) {
 
 Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
 	std::cout<<"A ver cual de los dos, receiver: "<<receiver<<" y exp: "<<expCP<<std::endl;
+	std::cout<<"LOWER: "<<lower_or_cap<<std::endl;
 	if((receiver != NULL) && (expCP != NULL)) {
-		return linker.create_keyword_message(receiver, op, expCP);
+		return linker.create_keyword_message(receiver, lower_or_cap, expCP);
 	}
 	return NULL;
 }
@@ -704,7 +704,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 		std::string msg = get_msg();
 		if(lower_keyword(codigo, posicion)) {
 			std::string lower_key = get_msg();
-			setFlag(lower_key);
 			codigo->seekg(*posicion, std::ios::beg);
 			*codigo>>valor;
 
@@ -717,8 +716,10 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 
 				if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
+						std::cout<<"LOWET KEEEEY: "<<lower_key<<std::endl;
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
-
+						setFlag(lower_key);
+				
 						//linker.create_keyword_message(msg, lower_key);
 
 						/**

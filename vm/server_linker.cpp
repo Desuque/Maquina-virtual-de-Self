@@ -89,32 +89,12 @@ Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::str
 
 Slot* Linker::get_object_by_name(std::string name) {
 	std::cout<<"Nombre que entra: "<<name<<" y dir: "<<vm->search_obj(name)<<std::endl;
-	return vm->search_obj(name);
-
-	//PREGUTAR A VIKEN POR QUE EL OBJ_BY_NAME NO ENCUENTRA AL LOBBY!!!!
-	return vm->search_obj_by_name(name, atoi(id.c_str()));
-}
-
-
-
-
-
-
-
-
-
-Slot* Linker::get_last_slot() {
-	return get_slot(get_last_created_pos());
-}
-
-int Linker::get_last_created_pos() {
-	return slots.size()-1;
-}
-
-Slot* Linker::get_slot(int pos) {
-	Slot* aux = slots.at(pos);
-	slots.erase(slots.begin()+pos-1);
-	return aux;
+	if(name == "lobby") {
+		return vm->search_obj(name);
+	} else {
+		//PREGUTAR A VIKEN POR QUE EL OBJ_BY_NAME NO ENCUENTRA AL LOBBY!!!!
+		return vm->search_obj_by_name(name, atoi(id.c_str()));
+	}
 }
 
 bool Linker::collect(std::string obj, std::string msg) {
@@ -125,26 +105,8 @@ bool Linker::collect(std::string obj, std::string msg) {
 	return false;
 }
 
-/**
-bool Linker::create_unary_message(std::string name, std::string msg) {
-	if(collect(name, msg)) {
-		return true;
-	} else {
-		Slot* slot = get_object_by_name(name, atoi(id.c_str()));
-		if(slot == NULL) {
-			slots.push_back(slot);
-			return false;
-		}
-		Slot* last_slot = vm->unary_message(slot, msg);
-		slots.push_back(last_slot);
-		return true;
-	}
-}
-**/
-
-
-
 bool Linker::remove_slots(std::string context, std::string slot) {
+	/**
 	Slot* X0 = vm->search_obj(context);
 	Slot* X1 = vm->create_object();
 	Slot* X2 = vm->create_object();
@@ -158,7 +120,7 @@ bool Linker::remove_slots(std::string context, std::string slot) {
 	} else {
 		return true;
 	}
-
+	**/
 }
 
 Linker::~Linker() {
