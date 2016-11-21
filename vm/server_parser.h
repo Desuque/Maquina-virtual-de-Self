@@ -30,7 +30,7 @@ private:
 	Slot* process_unary_message(Slot* receiver, std::string name);
 	Slot* process_binary_message(Slot* receiver, std::string op, Slot* expCP);
 	Slot* process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP);
-	Slot* process_slot_list(Slot** object, std::string slot_name_extended, std::string op, Slot* exp);
+	Slot* process_slot_list(Slot* object, std::string slot_name_extended, std::string op, Slot* exp);
 
 	bool unary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool binary_message(std::stringstream* codigo, int* posicion, Slot** slot);

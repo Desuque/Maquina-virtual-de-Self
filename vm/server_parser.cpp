@@ -155,10 +155,12 @@ bool Parser::pipe_without_script(std::stringstream* codigo, int* posicion) {
 	char c;
 	codigo->get(c);
 	if(c == '|') {
+		*posicion = codigo->tellg();
 		//Elimino posibles espacios
 		erase_white_spaces(codigo, posicion);
 		codigo->seekg(*posicion, std::ios::beg);
 		codigo->get(c);
+		std::cout<<"EL CARACTER FINAL: "<<c<<std::endl;
 		if(c == ')') {
 			*posicion = codigo->tellg();
 			return true;
@@ -229,9 +231,9 @@ bool Parser::object_intro(std::stringstream* codigo, int* posicion) {
 	return false;
 }
 
-Slot* Parser::process_slot_list(Slot** object, std::string slot_name_extended, std::string op, Slot* exp) {
+Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
 	if(exp != NULL) {
-		return linker.create_slot(*object, slot_name_extended, op, exp);
+		return linker.create_slot(object, slot_name_extended, op, exp);
 	}
 	return NULL;
 }
@@ -251,7 +253,8 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 			std::string op = get_op();
 			if(expression(codigo, posicion, &exp)) {
 				if(final(codigo, posicion)) {
-					*slot = process_slot_list(slot, slot_name_extended, op, exp);
+					*slot = process_slot_list(*slot, slot_name_extended, op, exp);
+					*posicion = codigo->tellg();
 					return true;
 				}
 			}
@@ -272,10 +275,10 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
 		
-		if(slot_list(codigo, posicion, &object) || (empty(codigo, posicion))) {
+		if(slot_list(codigo, posicion, &object)) { //|| (empty(codigo, posicion))) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
-
+			std::cout<<"Posicion despues de slot: "<<*posicion<<std::endl;
 			bool nextSlot = true;
 			while(nextSlot) {
 				nextSlot = slot_list(codigo, posicion, &object);
@@ -686,7 +689,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 
 	Slot* slot_receiver = NULL;
 	Slot* slot_expCP = NULL;
-
+	std::cout<<"SLOT AL ENTRAR: "<<*slot<<std::endl;
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
@@ -717,7 +720,9 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 				if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
 						std::cout<<"LOWET KEEEEY: "<<lower_key<<std::endl;
+						std::cout<<"Paso final: "<<slot_receiver<<" y exp: "<<slot_expCP<<std::endl;
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
+						std::cout<<"SLOT AL SALIR: "<<*slot<<std::endl;
 						setFlag(lower_key);
 				
 						//linker.create_keyword_message(msg, lower_key);
@@ -926,6 +931,8 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 			*codigo>>valor;
 			//Guardo el slot a retornar a la VM en la lista de slots procesados
 			std::cout<<"Lo guardo y todo"<<std::endl;
+			std::cout<<"SLOT AL FINAL DEL OTODO: "<<slot<<std::endl;
+
 			slots_to_process.push_back(slot);
 			if (!codigo->eof()) {
 				script(codigo, posicion);
