@@ -13,6 +13,7 @@ typedef std::multimap<std::string,Slot*> m_slots;
 typedef std::string string;
 typedef std::vector<string> v_strings;
 typedef std::vector<int> v_ids;
+typedef std::vector<Slot*> v_slots;
 
 using namespace rapidjson;
 
@@ -23,7 +24,8 @@ class JsonWriter{
 		string write_code(string id, string code);
                 string write_files_name(v_strings names);
                 string write_garbage_ids(v_ids& ids);
-	
+		string write_slots_value(int id_base, v_slots& slots);
+
 	private:
 		void write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code, int& id, int& id_base);
 		void get_slot_attr(Slot* sl, string& name, string& value, bool& type, bool& code, int& id);

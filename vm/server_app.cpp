@@ -54,7 +54,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        //test_example();
+        test_example();
 	while (true){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
@@ -159,8 +159,9 @@ void App::test_example(){
 	vm.immutable_object(X2);
 	vm.add_slot(X1, "y", X2);
         vm.add_slot(cont, "", X1);
-	vm.keyword_message(X0, "_AddSlots", cont);
-	vm.collect();
+        vm.keyword_message(X0, "_AddSlots", cont);
+	
+        vm.collect();
       /*
         //y print.
 	Slot* X4 = vm.search_obj("y");
@@ -287,7 +288,7 @@ void App::test_example(){
         vm.add_slot(X91, "", X92);
 	vm.add_slot(X91, "", X94);
         vm.keyword_message(X90, "_AddSlots", X91);
-        
+    
         //lobby _RemoveSlots: (| prueba1. prueba2. |).
 	Slot* X96 = vm.search_obj("lobby");
 	Slot* X97 = vm.create_object();

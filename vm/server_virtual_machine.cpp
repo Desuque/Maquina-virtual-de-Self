@@ -75,7 +75,14 @@ Slot* VM::create_garbage_slot(v_ids& ids){
 string VM::get_slots(int id_base, Slot* sl){
         if (!sl)
             return empty_string;
-        string json = sl -> get_value() -> get_json_slots(id_base);   
+        if ( sl -> get_value() ->is_container()){
+            p_slots vslots = sl -> get_value() -> get_slots();
+            JsonWriter writer;
+            return writer.write_slots_value(id_base, vslots);
+        }
+        
+        string json = sl -> get_value() -> get_json_slots(id_base);
+       
         if ( json != empty_slot &&  (sl -> get_name() != garbage_name))
                 return json;
         

@@ -34,6 +34,7 @@ class Object{
 		bool is_mark();
 		bool is_base_slot(Slot* sl);
 		bool is_num_slot(Slot* sl);
+		bool is_container();
 		Slot* as_slot();
 		virtual int as_int();
 		virtual string as_string();

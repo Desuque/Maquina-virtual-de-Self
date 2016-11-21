@@ -115,7 +115,7 @@ void Slot::set_type(bool val){
 }
 
 string Slot::get_name(){
-	return this -> name;
+        return this -> name;
 }
 
 string Slot::parent_name(){

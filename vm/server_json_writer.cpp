@@ -115,3 +115,26 @@ string JsonWriter::write_garbage_ids(v_ids& ids){
 	writer.EndObject();
 	return s.GetString();
 }
+
+string JsonWriter::write_slots_value(int id_base, v_slots& slots){
+        //> get_value() -> get_json_slots(id_base)
+	StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("slots");
+	writer.StartArray();
+	
+        int size = slots.size();
+        for (int i = 0; i < size; i++ ){
+                if ((!slots[i]->is_base_slot(slots[i])) && (!slots[i]->is_num_slot(slots[i]))){
+                                string name, value;
+                                bool type, code;
+                                int id;
+                                get_slot_attr(slots[i], name, value, type, code, id);
+                                write_slot_attr(writer,name, value, type, code, id, id_base);
+                }
+        }
+	writer.EndArray();
+	writer.EndObject();
+	return s.GetString();
+}

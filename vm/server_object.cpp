@@ -30,7 +30,7 @@ bool Object::is_mark(){
 
 void Object::add_slot(Slot* sl){
         Slot* sl_rep = get_slot(sl -> get_name());
-        if (!sl_rep){
+        if (!sl_rep || (sl_rep -> get_name() == "")){
                 slots.insert({sl -> get_name(), sl});
         }else{
             if (!sl_rep -> is_immutable()){
@@ -154,6 +154,14 @@ Slot* Object::as_slot(){
 			return (it->second);
 	}
 	return NULL;
+}
+
+bool Object::is_container(){
+        for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
+		if ((it->second)->get_name() != "" && !is_base_slot(it->second))
+			return false;
+	}
+	return true;
 }
 
 Object::~Object(){}
