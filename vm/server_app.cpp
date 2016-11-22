@@ -57,7 +57,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        test_example();
+        //test_example();
 	while (true){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
@@ -67,6 +67,7 @@ void App::run(int* fin){
 					break;
 				case cod_generic:
                                         rcv_msg_generic();
+                                        save_vm(this->name);
 					break;
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
@@ -74,7 +75,6 @@ void App::run(int* fin){
 
 					break;
 			}
-			save_vm(this->name);
 		} catch (const std::exception e){ break;}
 	}
 	/*Slot* gar =  vm.collect();
