@@ -661,8 +661,8 @@ bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot)
 				std::cout<<"Este slot voy a borrar: "<<msg_slot_to_erase<<std::endl;
 
 				if(msg_slot_to_erase.size() != 0) {
-					slot_name = linker.get_object_by_name(msg_slot_to_erase);
-					*slot = linker.remove_slots(slot_name);	
+					//slot_name = linker.get_object_by_name(msg_slot_to_erase);
+					*slot = linker.remove_slots(msg_slot_to_erase);	
 					std::cout<<"Slot a borrar: "<<*slot<<std::endl;
 				}
 			}
@@ -726,17 +726,23 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 				*codigo>>valor;
 
 				if(lower_key == "_RemoveSlots") {
-					Slot* slot_remove = NULL;
 					std::cout<<"Entro a punto de borrar"<<std::endl;
 					
-					if(remove_slots(codigo, posicion, &slot_remove)) {
+					if(remove_slots(codigo, posicion, &slot_expCP)) {
 						std::cout<<"Aca ya borre todo"<<std::endl;
-						*slot = process_keyword_message(slot_receiver, lower_key, slot_remove);
+						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
+						std::cout<<"Va todo bien??"<<std::endl;
 						return true;
+					} else {
+						//Si no hay coincidencia, vuelvo el puntero a su posicion original
+						*posicion = posicionOriginal;
+						*slot = NULL;
+						clean_flag();
+						return false;
 					}
 				}
-
+				std::cout<<"No tengo que pasar por aca!"<<std::endl;
 				if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
 						std::cout<<"LOWET KEEEEY: "<<lower_key<<std::endl;
@@ -959,6 +965,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 			if (!codigo->eof()) {
 				script(codigo, posicion);
 			}
+			std::cout<<"Ultima linea!"<<std::endl;
 			return true;
 		}
 	}
@@ -973,6 +980,7 @@ Slot* Parser::parsear(std::string codigo) {
 	if(script(&scripts, &posicion)) {
 		std::cout<<"Se completa el script papa!"<<std::endl;
 		Slot* ret = slots_to_process.at(slots_to_process.size()-1);
+		std::cout<<"Algo pasa aca?"<<std::endl;
 		return ret; //HARDCODEADO, DEVUELVE SIEMPRE EL PRIMERO!!!
 	} else {
 		std::cout<<"No es un script dog, lo siento"<<std::endl;

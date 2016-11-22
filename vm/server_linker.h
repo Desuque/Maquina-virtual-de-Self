@@ -26,7 +26,7 @@ public:
 
 	Slot* get_object_by_name(std::string name);
 	Slot* get_context(std::string name);
-	Slot* remove_slots(Slot* name);
+	Slot* remove_slots(std::string slot_to_erase);
 	virtual ~Linker();
 	
 private:

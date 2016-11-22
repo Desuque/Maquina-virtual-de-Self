@@ -72,13 +72,26 @@ Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::str
 	return object;
 }
 
-Slot* Linker::remove_slots(Slot* name) {
+Slot* Linker::remove_slots(std::string slot_to_erase) {
 	        //lobby _RemoveSlots: (| prueba1. prueba2. |).
 	
 	Slot* X1 = vm->create_object();
-	vm->add_slot(X1, "", name);
+	Slot* X2 = vm->create_object();
+	Slot* X3 = vm->create_string(slot_to_erase);
+	vm->add_slot(X2, slot_to_erase, X3);
+	vm->add_slot(X1, "", X2);
 
-	return X1;    
+	return X1;  
+/**
+Slot* X102 = vm.search_obj("lobby"); 
+Slot* X103 = vm.create_object();
+ Slot* X104 = vm.create_object();
+Slot* X105 = vm.create_string("str"); 
+vm.add_slot(X104, "str", X105); 
+vm.add_slot(X103, "", X104); 
+Slot* algo = vm.keyword_message(X102, "_RemoveSlots", X103); std::cout << "REMOVE " << vm.get_slots(0,algo) << std::endl;
+**/
+
 	/**
 	Slot* X96 = vm.search_obj("lobby");
 	Slot* X97 = vm.create_object();
