@@ -192,77 +192,7 @@ void MyArea::get_it_event(){
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
 
   proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
-  /*uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
-  
-  std::cout << codigoMensaje << std::endl;
-
-  switch(codigoMensaje) {
-    case 5: { 
-      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
-      std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
-      std::string json = proxyServer->recibir(tamMensaje);
-      std::cout << json << std::endl;
-      std::vector<InterfaceSlot*> i_slots;
-      JsonReader slots_reader;
-      slots_reader.read(i_slots, json);
-      if(i_slots.size()){
-        Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
-        morphs.push_back(nuevoMorph);
-      }
-      break;
-    }
-    case 3: {
-      // recibe el tamanio del mensaje, cambiar nombre
-      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
-      std::string json = proxyServer->recibir(tamMensaje);
-      std::cout << json << std::endl;
-      std::vector<InterfaceSlot*> i_slots;
-      JsonReader slots_reader;
-      slots_reader.read(i_slots, json);
-
-      int size = 1;
-      //int size = i_slots.size();
-      for (int i = 0; i < size ; i++){
-        i_slots[i] -> print_attr();
-        actual->agregarSlot(i_slots[i]);
-      }
-      break;
-    }
-    case 4: {
-      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
-      std::string json = proxyServer->recibir(tamMensaje);
-      std::cout << json << std::endl;
-      std::vector<InterfaceSlot*> i_slots;
-      JsonReader slots_reader;
-      slots_reader.read(i_slots, json);
-
-      int size = 1;
-      //int size = i_slots.size();
-      for (int i = 0; i < size ; i++){
-        i_slots[i] -> print_attr();
-        //actual->agregarSlot(i_slots[i]);
-        borrarSlot(actual, i_slots[i]->get_id(), referencias);
-      }
-      break;
-    }     
-    case 0: {
-      std::cout << "el server devolvio un error " <<
-       " cuando quizo ejecutar este codigo:" 
-       << textoAEnviar << std::endl;
-       break;
-    }
-    default: { 
-      std::cout << "error en default switch MyArea::do_it_event" << std::endl;
-      std::cout << "recibio: " << codigoMensaje << std::endl;
-      break;
-    }
-  }*/
-  queue_draw();
 }
-
-
-
-
 
 void MyArea::do_it_event(){
 
@@ -277,64 +207,6 @@ void MyArea::do_it_event(){
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
 
   proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
-  /*uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
-  
-  std::cout << codigoMensaje << std::endl;
-
-  switch(codigoMensaje) {
-    case 5: { 
-      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
-      std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
-      std::string json = proxyServer->recibir(tamMensaje);
-      std::cout << json << std::endl;
-      std::vector<InterfaceSlot*> i_slots;
-      JsonReader slots_reader;
-      slots_reader.read(i_slots, json);
-      if(i_slots.size())
-        std::cout << i_slots[0]->get_name() << std::endl;
-      break;
-    }
-    case 3: {
-      // recibe el tamanio del mensaje, cambiar nombre
-      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
-      std::string json = proxyServer->recibir(tamMensaje);
-      std::cout << json << std::endl;
-      std::vector<InterfaceSlot*> i_slots;
-      JsonReader slots_reader;
-      slots_reader.read(i_slots, json);
-
-      int size = 1;
-      //int size = i_slots.size();
-      for (int i = 0; i < size ; i++){
-        i_slots[i] -> print_attr();
-        actual->agregarSlot(i_slots[i]);
-      }
-      break;
-    }
-    case 4: {
-      uint32_t tamMensaje = proxyServer->recibirCodigo(4);
-      std::string json = proxyServer->recibir(tamMensaje);
-      std::cout << json << std::endl;
-      std::vector<InterfaceSlot*> i_slots;
-      JsonReader slots_reader;
-      slots_reader.read(i_slots, json);
-
-      int size = 1;
-      //int size = i_slots.size();
-      for (int i = 0; i < size ; i++){
-        i_slots[i] -> print_attr();
-        //actual->agregarSlot(i_slots[i]);
-        borrarSlot(actual, i_slots[i]->get_id(), referencias);
-      }
-      break;
-    }      
-    default: { 
-      std::cout << "error en default switch MyArea::do_it_event" << std::endl;
-      std::cout << "recibio: " << codigoMensaje << std::endl;
-      break;
-    }
-  }*/
-  queue_draw();    
 }
 
 void MyArea::close_event(){
@@ -583,7 +455,7 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
     if(actual != nullptr){
       proxyServer->enviar(8,1);
       JsonWriter jsonwriter;
-      std::string json = jsonwriter.write_position(actual->get_id_to_string(), (event->x+offXMouse), (event->y+offYMouse));
+      std::string json = jsonwriter.write_position(actual->get_id(), (event->x+offXMouse), (event->y+offYMouse));
       proxyServer->enviarJson(json);
       //actual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
     }

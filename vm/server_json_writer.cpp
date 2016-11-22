@@ -81,25 +81,26 @@ string JsonWriter::write_code(string id, string code){
 	return s.GetString();
 }
 
-string float_to_string(float aFloat){
+string double_to_string(double aDouble){
 	std::ostringstream ss;
-	ss << aFloat;
+	ss << aDouble;
 	return ss.str();
 }
 
-string JsonWriter::write_position(string id, float posX, float posY){
+string JsonWriter::write_position(int id, double posX, double posY){
 	StringBuffer s;
 	Writer<StringBuffer> writer(s);
 	writer.StartObject();
 	writer.Key("id");
-	writer.String(id.c_str());
+	writer.Int(id);
 	writer.String("posX");
-	writer.String(float_to_string(posX).c_str());
+	writer.Double(posX);
 	writer.String("posY");
-	writer.String(float_to_string(posY).c_str());
+	writer.Double(posY);
 	writer.EndObject();
 	return s.GetString();
 }
+
 
 string JsonWriter::write_files_name(v_strings names){
         StringBuffer s;

@@ -8,6 +8,7 @@
 
 static const int cod_get_slots = 2;
 static const int cod_generic = 5;
+static const int cod_update_position = 8;
 
 App::App(){
 	parser.setVM(&vm);
@@ -62,17 +63,17 @@ void App::run(int* fin){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
-				case 8:{
+				case cod_update_position: {
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
-					server -> update_lobby_data(this,8 , json, 0);
+					server -> update_lobby_data(this,cod_update_position , json, 0);
 					break;
 				}
 				case cod_get_slots:
-                                        rcv_msg_get_slots();
+                    rcv_msg_get_slots();
 					break;
 				case cod_generic:
-                                        rcv_msg_generic();
+                    rcv_msg_generic();
 					break;
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;

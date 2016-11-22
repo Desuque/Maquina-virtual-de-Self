@@ -13,7 +13,7 @@ class JsonReader{
 		void read_code(string json, string& id, string& code);
         void read_names(string json, v_strings& names);
         void read_garbage_ids(string json, v_ints& ids);
-        void read_position(string json, int& id, int& posX, int& posY); 
+        void read_position(string json, int& id, double& posX, double& posY); 
 };
 
 #endif

@@ -72,7 +72,8 @@ void Cliente::run() {
 				std::cout << json << std::endl;
 				
 				JsonReader jsonReader;
-				int id, posX, posY;
+				int id;
+				double posX, posY;
 				jsonReader.read_position(json, id, posX, posY);
 				std::cout << posX << std::endl;
 				std::cout << posY << std::endl;

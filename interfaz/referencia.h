@@ -46,20 +46,6 @@ public:
 		//std::vector<Referencia*> refs = this->apuntoAMorph->referencias;
 		this->apuntoAMorph->borrarReferencia(this);
 	}
-
-	//PREGUNTAR POR QUE NO ANDA EL OPERADOR DE MORPH
-	/*bool operator==(const Referencia& rhs) const {
-		if ((rhs.posX >= this->posX) && (rhs.posY >= this->posY)
-			&& (rhs.posX <= ((this->posX) + this->width)) 
-			&& (rhs.posY <= ((this->posY) + this->height))){
-			return true;
-		}
-		return false;
-	}
-
-	bool operator!=(const Referencia& rhs) const { 
-		return !(*this==rhs);
-	}*/
 	
 	void actualizar_posicion(double x, double y){
 		this->posX = x;
