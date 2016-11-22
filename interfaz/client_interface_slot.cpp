@@ -45,3 +45,7 @@ bool InterfaceSlot::get_type(){
 int InterfaceSlot::get_id(){
 	return this->id;
 }
+
+int InterfaceSlot::get_id_base(){
+	return this->id_base;
+}

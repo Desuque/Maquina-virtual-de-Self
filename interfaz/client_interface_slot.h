@@ -13,7 +13,7 @@ class InterfaceSlot{
 		string name;
 		string value;
 		int id;
-                int id_base;
+        int id_base;
 		
 	public:
 		InterfaceSlot();
@@ -22,6 +22,7 @@ class InterfaceSlot{
 		string get_name();
 		string get_value();
 		int get_id();
+		int get_id_base();
 		bool has_code();
 		bool get_type();
 };
