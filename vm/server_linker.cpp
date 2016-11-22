@@ -53,11 +53,6 @@ Slot* Linker::create_binary_message(Slot* receiver, std::string op, Slot* expCP)
 }
 
 Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
-	std::cout<<"Devuelvo bien: "<<lower_or_cap<<std::endl;
-	//vm->keyword_message(X0, "_AddSlots:", X1);
-	std::cout<<"En el keyword tengo que tener al lobby: "<<receiver<<std::endl;
-	std::cout<<"Este expCP tiene que tener el object: "<<expCP<<std::endl;
-	
 	return vm->keyword_message(receiver, lower_or_cap, expCP);
 }
 
@@ -66,14 +61,14 @@ Slot* Linker::create_object() {
 }
 
 Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
-	std::cout<<"Direccion dle object: "<<object<<std::endl;
-	Slot* X1 = exp;
+	Slot* X1 = vm->create_object();
+	Slot* X2 = exp;
 	if(op == "<-") {
-		std::cout<<"Es inmutable!"<<std::endl;
-		vm->immutable_object(X1);
+		vm->immutable_object(X2);
 	}
-	vm->add_slot(object, slot_name_extended, X1);
-	std::cout<<"Se crea el slot!"<<std::endl;
+	vm->add_slot(X1, slot_name_extended, X2);
+	vm->add_slot(object, "", X1);
+
 	return object;
 }
 
