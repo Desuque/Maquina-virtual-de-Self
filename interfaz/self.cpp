@@ -26,12 +26,7 @@ int main(int argc, char *argv[])
 				return 0;
 			}
 		}
-	} catch (const std::exception &e){
-
-	}
-	Cliente cliente(proxy);
-
-
+	
 	auto app = Gtk::Application::create();
 
   	auto refBuilder = Gtk::Builder::create();
@@ -53,10 +48,21 @@ int main(int argc, char *argv[])
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 	myArea->setProxy(&proxy);
 	myArea->iniciar();
+	
+	Cliente cliente(proxy, myArea);
+	cliente.start();
 
   	app->run(*window);
+
+  	proxy.cerrarConexion();
+  	cliente.join();
 	
 	return 0;
+
+	} catch (const std::exception &e){
+		std::cout << "Error de conexion con el server" << std::endl;
+		return 0;
+	}
 }
 
 void example(){

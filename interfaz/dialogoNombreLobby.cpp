@@ -1,5 +1,5 @@
 #include "dialogoNombreLobby.h"
-
+#include <gtkmm/entry.h>
 DialogoNombreLobby::DialogoNombreLobby(){}
 
 DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject, 	
@@ -9,6 +9,11 @@ DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject,
 	Gtk::Button* buttonOk = nullptr; 
 	m_builder->Gtk::Builder::get_widget("button10", buttonOk);
     buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&DialogoNombreLobby::botonOkNombre));
+
+    Gtk::Button* buttonSalir = nullptr; 
+	m_builder->Gtk::Builder::get_widget("button11", buttonSalir);
+    buttonSalir->signal_clicked().connect(sigc::mem_fun(*this,&DialogoNombreLobby::botonSalir));
+
 }
 
 DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject, 
@@ -31,7 +36,18 @@ void DialogoNombreLobby::botonOkNombre(){
 	if (respuesta == 0){
 		// el lobby ya existe lanzar un error y volver a pedir 
 		// el nombre.
+		//consultar
+		//entryNombreLobby->override_background_color(Gdk::RGBA(0.0, 1.0, 0.0, 1.0), Gtk::STATE_FLAG_NORMAL);
+		entryNombreLobby->set_text("NOMBRE EXISTENTE REINICIE LA APP");
+		std::cout << "ERROR: Nombre de lobby existente, por favor reinicie la aplicacion\n";
+		proxy->cerrarConexion();
+		return;
 	}
+	hide();
+}
+
+void DialogoNombreLobby::botonSalir(){
+	proxy->cerrarConexion();
 	hide();
 }
 

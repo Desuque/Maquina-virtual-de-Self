@@ -55,8 +55,7 @@ std::string ListaDeLobbys::obtenerLobbySeleccionado(){
     Gtk::TreeModel::iterator iter = refSelection->get_selected();
     if(iter) {
       Glib::ustring s = (*iter)[m_Columns.m_col_name];
-      std::string s2 = s;
-      return s2;
+      return std::string(s);
     }
   }
   return "";

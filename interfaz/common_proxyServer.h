@@ -17,13 +17,16 @@ class ProxyServer : public Proxy {
 		std::string recibirJson();
 		void enviar(uint32_t entero, size_t cantidad);
 		uint32_t recibirCodigo(size_t cantidad);
+		// habria que sacarla
 		std::string recibirSlotsDe(std::string lobbyId);
+		void pedirSlotsDe(std::string idObjeto);
 		uint32_t recibirCodigoMensaje(size_t cantidad);
-		uint32_t enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar);
+		void enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar);
 		std::string agregarSlotA(std::string idObjeto, std::string textoAEnviar);
 		ProxyServer(Socket& socket);
 		ProxyServer(ProxyServer&& other);
 		ProxyServer& operator=(ProxyServer&& other);
+		void cerrarConexion();
 		~ProxyServer();
 };
 

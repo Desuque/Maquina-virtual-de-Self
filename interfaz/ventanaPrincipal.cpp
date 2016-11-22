@@ -46,7 +46,3 @@ VentanaPrincipal::VentanaPrincipal(BaseObjectType* cobject, const Glib::RefPtr<G
 	pImage->show_all();
 	get_content_area()->pack_start(*pImage);*/
 }
-
-void VentanaPrincipal::on_button_close(){
-  std::cout << "cerraron " << std::endl;
-}

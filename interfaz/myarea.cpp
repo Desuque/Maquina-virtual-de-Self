@@ -67,19 +67,17 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 void MyArea::iniciar(){
   if(!proxyServer) std::cout << "Error: el socket no fue seteado" << std::endl;
   
+  std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
   Morph* lobby = new Morph("lobby",0,10.,10.,m_TextView, textViewCodAsociado);
   actual = lobby;
-  lNombreObjeto -> set_text(actual->nombreParaMostrar);
-  actual -> mostrarDescripcionMorph();
+  lNombreObjeto->set_text(actual->nombreParaMostrar);
+  actual->mostrarDescripcionMorph();
   morphs.push_back(lobby);
-
-  std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
   std::vector<InterfaceSlot*> i_slots;
   JsonReader slots_reader;
   slots_reader.read(i_slots, infoSlots);
-
 
   int size = i_slots.size();
   for (int i = 0; i < size ; i++){
@@ -104,34 +102,25 @@ void MyArea::liberarMemoria(){
   }
 }
 
-
-MyArea::~MyArea()
-{
-}
+MyArea::~MyArea(){}
 
 void MyArea::botonGuardarNuevoSlotEvent(){
-  
-  if (actual->nombreObjeto != "lobby"){
-    std::cout << "Error: solo puedes agregar slots a lobby de esa forma. \n"
-              << "Prueba de esta forma por la consola del obejto:  \n"
-              << "   <nombre del objeto> _AddSlots: (| a <- 8 . |) .";
-    sigcButtonGuardar.disconnect();
-    return;
-  }
 
   Gtk::TextView* textSlot = nullptr;
   m_builder-> Gtk::Builder::get_widget("textview3", textSlot);
   if (textSlot == nullptr) std::cout << "error" << std::endl;
   std::string textoDeSlot = textSlot->get_buffer()->get_text();
 
-  std::string textoAEnviar =  "lobby _AddSlots: (| ";
+  std::string textoAEnviar = actual->nombreObjeto;
+  textoAEnviar +=  " _AddSlots: (| ";
   textoAEnviar += textoDeSlot;
   textoAEnviar += " |) .";
 
   std::cout << textoAEnviar << std::endl;
   //std::cout << "lobby _AddSlots: (| a <- 8 . |) ." << std::endl;
 
-  uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  /*uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
 
   uint32_t tamMensaje = proxyServer->recibirCodigo(4);
   std::string json = proxyServer->recibir(tamMensaje);
@@ -145,7 +134,7 @@ void MyArea::botonGuardarNuevoSlotEvent(){
   for (int i = 0; i < size ; i++){
     i_slots[i] -> print_attr();
     actual->agregarSlot(i_slots[i]);
-  }
+  }*/
 
   sigcButtonGuardar.disconnect();
   queue_draw();
@@ -183,12 +172,15 @@ void borrarSlot(Morph* actual,int idSlot, std::vector<Referencia*>& referencias)
   }
 }
 
+void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
+  if(i_slots.size()){
+    Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
+    morphs.push_back(nuevoMorph);
+    queue_draw();
+  }
+}
+
 void MyArea::get_it_event(){
-  /*Morph* morph = new Morph("que?",200,200,m_TextView,textViewCodAsociado);
-  actual = morph->get_it();
-  //morph->nombreObjeto=objeto;
-  morphs.push_back(actual); 
-  actual -> mostrarDescripcionMorph();*/
   std::string textoAEnviar = actual->get_it();
   
   if (textoAEnviar == ""){
@@ -196,7 +188,8 @@ void MyArea::get_it_event(){
     return;
   }
 
-  uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  /*uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
   
   std::cout << codigoMensaje << std::endl;
 
@@ -260,7 +253,7 @@ void MyArea::get_it_event(){
       std::cout << "recibio: " << codigoMensaje << std::endl;
       break;
     }
-  }
+  }*/
   queue_draw();
 }
 
@@ -282,7 +275,8 @@ void MyArea::do_it_event(){
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
   std::cout << "json a enviar: " << json << std::endl;*/
 
-  uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  /*uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
   
   std::cout << codigoMensaje << std::endl;
 
@@ -295,8 +289,6 @@ void MyArea::do_it_event(){
       std::vector<InterfaceSlot*> i_slots;
       JsonReader slots_reader;
       slots_reader.read(i_slots, json);
-      /*Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),0,250.,550.,m_TextView, textViewCodAsociado);
-      morphs.push_back(nuevoMorph);*/
       if(i_slots.size())
         std::cout << i_slots[0]->get_name() << std::endl;
       break;
@@ -340,8 +332,7 @@ void MyArea::do_it_event(){
       std::cout << "recibio: " << codigoMensaje << std::endl;
       break;
     }
-  }
-  
+  }*/
   queue_draw();    
 }
 
@@ -406,6 +397,72 @@ bool MyArea::on_button_release_event(GdkEventButton *event)
   return false;
 }
 
+void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
+  if(i_slots.size() == 0){
+    return;
+  }
+  Morph* aux = nullptr;
+  for (int i =0; i < morphs.size() ; ++i){
+    //if((morphs[i]->tieneElMismoIdQueEsteSlot(i_slots[0]))){
+    if((morphs[i]->id == i_slots[0]->get_id_base())){
+      aux = morphs[i];
+    }
+  }
+  if(aux){
+    //int size = 1;
+    int size = i_slots.size();
+    for (int i = 0; i < size ; i++){
+      i_slots[i] -> print_attr();
+      aux->agregarSlot(i_slots[i]);
+    }
+  }
+  queue_draw();
+  /*int size = 1;
+  //int size = i_slots.size();
+  for (int i = 0; i < size ; i++){
+    i_slots[i] -> print_attr();
+    myArea->agregarSlot(i_slots[i]);
+  }*/
+}
+
+void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
+  if(i_slots.size() == 0){
+    return;
+  }
+  /*int size = 1;
+  //int size = i_slots.size();
+  for (int i = 0; i < morphs.size() ; ++i){
+    if((morphs[i]->tieneElMismoIdQueEsteSlot(i_slots[0]))){
+      i_slots[0] -> print_attr();
+      borrarSlot(morphs[i], i_slots[0]->get_id(), referencias);
+    }
+  }*/
+  Morph* aux = nullptr;
+  for (int i =0; i < morphs.size() ; ++i){
+    //if((morphs[i]->tieneElMismoIdQueEsteSlot(i_slots[0]))){
+    if((morphs[i]->id == i_slots[0]->get_id_base())){
+      aux = morphs[i];
+    }
+  }
+  if(aux){
+    //int size = 1;
+    int size = i_slots.size();
+    for (int i = 0; i < size ; i++){
+      i_slots[i] -> print_attr();
+      aux->agregarSlot(i_slots[i]);
+      borrarSlot(aux, i_slots[i]->get_id(), referencias);
+    }
+  }
+  queue_draw();
+  /*int size = 1;
+  //int size = i_slots.size();
+  for (int i = 0; i < size ; i++){
+    i_slots[i] -> print_attr();
+    myArea->agregarSlot(i_slots[i]);
+  }*/
+}
+
+
 // Mouse button pressed : process mouse button event
 bool MyArea::on_button_press_event(GdkEventButton *event)
 {
@@ -447,7 +504,9 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
           slot->setReferencia(referenciaNueva);
 
           if (!(slot->elValorEsPrimitivo())){
-            std::string infoSlots = proxyServer->recibirSlotsDe(slot->get_id_to_string());
+            
+            proxyServer->pedirSlotsDe(slot->get_id_to_string());
+            /*std::string infoSlots = proxyServer->recibirSlotsDe(slot->get_id_to_string());
 
             //DECODIFICACION DEL JSON (CLIENTE)
             std::vector<InterfaceSlot*> i_slots;
@@ -458,7 +517,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
             for (int i = 0; i < size ; i++){
               i_slots[i] -> print_attr();
               nuevoMorph->agregarSlot(i_slots[i]);
-            }
+            }*/
           }
         }
         offXMouse = actual->posX - event->x;
@@ -514,10 +573,10 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
     int XMouse=event->x;
     int YMouse=event->y;
     if(actual != nullptr){
-      actual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse ) );
+      actual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
     }
     if(refenciaActual != nullptr){
-      refenciaActual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse ) );
+      refenciaActual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
     }
     // Update view
     queue_draw();

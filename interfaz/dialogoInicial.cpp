@@ -27,6 +27,12 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
   	if (botonCargarLobby == nullptr) std::cout << "error" << std::endl;
     botonCargarLobby->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::cargarLobbyClick));
     //this->signal_delete_event().connect(sigc::mem_fun(*this,&DialogoInicial::cerrarDialogoClick));
+
+    
+    Gtk::Button* botonSalir = nullptr;
+	m_builder-> Gtk::Builder::get_widget("button13", botonSalir);
+  	if (botonSalir == nullptr) std::cout << "error glade" << std::endl;
+    botonSalir->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::salirClick));
 }
 
 DialogoInicial::DialogoInicial(BaseObjectType* cobject, 
@@ -35,12 +41,19 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
 
 }
 
+void DialogoInicial::salirClick(){
+    std::cout << "Click en salir dialogo" << std::endl;
+	proxy->cerrarConexion();
+	hide();
+}
+
 void DialogoInicial::nuevoLobbyClick(){
     std::cout << "Click en nuevo lobby" << std::endl;
     //Gtk::Dialog dialogoNombreLobby = nullptr;
 	//m_builder->get_widget("dialog2", dialogoNombreLobby);
     proxy->enviar(CREAR_MAQUINA_VIRTUAL,sizeof(char));
 	hide();
+	// proxy->recibirCodigo(1);
 
 	DialogoNombreLobby* dialogNombre = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog2", dialogNombre);
@@ -52,7 +65,7 @@ void DialogoInicial::cargarLobbyClick(){
     std::cout << "Click en cargar lobby" << std::endl;
     proxy->enviar(CARGAR_MAQUINA_VIRTUAL,sizeof(char));
     std::string json = proxy->recibirJson();
-    //std::cout << json << std::endl;
+    std::cout << json << std::endl;
 	std::vector<string> names;
 	JsonReader reader;
 	reader.read_names(json, names);

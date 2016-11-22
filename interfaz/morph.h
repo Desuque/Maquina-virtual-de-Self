@@ -68,6 +68,7 @@ class Morph : public Gtk::DrawingArea{
 	    	return !(*this==rhs);
 	    }
 	    bool tieneElMismoIdQueEsteSlot(Slot* unSlot);
+	    bool tieneElMismoIdQueEsteSlot(InterfaceSlot* unSlot);
 	    void agregarReferencia(Referencia* unaReferencia);
 
 		virtual ~Morph();

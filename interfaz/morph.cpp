@@ -158,14 +158,12 @@ std::string Morph::get_id_to_string(){
 std::string Morph::get_it(){
 	if (!m_TextView) std::cout << "error" << std::endl;
 	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
-	std::cout << textoAEnviar << std::endl;
 	return textoAEnviar;
 }
 
 std::string Morph::do_it(){
 	if (!m_TextView) std::cout << "error" << std::endl;
 	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
-	std::cout << textoAEnviar << std::endl;
 	return textoAEnviar;
 }
 
@@ -174,6 +172,11 @@ void Morph::actualizarAlturaMorph(size_t alturaDeSlot){
 }
 
 void Morph::agregarSlot(InterfaceSlot* interface_slot){
+	for(int i=0 ; i < slots.size() ; ++i){
+		if(slots[i]->get_name()==interface_slot->get_name()){
+			return;
+		}
+	}
 	Slot* slot = new Slot(interface_slot,this->posX, (this->posY)+(this->height), this->width, this->height);
 	this->actualizarAlturaMorph(slot->get_height());
 	slots.push_back(slot);
@@ -230,7 +233,9 @@ bool Morph::tieneElMismoIdQueEsteSlot(Slot* unSlot){
 	return (unSlot->get_id() == this->id);
 }
 
-
+bool Morph::tieneElMismoIdQueEsteSlot(InterfaceSlot* unSlot){
+	return (unSlot->get_id() == this->id);
+}
 
 void Morph::mostrarDescripcionMorph(){
 	//Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;

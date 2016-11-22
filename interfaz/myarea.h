@@ -50,7 +50,9 @@ public:
   void agregarSlot_event();
   void botonGuardarNuevoSlotEvent();
   void liberarMemoria();
-
+  void agregarSlots(std::vector<InterfaceSlot*> i_slots);
+  void borrarSlots(std::vector<InterfaceSlot*> i_slots);
+  void crearMorphs(std::vector<InterfaceSlot*> i_slots);
   void setProxy(ProxyServer* proxy){
     this->proxyServer = proxy;
   }

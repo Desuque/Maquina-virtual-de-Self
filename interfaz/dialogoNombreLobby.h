@@ -19,6 +19,7 @@ class DialogoNombreLobby : public Gtk::Dialog {
 			this->proxy = proxy;
 		}
 		void botonOkNombre();
+		void botonSalir();
 		virtual ~DialogoNombreLobby();
 };
 

@@ -54,7 +54,7 @@ uint32_t ProxyServer::enviarString(std::string textoAEnviar){
 	return recibirCodigoMensaje(1);
 }
 
-uint32_t ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar){
+void ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar){
 	// modificar cuando sea generico
 	
     this->enviar(5,sizeof(char));
@@ -79,8 +79,8 @@ uint32_t ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string te
 
 	sktCliente.send(textoAEnviar.c_str(), textoAEnviar.length());
 
-	//std::cout << recibir(1) << std::endl;
-	return recibirCodigoMensaje(1);
+	//return recibirCodigoMensaje(1);
+	
 	/*tamMensaje = 0;
 	bzero(buff,5);
 	sktCliente.receive(buff, sizeof(tamMensaje));
@@ -136,12 +136,16 @@ std::string ProxyServer::agregarSlotA(std::string idObjeto, std::string textoAEn
 
 	/*char infoSlots[tamMensaje+1];
 	bzero(infoSlots,tamMensaje+1);*/
-	char infoSlots[1024];
-	bzero(infoSlots,1024);
+	//char infoSlots[1024];
+	char* infoSlots = new char[tamMensaje+1];
+	bzero(infoSlots,tamMensaje+1);
 
 	sktCliente.receive(infoSlots,tamMensaje);
 
-	return std::string(infoSlots);
+	std::string str_infoSlots = std::string(infoSlots);
+
+	delete[] infoSlots;
+	return str_infoSlots;
 }
 
 std::string ProxyServer::recibirJson(){
@@ -181,6 +185,8 @@ std::string ProxyServer::recibirSlotsDe(std::string objeto){
 
 	sktCliente.send(objeto.c_str(), objeto.length());
 
+	recibirCodigoMensaje(1);
+
 	tamMensaje = 0;
 	bzero(buff,5);
 	sktCliente.receive(buff, sizeof(tamMensaje));
@@ -197,6 +203,36 @@ std::string ProxyServer::recibirSlotsDe(std::string objeto){
 	return std::string(infoSlots);
 }
 
+void ProxyServer::pedirSlotsDe(std::string idObjeto){
+	char buff[5];
+	bzero(buff,5);
+
+    this->enviar(PEDIR_SLOTS,sizeof(char));
+
+	uint32_t tamMensaje = idObjeto.length();
+	tamMensaje = htonl(tamMensaje);
+	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
+	
+	sktCliente.send(buff,sizeof(uint32_t));
+
+	sktCliente.send(idObjeto.c_str(), idObjeto.length());
+
+	/*tamMensaje = 0;
+	bzero(buff,5);
+	sktCliente.receive(buff, sizeof(tamMensaje));
+	memcpy(&tamMensaje, buff,sizeof(tamMensaje));
+	tamMensaje = ntohl(tamMensaje);
+
+	 hacer new
+	char infoSlots[tamMensaje+1];
+	bzero(infoSlots,tamMensaje+1);
+	
+	sktCliente.receive(infoSlots,tamMensaje);
+
+	return std::string(infoSlots);*/
+
+}
+
 
 void ProxyServer::enviar(uint32_t entero, size_t cantidad){
 	Proxy::enviarCantidad(sktCliente, entero, cantidad);
@@ -208,6 +244,10 @@ std::string ProxyServer::recibir(size_t cantidad){
 
 uint32_t ProxyServer::recibirCodigo(size_t cantidad){
 	return Proxy::recibirCantidad(sktCliente,cantidad);
+}
+
+void ProxyServer::cerrarConexion(){
+	sktCliente.shutdown();
 }
 
 ProxyServer::~ProxyServer(){
