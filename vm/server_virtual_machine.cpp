@@ -59,9 +59,6 @@ Slot* VM::collect(){
 	lobby -> get_value() -> mark_slots();
 	v_ids collected_ids;
         garbage_collector(collected_ids);
-        /*int size = collected_ids.size();
-        for (int i = 0; i< size ; i++)
-                std::cout << "Eliminado " << collected_ids[i] << std::endl;*/
         return create_garbage_slot(collected_ids);
 }
 
@@ -328,6 +325,8 @@ Slot* VM::search_obj_id(int id){
 }
 
 Slot* VM::search_obj_by_name(string name, int context){
+        if ( name == global_obj)
+            return slots[idx_global];
         Slot* sl_context = search_obj_id(context);
         Slot* my_slot = sl_context -> get_value() -> get_slot(name);
         if (my_slot)
