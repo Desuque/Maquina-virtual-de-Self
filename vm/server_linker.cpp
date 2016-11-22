@@ -72,6 +72,30 @@ Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::str
 	return object;
 }
 
+Slot* Linker::remove_slots(Slot* name) {
+	        //lobby _RemoveSlots: (| prueba1. prueba2. |).
+	
+	Slot* X1 = vm->create_object();
+	vm->add_slot(X1, "", name);
+
+	return X1;    
+	/**
+	Slot* X96 = vm.search_obj("lobby");
+	Slot* X97 = vm.create_object();
+        Slot* X98 = vm.create_object();
+	Slot* X99 = vm.create_string("prueba1");
+	Slot* X100 = vm.create_object();
+	Slot* X101 = vm.create_string("prueba2");
+        
+        vm.add_slot(X98, "prueba1", X99);
+        vm.add_slot(X100, "prueba2", X101);
+        vm.add_slot(X97, "", X98);
+	vm.add_slot(X97, "", X100);
+        vm.keyword_message(X96, "_RemoveSlots", X97);
+**/
+}
+
+
 Slot* Linker::get_object_by_name(std::string name) {
 	return vm->search_obj_by_name(name, atoi(id.c_str()));
 }
@@ -82,24 +106,6 @@ Slot* Linker::get_context(std::string name) {
 
 Slot* Linker::collect() {
 	return vm->collect();
-}
-
-bool Linker::remove_slots(std::string context, std::string slot) {
-	/**
-	Slot* X0 = vm->search_obj(context);
-	Slot* X1 = vm->create_object();
-	Slot* X2 = vm->create_object();
-	Slot* X3 = vm->create_string(slot);
-	vm->add_slot(X2, slot, X3);
-	vm->add_slot(X1, "", X2);
-	slots.push_back(vm->keyword_message(X0, "_RemoveSlots", X1));
-
-	if(slots.at(get_last_created_pos()) == NULL) {
-		return false;
-	} else {
-		return true;
-	}
-	**/
 }
 
 Linker::~Linker() {

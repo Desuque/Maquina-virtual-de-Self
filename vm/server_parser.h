@@ -66,7 +66,7 @@ private:
 	bool pipe_without_script(std::stringstream* codigo, int* posicion);
 	bool pipe_with_script(std::stringstream* codigo, int* posicion);
 
-	bool removeSlots(std::stringstream* codigo, int* posicion, std::string context);
+	bool remove_slots(std::stringstream* codigo, int* posicion, Slot** slot);
 	void setFlag(std::string valor);
 	void set_msg(std::string msg);
 	std::string get_msg();

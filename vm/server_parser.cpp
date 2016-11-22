@@ -595,34 +595,6 @@ bool Parser::cap_keyword(std::stringstream* codigo, int* posicion) {
 	return false;
 }
 
-bool Parser::removeSlots(std::stringstream* codigo, int* posicion, std::string context) {
-	int posicionOriginal = *posicion;
-
-	//Leo todo el valor desde la posicion indicada
-	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-
-	bool erase;
-	if(object_intro(codigo, posicion)) {
-		if(name(codigo, posicion)) {
-			if(final(codigo, posicion)) {
-				std::string slot = get_msg();
-				erase = linker.remove_slots(context, slot);
-				if(erase == false) {
-					setFlag("Error");
-				}
-			}
-		}
-		if(object_end(codigo, posicion)) {
-			return true;
-		}
-	}
-
-	//Si no hay coincidencia, vuelvo el puntero a su posicion original
-	*posicion = posicionOriginal;
-	return false;
-}
-
 bool Parser::operador(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 	//Elimino posibles espacios
@@ -673,6 +645,39 @@ bool Parser::operador(std::stringstream* codigo, int* posicion) {
 	return false;
 }
 
+bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot) {
+	int posicionOriginal = *posicion;
+
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+	
+	Slot* slot_name = NULL;
+
+	if(object_intro(codigo, posicion)) {
+		if(name(codigo, posicion)) {
+			if(final(codigo, posicion)) {
+				
+				std::string msg_slot_to_erase = get_msg();
+				std::cout<<"Este slot voy a borrar: "<<msg_slot_to_erase<<std::endl;
+
+				if(msg_slot_to_erase.size() != 0) {
+					slot_name = linker.get_object_by_name(msg_slot_to_erase);
+					*slot = linker.remove_slots(slot_name);	
+					std::cout<<"Slot a borrar: "<<*slot<<std::endl;
+				}
+			}
+		}
+		std::cout<<"Hasta aca llega"<<std::endl;
+		if(object_end(codigo, posicion)) {
+			std::cout<<"Object end se cumple"<<std::endl;
+			return true;
+		}
+	}
+
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
 
 Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
 	std::cout<<"A ver cual de los dos, receiver: "<<receiver<<" y exp: "<<expCP<<std::endl;
@@ -707,15 +712,30 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 		std::string msg = get_msg();
 		if(lower_keyword(codigo, posicion)) {
 			std::string lower_key = get_msg();
+			
+			//Elimino posibles espacios
+			erase_white_spaces(codigo, posicion);
+			//Leo todo el valor desde la posicion indicada
 			codigo->seekg(*posicion, std::ios::beg);
-			*codigo>>valor;
+			char c;
+			codigo->get(c);
 
-			//TODO REFACTOR CODIGO ACA, USAR WHITESPACES Y UN SOLO CARACTER O REVIENTA SI CAMBIA LA SINTAXIS
-
-			if(valor == ":") {
+			if(c == ':') {
 				*posicion = codigo->tellg();
 				codigo->seekg(*posicion, std::ios::beg);
 				*codigo>>valor;
+
+				if(lower_key == "_RemoveSlots") {
+					Slot* slot_remove = NULL;
+					std::cout<<"Entro a punto de borrar"<<std::endl;
+					
+					if(remove_slots(codigo, posicion, &slot_remove)) {
+						std::cout<<"Aca ya borre todo"<<std::endl;
+						*slot = process_keyword_message(slot_receiver, lower_key, slot_remove);
+						setFlag(lower_key);
+						return true;
+					}
+				}
 
 				if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
@@ -758,13 +778,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						}
 					}
 				}
-
-				if(lower_key == "_RemoveSlots") {
-					std::string contexto = msg;
-					if(removeSlots(codigo, posicion, contexto)) {
-						return true;
-					}
-				}
 			}
 		}
 	}
@@ -779,7 +792,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 Slot* Parser::process_binary_message(Slot* receiver, std::string op, Slot* expCP) {
 	if((receiver != NULL) && (expCP != NULL)) {
 		return linker.create_binary_message(receiver, op, expCP);
-		std::cout<<"Que pasa?"<<std::endl;
 	}
 	return NULL;
 }
@@ -799,7 +811,6 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 		}
 		if(operador(codigo, posicion)) {
 			std::string op1 = get_op();
-			std::cout<<"El operador que llega: "<<op1<<std::endl;
 			if(expressionCP(codigo, posicion, &slot_expCP)) {
 				//Si la expressionCP era un name, queda guardado en la variable msg_name
 				//Busco el slot correspondiente a ese name
@@ -807,9 +818,7 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 				if(msg_expCP.size() != 0) {
 					slot_expCP = linker.get_object_by_name(msg_expCP);
 				}
-
 				std::string op = get_op();
-				std::cout<<"Hasta aca vamos"<<std::endl;
 				*slot = linker.create_binary_message(slot_receiver, op, slot_expCP);
 				return true;
 			}
@@ -823,7 +832,6 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 
 Slot* Parser::process_unary_message(Slot* receiver, std::string name) {
 	if(receiver != NULL) {
-		std::cout<<"Llego a crearlo"<<std::endl;
 		return linker.create_unary_message(receiver, name);
 	}
 	return NULL;
