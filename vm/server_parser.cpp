@@ -647,26 +647,35 @@ bool Parser::operador(std::stringstream* codigo, int* posicion) {
 
 bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
-
+	bool remove = true;
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 	
 	Slot* slot_name = NULL;
 
 	if(object_intro(codigo, posicion)) {
-		if(name(codigo, posicion)) {
-			if(final(codigo, posicion)) {
-				
-				std::string msg_slot_to_erase = get_msg();
-				std::cout<<"Este slot voy a borrar: "<<msg_slot_to_erase<<std::endl;
+		while(remove) {
+			if(name(codigo, posicion)) {
+				if(final(codigo, posicion)) {
+					
+					std::string msg_slot_to_erase = get_msg();
+					std::cout<<"Este slot voy a borrar: "<<msg_slot_to_erase<<std::endl;
 
-				if(msg_slot_to_erase.size() != 0) {
-					//slot_name = linker.get_object_by_name(msg_slot_to_erase);
-					*slot = linker.remove_slots(msg_slot_to_erase);	
-					std::cout<<"Slot a borrar: "<<*slot<<std::endl;
+					if(msg_slot_to_erase.size() != 0) {
+						//slot_name = linker.get_object_by_name(msg_slot_to_erase);
+						*slot = linker.remove_slots(*slot, msg_slot_to_erase);	
+						std::cout<<"Slot a borrar: "<<*slot<<std::endl;
+					} else {
+						remove = false;
+					}
+				} else {
+					break;
 				}
+			} else {
+				break;
 			}
 		}
+
 		std::cout<<"Hasta aca llega"<<std::endl;
 		if(object_end(codigo, posicion)) {
 			std::cout<<"Object end se cumple"<<std::endl;
