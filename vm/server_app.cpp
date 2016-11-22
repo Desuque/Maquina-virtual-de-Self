@@ -57,7 +57,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        //test_example();
+        test_example();
 	while (true){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
@@ -67,7 +67,6 @@ void App::run(int* fin){
 					break;
 				case cod_generic:
                                         rcv_msg_generic();
-                                        save_vm(this->name);
 					break;
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
@@ -75,6 +74,7 @@ void App::run(int* fin){
 
 					break;
 			}
+			save_vm(this->name);
 		} catch (const std::exception e){ break;}
 	}
 	/*Slot* gar =  vm.collect();
@@ -92,7 +92,7 @@ void App::run(int* fin){
 void App::rcv_msg_get_slots(){
         uint32_t tamMensaje = proxy->recibirTamMensaje(4);
         std::string nombreObjeto = proxy->recibir(tamMensaje);
-        std::cout << nombreObjeto << std::endl;
+        std::cout << "id " <<nombreObjeto << std::endl;
         string string_to_send = get_slots(nombreObjeto);
         server -> update_lobby_data(this, cod_get_slots, string_to_send, 0);
 }

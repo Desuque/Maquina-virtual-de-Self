@@ -25,7 +25,7 @@ class JsonWriter{
                 string write_files_name(v_strings names);
                 string write_garbage_ids(v_ids& ids);
 		string write_slots_value(int id_base, v_slots& slots);
-
+		string write_position(string id, float posX, float posY);
 	private:
 		void write_slot_attr(Writer<StringBuffer>& writer, string& name, string& value, bool& type, bool& code, int& id, int& id_base);
 		void get_slot_attr(Slot* sl, string& name, string& value, bool& type, bool& code, int& id);

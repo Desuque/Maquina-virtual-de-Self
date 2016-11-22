@@ -41,8 +41,16 @@ void Server::run(int* fin){
                 proxy = new ProxyClient();
                 try{ proxyClient.aceptarCliente(proxy);}
                 catch (const std::exception e){break;}
-		
-		uint32_t codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
+		/* ver como hacer para que quede un solo try
+        // Esto pasa solo cuando un usuario desea salir antes
+        // en el ingreso del nombre o en la seleccion de lobby
+        // o en caso de error tambien. si no la atrapo el server 
+           recibe una exception y se cierra de golpe. */
+        uint32_t codigoMensaje = 0;        
+        try {
+            codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
+        } catch (const std::exception e){continue;}
+
                 if (codigoMensaje == cod_create_app){
                         
                         uint32_t tamMensaje = proxy->recibirTamMensaje(4);
@@ -57,6 +65,8 @@ void Server::run(int* fin){
                         } else {
                                 //Enviar Error, ese nombre ya existe
                                 proxy->enviar(cod_error, 1);
+                                // ahora se queda esperando que le envien un nombre
+                                // valido.
                         }
                 }else if (codigoMensaje == cod_get_apps_name){
                         string json = get_json_apps_name();
@@ -96,6 +106,7 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag){
         for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
                 if (or_app -> get_name() == it->first){                        
                         if (cod == 2){
+                                (it->second)->enviar(cod, 1);
                                 (it->second) -> enviarJson(json);
                         }else if (cod == 5){// podria ser cualquier cosa, ejemplo : agregarSlot remove
                                 if (flag == 0) {
@@ -105,7 +116,8 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag){
                                 } else if (flag == 4) {
                                     (it->second)->enviar(flag, 1);
                                 } else {
-                                //hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
+                                //hardcodeo el 5 porque devuelve -1 por defecto 
+                                //    para tener un caso no seteado
                                     (it->second)->enviar(5, 1);
                                 }
                                 std::cout << "devolucion: " << json << std::endl;
