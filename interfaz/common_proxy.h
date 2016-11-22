@@ -9,7 +9,6 @@ class Proxy {
 		int recibirCantidad(Socket& socket, size_t cantidad);
 		void enviarCantidad(Socket& socket,uint32_t entero, size_t cantidad);
 		void enviar(Socket& socket,std::string mensaje, size_t cantidad);
-		
 		virtual ~Proxy(){}
 };
 

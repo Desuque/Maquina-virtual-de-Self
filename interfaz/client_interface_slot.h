@@ -14,7 +14,7 @@ class InterfaceSlot{
 		string value;
 		int id;
         int id_base;
-		
+	
 	public:
 		InterfaceSlot();
 		InterfaceSlot(string name, string value, bool code, bool type, int id, int id_base);

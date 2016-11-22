@@ -258,6 +258,10 @@ uint32_t ProxyServer::recibirCodigo(size_t cantidad){
 	return Proxy::recibirCantidad(sktCliente,cantidad);
 }
 
+uint32_t ProxyServer::recibirTamanioDeMensaje(size_t cantidad){
+	return Proxy::recibirCantidad(sktCliente,cantidad);
+}
+
 void ProxyServer::cerrarConexion(){
 	sktCliente.shutdown();
 }

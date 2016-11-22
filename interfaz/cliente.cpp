@@ -11,7 +11,6 @@ void Cliente::run() {
 			// error de conexion.
 			return;
 		}
-		std::cout << "codigo respuesta: " << codigo << std::endl;
 		switch (codigo){	
 			case 2: {
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
@@ -21,6 +20,11 @@ void Cliente::run() {
 				JsonReader slots_reader;
 				slots_reader.read(i_slots, json);
 				myArea->agregarSlots(i_slots);
+				int size = i_slots.size();
+			    for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+			    	delete* it;  
+			    	it = i_slots.erase(it);
+			  	}
 				break;
 			}
 			case 3: {
@@ -32,16 +36,26 @@ void Cliente::run() {
 				JsonReader slots_reader;
 				slots_reader.read(i_slots, json);
 				myArea->agregarSlots(i_slots);
+			    for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+			    	delete* it;  
+			    	it = i_slots.erase(it);
+			  	}
 				break;
 		    }
 		    case 4: {
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
 				std::string json = proxy.recibir(tamMensaje);
 				std::cout << json << std::endl;
-				std::vector<InterfaceSlot*> i_slots;
+
 				JsonReader slots_reader;
+				std::vector<InterfaceSlot*> i_slots;
 				slots_reader.read(i_slots, json);
 				myArea->borrarSlots(i_slots);
+
+			    for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+			    	delete* it;  
+			    	it = i_slots.erase(it);
+			  	}
 				break;
 		    }
 			case 5: { 
@@ -54,6 +68,10 @@ void Cliente::run() {
 				std::cout << i_slots.size() << std::endl;
 				slots_reader.read(i_slots, json);
 				myArea->crearMorphs(i_slots);
+				for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+			    	delete* it;  
+			    	it = i_slots.erase(it);
+			  	}
 				break;
 			}
 			case GET_IT : {
@@ -66,24 +84,13 @@ void Cliente::run() {
 			}					
 			case ACTUALIZAR_VISTA : {
 				//....
-				std::cout << "recibi actualizacion" << std::endl;
-				uint32_t tamMensaje = proxy.recibirCodigo(4);
-				std::string json = proxy.recibir(tamMensaje);
-				std::cout << json << std::endl;
-				
+				uint32_t tamMensaje = proxy.recibirTamanioDeMensaje(4);
+				std::string json = proxy.recibir(tamMensaje);	
 				JsonReader jsonReader;
-				int id;
+				int id = -1;
 				double posX, posY;
 				jsonReader.read_position(json, id, posX, posY);
-				std::cout << posX << std::endl;
-				std::cout << posY << std::endl;
-
-				myArea->actualizarPosicionAMoprh(id,posX,posY);
-
-				//uint32_t posX = proxy.recibirCodigo(TAM_COD);
-				//uint32_t posY = proxy.recibirCodigo(TAM_COD);
-				//std::cout << "recibi posX: " << (posX) << std::endl;
-				//std::cout << "recibi posY: " <<(posY )  << std::endl;
+				myArea->actualizarPosicionAMoprh(id, posX, posY);
 				break;
 			}
 			default: {
