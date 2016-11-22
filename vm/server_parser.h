@@ -73,6 +73,10 @@ private:
 	void set_op(std::string op);
 	std::string get_op();
 	void erase_white_spaces(std::stringstream* codigo, int* posicion);
+
+	void clean_flag();
+
+
 };
 
 #endif /* PARSER_H_ */

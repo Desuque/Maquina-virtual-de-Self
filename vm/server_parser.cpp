@@ -700,7 +700,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 		std::string msg_receiver = get_msg();
 		std::cout<<"MENSAJE: "<<msg_receiver<<std::endl;
 		if(msg_receiver.size() != 0) {
-			slot_receiver = linker.get_object_by_name(msg_receiver);
+			slot_receiver = linker.get_context(msg_receiver);
 			std::cout<<"A ver el slot_receiver: "<<slot_receiver<<std::endl;
 		}
 
@@ -725,11 +725,9 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						std::cout<<"SLOT AL SALIR: "<<*slot<<std::endl;
 						setFlag(lower_key);
 				
-						//linker.create_keyword_message(msg, lower_key);
-
 						/**
 						 * Puede haber o no cap_keyword
-						 
+												 
 						bool isCap_keyword = true;
 						while(isCap_keyword) {
 							if(cap_keyword(codigo, posicion)) {
@@ -742,7 +740,8 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 								codigo->get(c);
 								if(c == ':') {
 									*posicion = codigo->tellg();
-									if(expressionCP(codigo, posicion, &slot)) {
+									if(expressionCP(codigo, posicion, &slot_expCP)) {
+										*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 										isCap_keyword = true;
 									}
 								}
@@ -754,8 +753,9 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						
 						 * Fin carga de cap_keyword
 						 */
-
-						return true;
+						if(*slot != NULL) {
+							return true;
+						}
 					}
 				}
 
@@ -771,6 +771,8 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
+	*slot = NULL;
+	clean_flag();
 	return false;
 }
 
@@ -821,6 +823,7 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 
 Slot* Parser::process_unary_message(Slot* receiver, std::string name) {
 	if(receiver != NULL) {
+		std::cout<<"Llego a crearlo"<<std::endl;
 		return linker.create_unary_message(receiver, name);
 	}
 	return NULL;
@@ -838,6 +841,7 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 		std::string msg_receiver = get_msg();
 		if(msg_receiver.size() != 0) {
 			slot_receiver =  linker.get_object_by_name(msg_receiver);
+			std::cout<<"A VER EL RECEIVER: "<<slot_receiver<<std::endl; 
 		}
 
 		if (name(codigo, posicion)) {
@@ -847,6 +851,7 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 			std::string msg_name = get_msg();
 			
 			//Actualizo la referencia al slot final creado
+			std::cout<<"Por aca entro al unary message"<<std::endl;
 			*slot = process_unary_message(slot_receiver, msg_name);
 			/**
 			if (msg_name.size() == 0) {
@@ -972,7 +977,7 @@ void Parser::set_msg(std::string msg) {
 
 std::string Parser::get_msg() {
 	std::string aux = msg;
-	msg = "";
+	this->msg = "";
 	return aux;
 }
 
@@ -994,6 +999,10 @@ void Parser::setFlag(std::string valor) {
 	} else {
 		flag = NOT_SET;
 	}
+}
+
+void Parser::clean_flag() {
+	flag = NOT_SET;
 }
 
 int Parser::getFlag() {

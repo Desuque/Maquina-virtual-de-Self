@@ -59,8 +59,6 @@ Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, S
 	std::cout<<"Este expCP tiene que tener el object: "<<expCP<<std::endl;
 	
 	return vm->keyword_message(receiver, lower_or_cap, expCP);
-	
-	//return vm->keyword_message(receiver, lower_or_cap, X1);
 }
 
 Slot* Linker::create_object() {
@@ -68,29 +66,6 @@ Slot* Linker::create_object() {
 }
 
 Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
-
-	/**
-	lobby _AddSlots: (| y <- 8. |).
-	Slot* X0 = vm->search_obj("lobby");
-	
-	Slot* X1 = vm->create_object();
-	Slot* X2 = vm->create_int(8);
-	vm->immutable_object(X2);
-	vm->add_slot(X1, "y", X2);
-	vm->keyword_message(X0, "_AddSlots:", X1);
-	vm->collect();
-	//y print.
-	Slot* X4 = vm->search_obj("y");
-	vm->unary_message(X4, "print");
-**
-	Slot* X1 = vm->create_object();
-	Slot* X2 = vm->create_int(8);
-	vm->immutable_object(X2);
-	vm->add_slot(X1, "y", X2);
-
-	return X1;
-
-**/
 	std::cout<<"Direccion dle object: "<<object<<std::endl;
 	Slot* X1 = exp;
 	if(op == "<-") {
@@ -103,14 +78,11 @@ Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::str
 }
 
 Slot* Linker::get_object_by_name(std::string name) {
-	std::cout<<"Nombre que entra: "<<name<<" y dir: "<<vm->search_obj(name)<<std::endl;
-	if(name == "lobby") {
-		std::cout<<"Aca tengo que entrar a buscar al lobby: "<<vm->search_obj(name)<<std::endl;
-		return vm->search_obj(name);
-	} else {
-		//PREGUTAR A VIKEN POR QUE EL OBJ_BY_NAME NO ENCUENTRA AL LOBBY!!!!
-		return vm->search_obj_by_name(name, atoi(id.c_str()));
-	}
+	return vm->search_obj_by_name(name, atoi(id.c_str()));
+}
+
+Slot* Linker::get_context(std::string name) {
+	return vm->search_obj(name);
 }
 
 bool Linker::collect(std::string obj, std::string msg) {

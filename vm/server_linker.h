@@ -24,6 +24,7 @@ public:
 	Slot* create_object();
 
 	Slot* get_object_by_name(std::string name);
+	Slot* get_context(std::string name);
 	bool remove_slots(std::string context, std::string slot);
 	virtual ~Linker();
 	
