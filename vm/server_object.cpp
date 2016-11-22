@@ -30,16 +30,18 @@ bool Object::is_mark(){
 }
 
 void Object::add_slot(Slot* sl){
-        Slot* sl_rep = get_slot(sl -> get_name());
-        if (!sl_rep || (sl_rep -> get_name() == "")){
-                slots.insert({sl -> get_name(), sl});
-        }else{
-            if (!sl_rep -> is_immutable()){
-                    rm_slot(sl -> get_name());
+        if ( sl ){
+            Slot* sl_rep = get_slot(sl -> get_name());
+            if (!sl_rep || (sl_rep -> get_name() == "")){
                     slots.insert({sl -> get_name(), sl});
             }else{
-                    //throw ErrorType(sl -> get_name());
-                    throw "Objeto NO MUTABLE";
+                if (!sl_rep -> is_immutable()){
+                        rm_slot(sl -> get_name());
+                        slots.insert({sl -> get_name(), sl});
+                }else{
+                        //throw ErrorType(sl -> get_name());
+                        throw "Objeto NO MUTABLE";
+                }
             }
         }
 }

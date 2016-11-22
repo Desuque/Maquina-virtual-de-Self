@@ -6,6 +6,9 @@
 #include <cstdlib>
 #include <fstream>
 
+static const int cod_get_slots = 2;
+static const int cod_generic = 5;
+
 App::App(){
 	parser.setVM(&vm);
 }
@@ -59,10 +62,10 @@ void App::run(int* fin){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
-				case 2:
+				case cod_get_slots:
                                         rcv_msg_get_slots();
 					break;
-				case 5:
+				case cod_generic:
                                         rcv_msg_generic();
 					break;
 				default:
@@ -91,8 +94,7 @@ void App::rcv_msg_get_slots(){
         std::string nombreObjeto = proxy->recibir(tamMensaje);
         std::cout << nombreObjeto << std::endl;
         string string_to_send = get_slots(nombreObjeto);
-        proxy -> enviarJson(string_to_send);
-        server -> update_lobby_data(this, string_to_send);
+        server -> update_lobby_data(this, cod_get_slots, string_to_send, 0);
 }
 
 void App::rcv_msg_generic(){
@@ -106,29 +108,8 @@ void App::rcv_msg_generic(){
         JsonWriter writer;
         string json = writer.write_code(nombreObjeto, codigoAEjecutar);
         string result = execute(json);
-
-        // ver como hacer con esto, mando mensaje "generic" pero 
-        // podria ser cualquier cosa, ejemplo : agregarSlot remove
         int flag = parser.getFlag();
-        if (flag == 0) {
-                proxy->enviar(flag, 1);
-        } else if (flag == 3) {
-                proxy->enviar(flag, 1);
-        } else if (flag == 4) {
-                proxy->enviar(flag, 1);
-        } else {
-                //hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
-                proxy->enviar(5, 1);
-        }
-	std::cout << "devolucion: " << result << std::endl;
-					
-	if(flag != 0)
-		proxy->enviarJson(result);
-        server -> update_lobby_data(this, result);
-}
-
-void App::send_msg_get_slots(string json){
-        proxy->enviarJson(json);
+        server -> update_lobby_data(this, cod_generic, result, flag);
 }
 
 ProxyClient* App::get_proxy(){
@@ -145,7 +126,6 @@ string App::get_name(){
 }
 
 App::~App(){
-        delete proxy;
 }
 
 void App::test_example(){

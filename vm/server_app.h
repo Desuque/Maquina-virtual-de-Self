@@ -28,7 +28,6 @@ class App : public Thread{
                 string get_name();
 		int execute_file(string file_name);
                 void run(int* fin);
-		void send_msg_get_slots(string json);
                 ProxyClient* get_proxy();
 		~App();
 

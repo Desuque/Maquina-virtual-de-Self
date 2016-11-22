@@ -10,10 +10,12 @@
 
 typedef std::string string;
 typedef std::multimap<string, App*> map_apps;
+typedef std::multimap<string, ProxyClient*> map_proxys;
 
 class Server : public Thread{ 
 	private:
 		map_apps apps;
+                map_proxys proxys;
                 ProxyClient proxyClient;
 
 	public:
@@ -23,7 +25,8 @@ class Server : public Thread{
                 void run(int* fin);
                 void shutdown();
                 int execute(string file_name);
-                void update_lobby_data(App* or_app, string json);
+                void update_lobby_data(App* or_app, int code, string json, int flag);
+                ~Server();
                 
 	private:
 		int execute_file(App* app, string file_name);

@@ -36,8 +36,8 @@ void Server::bind(int port){
 }
 
 void Server::run(int* fin){
-        ProxyClient* proxy;
-	while (true){
+	ProxyClient* proxy;
+        while (true){
                 proxy = new ProxyClient();
                 try{ proxyClient.aceptarCliente(proxy);}
                 catch (const std::exception e){break;}
@@ -52,6 +52,7 @@ void Server::run(int* fin){
                                 proxy->enviar(cod_create_app, 1);
                                 App* new_app = new App(app_name, this, proxy);
                                 apps.insert (std::pair<string,App*>(app_name, new_app));
+                                proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
                                 new_app -> start();
                         } else {
                                 //Enviar Error, ese nombre ya existe
@@ -66,17 +67,9 @@ void Server::run(int* fin){
                                 string app_name = proxy->recibir(tamMensaje);
                                 App* new_app = new App(app_name, this, proxy);
                                 apps.insert (std::pair<string,App*>(app_name, new_app));
+                                proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
                                 execute_file(new_app, app_name);
                                 new_app -> start();
-                                /*App* app_load = apps.at(app_name);
-                                if (app_load){
-                                        app_load -> add_proxy(proxy);
-                                }else{
-                                        app_load = new App(proxy);
-                                        apps.at(app_name) = app_load;
-                                        execute_file(app_load, app_name);
-                                        app_load -> start();
-                                }*/
                                 proxy->enviar(cod_load_app, 1);
                         }
                 }
@@ -99,12 +92,27 @@ void Server::join_threads(){
         }
 }
 
-void Server::update_lobby_data(App* or_app, string json){
-        for (map_apps::iterator it = apps.begin(); it != apps.end(); ++it){
-                if ((or_app -> get_name() == it->first) && (!it -> second)){
-                        //UPDATE
-                        //ProxyClient* proxy = (it->second) -> get_proxy();
-                        //proxy -> enviarJson(json);
+void Server::update_lobby_data(App* or_app, int cod, string json, int flag){
+        for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
+                if (or_app -> get_name() == it->first){                        
+                        if (cod == 2){
+                                (it->second) -> enviarJson(json);
+                        }else if (cod == 5){// podria ser cualquier cosa, ejemplo : agregarSlot remove
+                                if (flag == 0) {
+                                    (it->second)->enviar(flag, 1);
+                                } else if (flag == 3) {
+                                    (it->second)->enviar(flag, 1);
+                                } else if (flag == 4) {
+                                    (it->second)->enviar(flag, 1);
+                                } else {
+                                //hardcodeo el 5 porque devuelve -1 por defecto para tener un caso no seteado
+                                    (it->second)->enviar(5, 1);
+                                }
+                                std::cout << "devolucion: " << json << std::endl;
+					
+                                if(flag != 0)
+                                    (it->second)->enviarJson(json);
+                        }                        
                 }
         }
 }
@@ -143,4 +151,10 @@ int Server::execute_file(App* app, string file_name){
 void Server::shutdown(){
         this -> proxyClient.cerrarConexion();
         join_threads();
+}
+
+Server::~Server(){
+         for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
+                delete it->second;
+        }    
 }
