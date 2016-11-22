@@ -22,6 +22,7 @@ public:
 	Slot* create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP);
 	Slot* create_slot(Slot* slot, std::string slot_name_extended, std::string op, Slot* exp);
 	Slot* create_object();
+	Slot* collect();
 
 	Slot* get_object_by_name(std::string name);
 	Slot* get_context(std::string name);
@@ -29,7 +30,6 @@ public:
 	virtual ~Linker();
 	
 private:
-	bool collect(std::string obj, std::string msg);
 	Slot* create_float(std::string number);
 	Slot* create_int(std::string number);
 

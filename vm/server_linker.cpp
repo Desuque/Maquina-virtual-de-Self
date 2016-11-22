@@ -80,12 +80,8 @@ Slot* Linker::get_context(std::string name) {
 	return vm->search_obj(name);
 }
 
-bool Linker::collect(std::string obj, std::string msg) {
-	if((obj == "lobby") && (msg == "collect")) {
-		vm->collect();
-		return true;
-	}
-	return false;
+Slot* Linker::collect() {
+	return vm->collect();
 }
 
 bool Linker::remove_slots(std::string context, std::string slot) {

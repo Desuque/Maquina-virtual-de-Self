@@ -841,18 +841,27 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 		std::string msg_receiver = get_msg();
 		if(msg_receiver.size() != 0) {
 			slot_receiver =  linker.get_object_by_name(msg_receiver);
-			std::cout<<"A VER EL RECEIVER: "<<slot_receiver<<std::endl; 
 		}
 
 		if (name(codigo, posicion)) {
 			codigo->seekg(*posicion, std::ios::beg);
-			std::string valor;
-			*codigo>>valor;
 			std::string msg_name = get_msg();
 			
-			//Actualizo la referencia al slot final creado
-			std::cout<<"Por aca entro al unary message"<<std::endl;
-			*slot = process_unary_message(slot_receiver, msg_name);
+			if((msg_receiver == "lobby") && (msg_name == "collect")) {
+				int posAux = codigo->tellg();
+				//Elimino posibles espacios
+				erase_white_spaces(codigo, &posAux);
+				//Leo todo el valor desde la posicion indicada
+				codigo->seekg(posAux, std::ios::beg);
+				char c;
+				codigo->get(c);
+				if (c == '.') {
+					*slot = linker.collect();
+				}
+			} else {
+				//Actualizo la referencia al slot final creado
+				*slot = process_unary_message(slot_receiver, msg_name);
+			}
 			/**
 			if (msg_name.size() == 0) {
 				linker.create_unary_message(msg);
