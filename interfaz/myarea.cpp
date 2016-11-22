@@ -188,8 +188,10 @@ void MyArea::get_it_event(){
     std::cout << "Error ingresar Codigo" << std::endl;
     return;
   }
+  JsonWriter writer;
+  string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
 
-  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
   /*uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
   
   std::cout << codigoMensaje << std::endl;
@@ -271,12 +273,10 @@ void MyArea::do_it_event(){
     return;
   }
 
-  /* descomentar cuando se saque esto de server_server
   JsonWriter writer;
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
-  std::cout << "json a enviar: " << json << std::endl;*/
 
-  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
   /*uint32_t codigoMensaje = proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), textoAEnviar);  
   
   std::cout << codigoMensaje << std::endl;

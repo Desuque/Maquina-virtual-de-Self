@@ -63,18 +63,9 @@ void App::run(int* fin){
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
 				case 8:{
-					std::cout << "server recibi 8" << std::endl;
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
-					std::cout << json << std::endl;
-					
 					server -> update_lobby_data(this,8 , json, 0);
-					//proxy->enviar(8,1);
-					// posX = proxy->recibirCodigoMensaje(1);
-					//uint32_t posY = proxy->recibirCodigoMensaje(1);
-					//std::cout << "server posX " << posX << std::endl;
-					//std::cout << "server posY " << posY << std::endl;
-					//server -> update_lobby_data_NICOLAS(this);
 					break;
 				}
 				case cod_get_slots:
@@ -107,24 +98,19 @@ void App::run(int* fin){
 void App::rcv_msg_get_slots(){
         uint32_t tamMensaje = proxy->recibirTamMensaje(4);
         std::string nombreObjeto = proxy->recibir(tamMensaje);
-        std::cout << "id " <<nombreObjeto << std::endl;
         string string_to_send = get_slots(nombreObjeto);
         server -> update_lobby_data(this, cod_get_slots, string_to_send, 0);
 }
 
 void App::rcv_msg_generic(){
-   	uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-        std::string nombreObjeto = proxy->recibir(tamMensaje);
-        std::cout << "id del objeto: " << nombreObjeto << std::endl;
-        tamMensaje = proxy->recibirTamMensaje(4);
-        std::string codigoAEjecutar = proxy->recibir(tamMensaje);
-        std::cout << "codigo A Ejecutar: " << codigoAEjecutar << std::endl;
+	uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+    std::string nombreObjeto = proxy->recibir(tamMensaje);
+    tamMensaje = proxy->recibirTamMensaje(4);
+    std::string codigoAEjecutar = proxy->recibir(tamMensaje);
 
-        JsonWriter writer;
-        string json = writer.write_code(nombreObjeto, codigoAEjecutar);
-        string result = execute(json);
-        int flag = parser.getFlag();
-        server -> update_lobby_data(this, cod_generic, result, flag);
+    string result = execute(codigoAEjecutar);
+    int flag = parser.getFlag();
+    server -> update_lobby_data(this, cod_generic, result, flag);
 }
 
 ProxyClient* App::get_proxy(){
