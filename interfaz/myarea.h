@@ -57,6 +57,8 @@ public:
     this->proxyServer = proxy;
   }
 
+  void actualizarPosicionAMoprh(int id, int posX, int posY);
+
   virtual ~MyArea();
 
 protected:

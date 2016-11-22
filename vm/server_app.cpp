@@ -62,6 +62,21 @@ void App::run(int* fin){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
 			switch (codigoMensaje){
+				case 8:{
+					std::cout << "server recibi 8" << std::endl;
+					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					std::string json = proxy->recibir(tamMensaje);
+					std::cout << json << std::endl;
+					
+					server -> update_lobby_data(this,8 , json, 0);
+					//proxy->enviar(8,1);
+					// posX = proxy->recibirCodigoMensaje(1);
+					//uint32_t posY = proxy->recibirCodigoMensaje(1);
+					//std::cout << "server posX " << posX << std::endl;
+					//std::cout << "server posY " << posY << std::endl;
+					//server -> update_lobby_data_NICOLAS(this);
+					break;
+				}
 				case cod_get_slots:
                                         rcv_msg_get_slots();
 					break;

@@ -39,7 +39,9 @@ class Morph : public Gtk::DrawingArea{
 			}
 		}
 		std::string get_id_to_string();
-		
+		int get_id(){
+    		return this->id;
+  		}
 		void resaltarMorph(const Cairo::RefPtr<Cairo::Context>& cr);
   		std::string get_it();
   		std::string do_it();

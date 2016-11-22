@@ -53,6 +53,18 @@ uint32_t ProxyServer::enviarString(std::string textoAEnviar){
 	//std::cout << recibir(1) << std::endl;
 	return recibirCodigoMensaje(1);
 }
+void ProxyServer::enviarJson(std::string textoAEnviar){
+	char buff[5];
+	bzero(buff,5);
+	uint32_t tamMensaje = textoAEnviar.length();
+	tamMensaje = htonl(tamMensaje);
+	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
+	
+	sktCliente.send(buff,sizeof(uint32_t));
+
+	sktCliente.send(textoAEnviar.c_str(), textoAEnviar.length());
+}
+
 
 void ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar){
 	// modificar cuando sea generico

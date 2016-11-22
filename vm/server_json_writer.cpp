@@ -1,5 +1,6 @@
 #include "server_json_writer.h"
 #include <sstream>
+
 string JsonWriter::write_slot(int id_base, Slot* sl){
 	StringBuffer s;
 	Writer<StringBuffer> writer(s);

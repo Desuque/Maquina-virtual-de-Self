@@ -30,6 +30,15 @@ void JsonReader::read_code(string json, string& id, string& code){
 	code = document["code"].GetString();
 }
 
+void JsonReader::read_position(string json, int& id, int& posX, int& posY){
+	Document document;
+	document.Parse(json.c_str());
+	id = std::stoi(document["id"].GetString());
+	posX = std::stoi(document["posX"].GetString());
+	posY = std::stoi(document["posY"].GetString());
+}
+
+
 void JsonReader::read_names(string json, v_strings& names){
         Document document;
 	document.Parse(json.c_str());

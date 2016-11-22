@@ -1,5 +1,5 @@
 #include "cliente.h"
-
+#include "client_json_reader.h"
 Cliente::Cliente(ProxyServer& proxy, MyArea* myArea) : proxy(proxy), myArea(myArea) {}
 		
 void Cliente::run() {
@@ -66,6 +66,23 @@ void Cliente::run() {
 			}					
 			case ACTUALIZAR_VISTA : {
 				//....
+				std::cout << "recibi actualizacion" << std::endl;
+				uint32_t tamMensaje = proxy.recibirCodigo(4);
+				std::string json = proxy.recibir(tamMensaje);
+				std::cout << json << std::endl;
+				
+				JsonReader jsonReader;
+				int id, posX, posY;
+				jsonReader.read_position(json, id, posX, posY);
+				std::cout << posX << std::endl;
+				std::cout << posY << std::endl;
+
+				myArea->actualizarPosicionAMoprh(id,posX,posY);
+
+				//uint32_t posX = proxy.recibirCodigo(TAM_COD);
+				//uint32_t posY = proxy.recibirCodigo(TAM_COD);
+				//std::cout << "recibi posX: " << (posX) << std::endl;
+				//std::cout << "recibi posY: " <<(posY )  << std::endl;
 				break;
 			}
 			default: {

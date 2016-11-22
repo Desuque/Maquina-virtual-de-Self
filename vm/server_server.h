@@ -33,6 +33,7 @@ class Server : public Thread{
                 void load_file_names();
                 string get_json_apps_name();
 		void join_threads();
+
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include "slot.h"
 #include "client_interface_slot.h"
 #include "client_json_reader.h"
+#include "server_json_writer.h"
 
 #define CREAR_MAQUINA_VIRTUAL 0x01
 
@@ -562,7 +563,14 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
   return false;
 }
 
-
+void MyArea::actualizarPosicionAMoprh(int id, int posX, int posY){
+  for (int i =0; i < morphs.size() ; ++i){      
+    if((morphs[i])->get_id() == id){
+      morphs[i]->actualizar_posicion(posX,posY);       
+    }
+  }
+  queue_draw();
+}
 
 bool MyArea::on_motion_notify_event(GdkEventMotion*event)
 {
@@ -573,7 +581,11 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
     int XMouse=event->x;
     int YMouse=event->y;
     if(actual != nullptr){
-      actual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
+      proxyServer->enviar(8,1);
+      JsonWriter jsonwriter;
+      std::string json = jsonwriter.write_position(actual->get_id_to_string(), (event->x+offXMouse), (event->y+offYMouse));
+      proxyServer->enviarJson(json);
+      //actual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
     }
     if(refenciaActual != nullptr){
       refenciaActual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
