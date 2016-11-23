@@ -232,18 +232,18 @@ void App::test_example(){
 	vm.add_slot(X32, "punto", X33);
         vm.add_slot(cont4,"",X32);
 	vm.keyword_message(X31, "_AddSlots", cont4);
-	/*
+	
 	//punto print.   #Print Method Object
 	Slot* X36 = vm.search_obj("punto");
 	vm.unary_message(X36, "print");
-	*/
+	
 	Slot* X37 = vm.search_obj("punto1");
 	Slot* X38 = vm.search_obj("punto");
 	vm.add_parent(X37, "padre", X38);
-	/*
+	
 	//punto1 square_norm.   #Print Method Object
 	Slot* X39 = vm.search_obj("punto1");
-	vm.unary_message(X39, "square_norm");*/
+	vm.unary_message(X39, "square_norm");
 	/*
         //(punto y) print.
 	Slot* X40 = vm.search_obj("punto");

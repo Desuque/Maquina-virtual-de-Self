@@ -4,6 +4,7 @@
 #include "server_check_point.h"
 #include "server_json_writer.h"
 #include "server_garbage_slot.h"
+#include "server_parser.h"
 #include <iostream>
 
 static const char* global_obj = "lobby";
@@ -184,8 +185,7 @@ Slot* VM::create_int(int value){
 Slot* VM::create_float(float value){
 	Slot* sl = new Slot(get_id_slots(), std::to_string(value));
 	sl -> set_float_value(get_id_slots(), value);
-        std::cout << "Creando FLOAT " << value << std::endl;
-	add_basic_slots(sl, std::to_string(value));
+        add_basic_slots(sl, std::to_string(value));
 	add_default_numeric_slots(sl);
 	return sl;
 }
@@ -224,8 +224,14 @@ Slot* VM::search_msg(Slot* sl_recv, string msg){
 Slot* VM::search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args){
 	Slot* sl_msg = search_msg(sl_recv, msg);
 	if (sl_msg){
-		if (sl_msg -> is_code())
-			std::cout << "Ejecutar " << sl_msg -> get_value() -> as_string() << std::endl;
+		if (sl_msg -> is_code()){
+                        Parser parser;
+                        parser.setVM(this);
+                        int id_context = sl_recv -> get_id();
+                        string code = sl_msg -> get_value() -> as_string();
+                        std::cout << "Ejecutar " << id_context << " " << code << std::endl;
+                        //return parser.parsear(code, id_context);
+                }
 		
 		return execute_msg(sl_msg, sl_recv, args);
 	}
@@ -287,7 +293,13 @@ Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
                 }
                 ret = rm_slots;
         }else{
-            std::cout << "Metodo de usuario" << std::endl;
+            p_objects args;
+            args.push_back(sl_recv -> get_value());
+            args.push_back(sl -> get_value());
+            Slot* sl_ret = search_and_execute_msg(sl_recv, msg, args);
+            if (!sl_ret)
+		throw NotFound(msg);
+            ret = sl_ret;
         }
 	return ret;
 }
