@@ -184,6 +184,7 @@ Slot* VM::create_int(int value){
 Slot* VM::create_float(float value){
 	Slot* sl = new Slot(get_id_slots(), std::to_string(value));
 	sl -> set_float_value(get_id_slots(), value);
+        std::cout << "Creando FLOAT " << value << std::endl;
 	add_basic_slots(sl, std::to_string(value));
 	add_default_numeric_slots(sl);
 	return sl;

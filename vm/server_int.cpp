@@ -50,9 +50,8 @@ Slot* Int::div(VM& vm, Object* op){
         int b = op -> as_int();
         if (b == 0)
                 throw "NO SE PUEDE DIVIDIR POR 0";
-        
-        int res = value /  op -> as_int();
-	Slot* result = vm.create_int(res);
+        float res = (float)value / (float)b;
+	Slot* result = vm.create_float(res);
         return result;
 }
 
