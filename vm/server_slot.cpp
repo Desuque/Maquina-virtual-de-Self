@@ -13,8 +13,8 @@
 #include <iostream>
 
 static const char* sum = "+";
-static const char* mult = "*";
-static const char* sub = "-";
+static const char* multip = "*";
+static const char* subs = "-";
 static const char* dv = "/";
 static const char* eq = "==";
 static const char* neq = "!=";
@@ -70,9 +70,9 @@ void Slot::set_boolean_value(int id, bool value){
 void Slot::set_int_method_value(int id, string name){
 	if (name == sum)
 		this -> value = new Sum(id);
-	else if (name == mult)
+	else if (name == multip)
 		this -> value = new Mult(id);
-	else if (name == sub)
+	else if (name == subs)
 		this -> value = new Sub(id);
 	else if (name == dv)
 		this -> value = new Div(id);

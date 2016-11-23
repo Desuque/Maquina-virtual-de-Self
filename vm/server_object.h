@@ -37,7 +37,14 @@ class Object{
 		bool is_container();
 		Slot* as_slot();
 		virtual int as_int();
+                virtual float as_float();
 		virtual string as_string();
+                virtual Slot* add(VM& vm, Object* op);
+                virtual Slot* sub(VM& vm, Object* op);
+                virtual Slot* mult(VM& vm, Object* op);
+                virtual Slot* div(VM& vm, Object* op);
+                virtual Slot* nequal(VM& vm, Object* op);
+                virtual Slot* equal(VM& vm, Object* op);
 		virtual Slot* print(VM& vm);
 		virtual Slot* clone(VM& vm);
 		virtual Slot* execute(VM& vm, p_objects& args);

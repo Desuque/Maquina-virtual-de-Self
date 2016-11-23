@@ -93,6 +93,34 @@ int Object::as_int(){
 	return 0;
 }
 
+float Object::as_float(){
+        return 0;
+}
+
+Slot* Object::add(VM& vm, Object* op){
+        return vm.create_int(0);
+}
+
+Slot* Object::div(VM& vm, Object* op){
+        return vm.create_int(0);
+}
+
+Slot* Object::sub(VM& vm, Object* op){
+        return vm.create_int(0);
+}
+
+Slot* Object::mult(VM& vm, Object* op){
+        return vm.create_int(0);
+}
+
+Slot* Object::equal(VM& vm, Object* op){
+	return vm.create_boolean(0);
+}
+
+Slot* Object::nequal(VM& vm, Object* op){
+	return vm.create_boolean(0);
+}
+
 string Object::get_json_slots(int id_base){
 	JsonWriter json_writer;
 	string json = json_writer.write(id_base, slots);

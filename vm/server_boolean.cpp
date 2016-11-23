@@ -8,11 +8,17 @@ Boolean::Boolean(int id, bool value):Object(id){
 
 Slot* Boolean::print(VM& vm){
 	std::cout << this -> value << std::endl;
-	return vm.create_boolean(this -> value);
+        string rep = "false";
+        if (value)
+            rep = "true";
+	return vm.create_string(rep);
 }
 
 string Boolean::as_string(){
-	return std::to_string(this -> value);
+        string rep = "false";
+        if (value)
+            rep = "true";
+	return rep;
 }
 
 Slot* Boolean::clone(VM& vm){

@@ -27,3 +27,47 @@ Slot* Int::clone(VM& vm){
 void Int::get_self_slots(string& slots_self){
 	slots_self += " " + as_string() + " .";
 }
+
+Slot* Int::add(VM& vm, Object* op){
+        int res = value +  op -> as_int();
+	Slot* result = vm.create_int(res);
+        return result;
+}
+
+Slot* Int::sub(VM& vm, Object* op){
+        int res = value -  op -> as_int();
+	Slot* result = vm.create_int(res);
+        return result;
+}
+
+Slot* Int::mult(VM& vm, Object* op){
+        int res = value *  op -> as_int();
+	Slot* result = vm.create_int(res);
+        return result;
+}
+
+Slot* Int::div(VM& vm, Object* op){
+        int b = op -> as_int();
+        if (b == 0)
+                throw "NO SE PUEDE DIVIDIR POR 0";
+        
+        int res = value /  op -> as_int();
+	Slot* result = vm.create_int(res);
+        return result;
+}
+
+Slot* Int::equal(VM& vm, Object* op){
+        bool res = (value ==  op -> as_int());
+	Slot* result = vm.create_boolean(res);
+	return result;
+}
+
+Slot* Int::nequal(VM& vm, Object* op){
+        bool res = (value !=  op -> as_int());
+	Slot* result = vm.create_boolean(res);
+	return result;
+}
+
+float Int::as_float(){
+        return value;
+}
