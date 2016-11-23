@@ -132,6 +132,11 @@ void Object::get_self_slots(string& slots_self){
 	self_writer.write(slots, slots_self);
 }
 
+string Object::get_full_self_slots(string slot_name){
+        SelfWriter self_writer;
+	return self_writer.write_full(slot_name, slots);
+}
+		
 Slot* Object::clone(VM& vm){
 	Slot* new_sl = vm.create_object(); 
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){

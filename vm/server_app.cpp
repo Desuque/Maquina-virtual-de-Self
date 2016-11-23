@@ -10,6 +10,7 @@ static const int cod_get_slots = 2;
 static const int cod_generic = 5;
 static const int cod_update_position = 8;
 static const int cod_pedir_morph = 11;
+static const int cod_share_obj = 12;
 
 App::App(){
 	parser.setVM(&vm);
@@ -71,12 +72,15 @@ void App::run(int* fin){
 					break;
 				}
 				case cod_get_slots:
-                    rcv_msg_get_slots();
+                                        rcv_msg_get_slots();
 					break;
 				case cod_generic:
-                    rcv_msg_generic();
-           			save_vm(this->name);
+                                        rcv_msg_generic();
+                                        save_vm(this->name);
 					break;
+                                case cod_share_obj:
+                                        rcv_share_obj();
+                                        break;
 				case cod_pedir_morph :{
 					std::cout << "reenvio el mensaje" << std::endl;
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
@@ -122,6 +126,17 @@ void App::rcv_msg_generic(){
     string result = execute(codigoAEjecutar);
     int flag = parser.getFlag();
     server -> update_lobby_data(this, cod_generic, result, flag);
+}
+
+void App::rcv_share_obj(){
+        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+        std::string data = proxy->recibir(tamMensaje);
+        int id;
+        string lobby_des;
+        JsonReader reader;
+        reader.read_share_data(data, id, lobby_des);
+        string str_parser_share = vm.get_slot_to_share(id);
+        server -> share_obj_to(str_parser_share, lobby_des);
 }
 
 ProxyClient* App::get_proxy(){

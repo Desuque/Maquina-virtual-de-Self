@@ -49,6 +49,7 @@ class Object{
 		virtual Slot* clone(VM& vm);
 		virtual Slot* execute(VM& vm, p_objects& args);
 		virtual void get_self_slots(string& slots_self);
+                virtual string get_full_self_slots(string slot_name);
 		virtual ~Object();
 };
 

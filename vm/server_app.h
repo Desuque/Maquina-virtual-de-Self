@@ -8,7 +8,6 @@
 #include "../interfaz/common_proxyClient.h"
 #include "server_parser.h"
 
-
 class Server;
 class App : public Thread{
 	private:
@@ -34,6 +33,7 @@ class App : public Thread{
 	private:
                 void rcv_msg_get_slots();
                 void rcv_msg_generic();
+		void rcv_share_obj();
 		void test_example();
 };
 

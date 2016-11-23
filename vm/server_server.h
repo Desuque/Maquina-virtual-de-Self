@@ -24,9 +24,10 @@ class Server : public Thread{
                 void listen();
                 void run(int* fin);
                 void shutdown();
-                int execute(string file_name);
+                int  execute(string file_name);
                 void update_lobby_data(App* or_app, int code, string json, int flag);
-                ~Server();
+		void share_obj_to(string str_share, string lobby_des);                
+		~Server();
                 
 	private:
 		int execute_file(App* app, string file_name);

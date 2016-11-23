@@ -67,4 +67,9 @@ void JsonReader::read_garbage_ids(string json, v_ints& gar_ids){
 	}
 }
 
-
+void JsonReader::read_share_data(string json, int& id, string& lobby_des){
+        Document document;
+	document.Parse(json.c_str());
+	id = document["id"].GetInt();
+	lobby_des = document["destination"].GetString();
+}

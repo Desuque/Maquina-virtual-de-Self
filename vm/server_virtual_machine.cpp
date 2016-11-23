@@ -351,6 +351,13 @@ Slot* VM::search_obj_by_name(string name, int context){
 	return results[0];
 }
 
+string VM::get_slot_to_share(int id){
+        Slot* sl = search_obj_id(id);
+        string obj_name = sl -> get_name();
+        Object* obj = sl -> get_value();
+        return obj -> get_full_self_slots(obj_name);
+}
+
 VM::~VM(){
 	for (map_slots::iterator it = slots.begin(); it != slots.end();++it)
 		delete (it->second);
