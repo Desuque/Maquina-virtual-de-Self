@@ -230,7 +230,7 @@ Slot* VM::search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args){
                         int id_context = sl_recv -> get_id();
                         string code = sl_msg -> get_value() -> as_string();
                         std::cout << "Ejecutar " << id_context << " " << code << std::endl;
-                        //return parser.parsear(code, id_context);
+                        return parser.parsear(code, id_context);
                 }
 		
 		return execute_msg(sl_msg, sl_recv, args);
