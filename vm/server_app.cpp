@@ -9,6 +9,7 @@
 static const int cod_get_slots = 2;
 static const int cod_generic = 5;
 static const int cod_update_position = 8;
+static const int cod_pedir_morph = 11;
 
 App::App(){
 	parser.setVM(&vm);
@@ -74,14 +75,23 @@ void App::run(int* fin){
 					break;
 				case cod_generic:
                     rcv_msg_generic();
+           			save_vm(this->name);
 					break;
+				case cod_pedir_morph :{
+					std::cout << "reenvio el mensaje" << std::endl;
+					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					std::string json = proxy->recibir(tamMensaje);
+			        server -> update_lobby_data(this, cod_pedir_morph, json, 0);
+					/*proxy->enviar(cod_pedir_morph,1);
+					proxy->enviarJson(json);*/
+					break;
+				}
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
 					std::cout << "recibio: " << codigoMensaje << std::endl;
 
 					break;
 			}
-			save_vm(this->name);
 		} catch (const std::exception e){ break;}
 	}
 	/*Slot* gar =  vm.collect();

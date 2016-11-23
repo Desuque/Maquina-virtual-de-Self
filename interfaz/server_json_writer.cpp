@@ -28,6 +28,19 @@ string JsonWriter::write_position(int id, double posX, double posY){
 }
 
 
+
+string JsonWriter::write_id_morph_id_slot(int id_morph, int id_slot){
+	StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("id_morph");
+	writer.Int(id_morph);
+	writer.String("id_slot");
+	writer.Int(id_slot);
+	writer.EndObject();
+	return s.GetString();
+}
+
 string JsonWriter::write_garbage_ids(v_ids& ids){
         StringBuffer s;
 	Writer<StringBuffer> writer(s);

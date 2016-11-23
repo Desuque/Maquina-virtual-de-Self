@@ -20,6 +20,7 @@ class ProxyServer : public Proxy {
 		uint32_t recibirCodigo(size_t cantidad);
 		uint32_t recibirTamanioDeMensaje(size_t cantidad);
 		// habria que sacarla
+		void pedirMorphDeEsteSlot(int id_morph, int id_slot);
 		std::string recibirSlotsDe(std::string lobbyId);
 		void pedirSlotsDe(std::string idObjeto);
 		uint32_t recibirCodigoMensaje(size_t cantidad);

@@ -38,6 +38,12 @@ void JsonReader::read_position(string json, int& id, double& posX, double& posY)
 	posY = document["posY"].GetDouble();
 }
 
+void JsonReader::read_id_morph_id_slot(string json, int& id_morph, int& id_slot){
+	Document document;
+	document.Parse(json.c_str());
+	id_morph = document["id_morph"].GetInt();
+	id_slot = document["id_slot"].GetInt();
+}
 
 void JsonReader::read_names(string json, v_strings& names){
         Document document;

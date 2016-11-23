@@ -228,6 +228,16 @@ Slot* Morph::obtenerSlot(int posX,int posY){
 	return nullptr; 
 }
 
+Slot* Morph::obtenerSlotConId(int id_slot){     
+	for (int i=0; i < slots.size(); ++i){         
+		// guardar cuando agregue poli         
+		if (slots[i]->get_id() == id_slot){   
+			return slots[i];     
+		}     
+	}     
+	return nullptr; 
+}
+
 
 bool Morph::tieneElMismoIdQueEsteSlot(Slot* unSlot){
 	return (unSlot->get_id() == this->id);

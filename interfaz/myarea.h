@@ -1,5 +1,5 @@
-#ifndef GTKMM_EXAMPLE_MYAREA_H
-#define GTKMM_EXAMPLE_MYAREA_H
+#ifndef MYAREA_H
+#define MYAREA_H
 #include <gtkmm.h>
 #include "morph.h"
 #include "common_proxyServer.h"
@@ -48,11 +48,13 @@ public:
   void close_event();
   void do_it_event();
   void agregarSlot_event();
+  void botonSalirNuevoSlotEvent();
   void botonGuardarNuevoSlotEvent();
   void liberarMemoria();
   void agregarSlots(std::vector<InterfaceSlot*> i_slots);
   void borrarSlots(std::vector<InterfaceSlot*> i_slots);
   void crearMorphs(std::vector<InterfaceSlot*> i_slots);
+  void mostrarEsteSlotComoMorph(int id_morph, int id_slot);
   void setProxy(ProxyServer* proxy){
     this->proxyServer = proxy;
   }
@@ -67,4 +69,4 @@ protected:
   
 };
 
-#endif // GTKMM_EXAMPLE_MYAREA_H
+#endif

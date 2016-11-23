@@ -50,6 +50,7 @@ class Morph : public Gtk::DrawingArea{
   		void agregarSlot(InterfaceSlot* nombreSlot);
 
   		Slot* obtenerSlot(int posX,int posY);
+  		Slot* obtenerSlotConId(int id_slot);    
 
 		Morph(double posX, double posY);
 		Morph();

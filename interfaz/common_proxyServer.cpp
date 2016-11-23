@@ -4,9 +4,12 @@
 #include <arpa/inet.h>
 #include <strings.h>
 #include <string.h>
+#include "server_json_writer.h"
 
 #define PEDIR_SLOTS 2
 #define AGREGAR_SLOT 3
+#define PEDIR_MORPH 11
+
 
 ProxyServer::ProxyServer(const char* hostname, const unsigned int puerto){
 	sktCliente.connect(hostname,puerto);
@@ -213,6 +216,16 @@ std::string ProxyServer::recibirSlotsDe(std::string objeto){
 	sktCliente.receive(infoSlots,tamMensaje);
 
 	return std::string(infoSlots);
+}
+
+void ProxyServer::pedirMorphDeEsteSlot(int id_morph, int id_slot){
+	
+	JsonWriter writer;
+	std::string json = writer.write_id_morph_id_slot(id_morph, id_slot);	
+
+    this->enviar(PEDIR_MORPH,sizeof(char));
+
+    this->enviarJson(json);
 }
 
 void ProxyServer::pedirSlotsDe(std::string idObjeto){
