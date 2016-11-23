@@ -13,6 +13,8 @@ typedef std::multimap<std::string,Slot*> m_slots;
 class SelfWriter{	
 	public:
 		void write(m_slots& slots, string& slots_self);
+	private:
+		bool valid_slot(string name);
 };
 
 #endif

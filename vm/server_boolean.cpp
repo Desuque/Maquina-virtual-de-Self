@@ -27,5 +27,5 @@ Slot* Boolean::clone(VM& vm){
 }
 
 void Boolean::get_self_slots(string& slots_self){
-	slots_self += as_string() + ".";
+	slots_self += as_string() + ". ";
 }

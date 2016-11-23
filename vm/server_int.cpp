@@ -25,7 +25,7 @@ Slot* Int::clone(VM& vm){
 }
 
 void Int::get_self_slots(string& slots_self){
-	slots_self += " " + as_string() + " .";
+	slots_self += " " + as_string() + " . ";
 }
 
 Slot* Int::add(VM& vm, Object* op){

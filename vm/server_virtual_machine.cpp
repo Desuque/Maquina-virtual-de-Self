@@ -145,7 +145,7 @@ Slot* VM::add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	Slot* sl_p = new Slot(get_id_slots(), sl_recv_id);
 	sl_p -> set_value(sl->get_value());
 	add_basic_slots(sl_p, sl_recv_id);
-	sl_p -> set_parent(true, sl_p -> get_name(), sl -> get_id());
+	sl_p -> set_parent(true, sl -> get_name(), sl -> get_id());
 	sl_recv -> add_slot(sl_p);
 	this -> slots.insert(std::pair<int,Slot*>(sl_p -> get_id(),sl_p));
 	return sl_recv;
