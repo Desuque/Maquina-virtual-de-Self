@@ -1,5 +1,12 @@
 #include "cliente.h"
 #include "client_json_reader.h"
+
+#define TAM_COD 1
+#define ACTUALIZAR_VISTA 8
+#define GET_IT 9
+#define DO_IT 10
+#define PEDIR_MORPH 11
+
 Cliente::Cliente(ProxyServer& proxy, MyArea* myArea) : proxy(proxy), myArea(myArea) {}
 		
 void Cliente::run() {
@@ -13,7 +20,9 @@ void Cliente::run() {
 		}
 		switch (codigo){	
 			case 2: {
+				std::cout << "recibi slot" << std::endl;
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
+				std::cout << tamMensaje << std::endl;
 				std::string json = proxy.recibir(tamMensaje);
 				std::cout << json << std::endl;
 				std::vector<InterfaceSlot*> i_slots;
@@ -74,6 +83,19 @@ void Cliente::run() {
 			  	}
 				break;
 			}
+			case PEDIR_MORPH: {
+				std::cout << "pedi morph" << std::endl;
+				uint32_t tamMensaje = proxy.recibirCodigo(4);
+				std::string json = proxy.recibir(tamMensaje);
+				std::cout << json << std::endl;
+				std::vector<InterfaceSlot*> i_slots;
+				JsonReader ids_reader;
+				int id_morph = -1, id_slot = -1;
+				ids_reader.read_id_morph_id_slot(json, id_morph, id_slot);
+				//myArea->agregarSlots(i_slots);
+				myArea->mostrarEsteSlotComoMorph(id_morph, id_slot);
+				break;
+			}
 			case GET_IT : {
 				//....
 				break;
@@ -88,13 +110,14 @@ void Cliente::run() {
 				std::string json = proxy.recibir(tamMensaje);	
 				JsonReader jsonReader;
 				int id = -1;
-				double posX, posY;
+				double posX = 0, posY = 0;
 				jsonReader.read_position(json, id, posX, posY);
 				myArea->actualizarPosicionAMoprh(id, posX, posY);
 				break;
 			}
 			default: {
 				std::cout << "recibi comando desconocido\n";
+				std::cout << "recibi comando desconocido: " << codigo << std::endl;
 				break;
 			}
 		}

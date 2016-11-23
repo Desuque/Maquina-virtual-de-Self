@@ -105,7 +105,7 @@ void Server::join_threads(){
 void Server::update_lobby_data(App* or_app, int cod, string json, int flag){
         for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
                 if (or_app -> get_name() == it->first){                        
-                        if (cod == 2 || cod == 8){
+                        if (cod == 2 || cod == 8 || cod == 11){
                                 (it->second)->enviar(cod, 1);
                                 (it->second) -> enviarJson(json);
                         }else if (cod == 5){// podria ser cualquier cosa, ejemplo : agregarSlot remove
