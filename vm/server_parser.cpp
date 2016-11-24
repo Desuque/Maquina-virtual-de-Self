@@ -122,24 +122,37 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 	codigo->seekg(*posicion, std::ios::beg);
 
 	char c;
-	std::string script;
+	std::string msg_script;
 	codigo->get(c);
 	if(c == '|') {
+		int posInicio = codigo->tellg();
+		int posSalida;
+
 		//Elimino posibles espacios
 		erase_white_spaces(codigo, posicion);
 		*posicion = codigo->tellg();
 		codigo->seekg(*posicion, std::ios::beg);
-		while(codigo->get(c)) {
-			if(c == ')') {
-				//*slot = linker.set_object_script(script);
-				break;
-			}
-			script+= c;
-		}
-		*posicion = codigo->tellg();
-		return true;
-	}
 
+		//Parser null_parser;
+		if(script(codigo, posicion)) {
+			posSalida = *posicion;
+			codigo->seekg(posInicio, std::ios::beg);
+			for(unsigned int i = posInicio; i<posSalida; i++) {
+				codigo->get(c);
+				msg_script += c;
+			}
+			std::cout<<"Esta es la posicion de salida: "<<*posicion<<" y el tellg: "<<codigo->tellg()<<std::endl;
+			std::cout<<"Este es el script ingresado: "<<msg_script<<std::endl;
+			*posicion = codigo->tellg();
+			//*slot = linker.set_object_script(script);
+			return true;		
+		} else {
+			//Si no hay coincidencia, vuelvo el puntero a su posicion original
+			*posicion = posicionOriginal;
+			return false;
+		}
+	}
+	
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -998,7 +1011,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	Slot* slot = NULL;
 	
 	int posicionOriginal = *posicion;
-	
+	/**
 	if(only_name(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
 			slots_to_process.push_back(slot);
@@ -1012,7 +1025,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	} else {
 		*posicion = posicionOriginal;
 	}
-
+	**/
 	if(expression(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
 			codigo->seekg(*posicion, std::ios::beg);
