@@ -160,3 +160,15 @@ string JsonWriter::write_slots_value(int id_base, v_slots& slots){
 	writer.EndObject();
 	return s.GetString();
 }
+
+string JsonWriter::write_share_obj(int id, string dest_lobby_name){
+        StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("id");
+	writer.Int(id);
+	writer.Key("destination");
+	writer.String(dest_lobby_name.c_str());
+	writer.EndObject();
+	return s.GetString();
+}
