@@ -10,6 +10,7 @@
 #define NOT_SET -1
 #define ADD_SLOTS 3
 #define REMOVE_SLOTS 4
+#define COLLECT 13
 #define ERROR 0
 
 Parser::Parser() : vm(NULL) {
@@ -916,6 +917,7 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 				codigo->get(c);
 				if (c == '.') {
 					*slot = linker->collect();
+					setFlag(msg_name);
 				}
 			} else {
 				//Actualizo la referencia al slot final creado
@@ -1122,6 +1124,8 @@ void Parser::setFlag(std::string valor) {
 		flag = REMOVE_SLOTS;
 	} else if (valor == "Error") {
 		flag = ERROR;
+	} else if (valor == "collect") {
+		flag = COLLECT;
 	} else {
 		flag = NOT_SET;
 	}
