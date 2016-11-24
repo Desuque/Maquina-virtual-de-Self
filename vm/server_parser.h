@@ -9,7 +9,7 @@
 class Parser {
 private:
 	VM* vm;
-	Linker linker;
+	Linker* linker;
 	std::string msg;
 	std::string op;
 	int flag;
@@ -22,6 +22,7 @@ public:
 	Slot* parsear(std::string codigo, std::string id);
 	virtual ~Parser();
 private:
+	void set_linker(Linker* linker);
 	bool null_parser(std::string codigo, std::string id);
 
 	Slot* parsear(std::string codigo);
