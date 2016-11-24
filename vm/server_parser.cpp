@@ -113,7 +113,7 @@ bool Parser::text(std::stringstream* codigo, int* posicion, Slot** slot) {
 	return false;
 }
 
-bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion) {
+bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 	//Elimino posibles espacios
@@ -131,6 +131,7 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion) {
 		codigo->seekg(*posicion, std::ios::beg);
 		while(codigo->get(c)) {
 			if(c == ')') {
+				//*slot = linker.set_object_script(script);
 				break;
 			}
 			script+= c;
@@ -160,7 +161,6 @@ bool Parser::pipe_without_script(std::stringstream* codigo, int* posicion) {
 		erase_white_spaces(codigo, posicion);
 		codigo->seekg(*posicion, std::ios::beg);
 		codigo->get(c);
-		std::cout<<"EL CARACTER FINAL: "<<c<<std::endl;
 		if(c == ')') {
 			*posicion = codigo->tellg();
 			return true;
@@ -258,7 +258,7 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 					return true;
 				}
 			}
-		}
+		} //TODO AGREGAR * Y :
 	}
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -271,26 +271,24 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
 
 	Slot* object = linker.create_object();
-
+	Slot* script = NULL;
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
 		
 		if(slot_list(codigo, posicion, &object)) { //|| (empty(codigo, posicion))) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
-			std::cout<<"Posicion despues de slot: "<<*posicion<<std::endl;
 			bool nextSlot = true;
 			while(nextSlot) {
 				nextSlot = slot_list(codigo, posicion, &object);
 			}
-			std::cout<<"Aca llega"<<std::endl;
 			if (pipe_without_script(codigo, posicion)) {
 				//Quiere decir que se encontro una barra y un parentesis
 				std::cout<<"La direccion del object: "<<object<<std::endl;
 				*slot = object;
 				return true;
 			}
-			if (pipe_with_script(codigo, posicion)) {
+			if (pipe_with_script(codigo, posicion, &object)) {
 				//Se encontró que no hay un parentesis luego de la barra
 				//Se guarda el script sin comprobar su sintaxis
 				std::cout<<"No tendria que entrar aca"<<std::endl;
@@ -524,7 +522,6 @@ bool Parser::receiver(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
 
 	if(expressionCP(codigo, posicion, slot)) {
-		std::cout<<"Al salir de receiver: "<<slot<<std::endl;
 		return true;
 	}
 
@@ -650,21 +647,14 @@ bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot)
 	bool remove = true;
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
-	
-	Slot* slot_name = NULL;
 
 	if(object_intro(codigo, posicion)) {
 		while(remove) {
 			if(name(codigo, posicion)) {
 				if(final(codigo, posicion)) {
-					
 					std::string msg_slot_to_erase = get_msg();
-					std::cout<<"Este slot voy a borrar: "<<msg_slot_to_erase<<std::endl;
-
 					if(msg_slot_to_erase.size() != 0) {
-						//slot_name = linker.get_object_by_name(msg_slot_to_erase);
 						*slot = linker.remove_slots(*slot, msg_slot_to_erase);	
-						std::cout<<"Slot a borrar: "<<*slot<<std::endl;
 					} else {
 						remove = false;
 					}
@@ -675,10 +665,7 @@ bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot)
 				break;
 			}
 		}
-
-		std::cout<<"Hasta aca llega"<<std::endl;
 		if(object_end(codigo, posicion)) {
-			std::cout<<"Object end se cumple"<<std::endl;
 			return true;
 		}
 	}
@@ -689,8 +676,6 @@ bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot)
 }
 
 Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
-	std::cout<<"A ver cual de los dos, receiver: "<<receiver<<" y exp: "<<expCP<<std::endl;
-	std::cout<<"LOWER: "<<lower_or_cap<<std::endl;
 	if((receiver != NULL) && (expCP != NULL)) {
 		return linker.create_keyword_message(receiver, lower_or_cap, expCP);
 	}
@@ -703,7 +688,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 
 	Slot* slot_receiver = NULL;
 	Slot* slot_expCP = NULL;
-	std::cout<<"SLOT AL ENTRAR: "<<*slot<<std::endl;
+
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
 	std::string valor;
@@ -712,10 +697,8 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 		//El receiver siempre es el contexto en un keyword_message, por ende
 		//obtengo el slot correspondiente usando el name cargado
 		std::string msg_receiver = get_msg();
-		std::cout<<"MENSAJE: "<<msg_receiver<<std::endl;
 		if(msg_receiver.size() != 0) {
 			slot_receiver = linker.get_context(msg_receiver);
-			std::cout<<"A ver el slot_receiver: "<<slot_receiver<<std::endl;
 		}
 
 		std::string msg = get_msg();
@@ -735,13 +718,10 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 				*codigo>>valor;
 
 				if(lower_key == "_RemoveSlots") {
-					std::cout<<"Entro a punto de borrar"<<std::endl;
 					
 					if(remove_slots(codigo, posicion, &slot_expCP)) {
-						std::cout<<"Aca ya borre todo"<<std::endl;
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
-						std::cout<<"Va todo bien??"<<std::endl;
 						return true;
 					} else {
 						//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -750,14 +730,12 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						clean_flag();
 						return false;
 					}
-				}
-				std::cout<<"No tengo que pasar por aca!"<<std::endl;
-				if(lower_key == "_AddSlots") {
+
+				//Tiene en cuenta _AddSlots: como cualquier metodo de usuario
+				} else {
+				//if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
-						std::cout<<"LOWET KEEEEY: "<<lower_key<<std::endl;
-						std::cout<<"Paso final: "<<slot_receiver<<" y exp: "<<slot_expCP<<std::endl;
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
-						std::cout<<"SLOT AL SALIR: "<<*slot<<std::endl;
 						setFlag(lower_key);
 				
 						/**
@@ -904,9 +882,24 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 	return false;
 }
 
-bool Parser::expressionCP(std::stringstream* codigo, int* posicion, Slot** slot) {
+bool Parser::only_name(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
 
+	if (name(codigo, posicion)) {
+		std::string msg_name = get_msg();
+		if(msg_name.size() != 0) {
+			std::cout<<"Aca entro"<<std::endl;
+			*slot = linker.only_name(msg_name, *slot);	
+			return true;
+		}
+	}
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
+
+bool Parser::expressionCP(std::stringstream* codigo, int* posicion, Slot** slot) {
+	int posicionOriginal = *posicion;
 
 	if (expressionP(codigo, posicion, slot)) {
 		return true;
@@ -934,7 +927,6 @@ bool Parser::expression(std::stringstream* codigo, int* posicion, Slot** slot) {
 	if(expressionCP(codigo, posicion, slot)) {
 		return true;
 	}
-
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -961,6 +953,23 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 bool Parser::script(std::stringstream *codigo, int* posicion) {
 	//Por cada script, se devuelve un Slot
 	Slot* slot = NULL;
+	
+	int posicionOriginal = *posicion;
+	
+	if(only_name(codigo, posicion, &slot)) {
+		if(final(codigo, posicion)) {
+			slots_to_process.push_back(slot);
+			if (!codigo->eof()) {
+				script(codigo, posicion);
+			}
+			return true;
+		} else {
+			*posicion = posicionOriginal;
+		}
+	} else {
+		*posicion = posicionOriginal;
+	}
+
 	if(expression(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
 			codigo->seekg(*posicion, std::ios::beg);

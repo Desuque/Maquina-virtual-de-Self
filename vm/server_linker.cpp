@@ -94,6 +94,35 @@ Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	**/
 }
 
+/**
+Slot* Linker::set_object_script(Slot* slot, std::string script) {
+	Slot* X34 = vm.create_string("((x*x)+(y*y))");
+	
+
+	return vm->create_string(script);
+
+
+	Slot* X31 = vm.search_obj("lobby");
+	Slot* cont4 = vm.create_object();
+        Slot* X32 = vm.create_object();
+	Slot* X33 = vm.create_object();
+	Slot* X34 = vm.create_string("((x*x)+(y*y))");
+	Slot* X35 = vm.create_string("print x");
+	Slot* X3Y = vm.create_int(7);
+	vm.immutable_object(X3Y);
+	vm.add_code(X33, "print", X35);
+	vm.add_code(X33, "square_norm", X34);
+	vm.add_slot(X33, "y", X3Y);
+	vm.add_slot(X32, "punto", X33);
+        vm.add_slot(cont4,"",X32);
+	vm.keyword_message(X31, "_AddSlots", cont4);
+}
+**/
+
+Slot* Linker::only_name(std::string name, Slot* slot) {
+	Slot* X1 = get_object_by_name(name);
+	return create_unary_message(X1, "print");
+}
 
 Slot* Linker::get_object_by_name(std::string name) {
 	return vm->search_obj_by_name(name, atoi(id.c_str()));
