@@ -10,7 +10,8 @@ static const int cod_get_slots = 2;
 static const int cod_generic = 5;
 static const int cod_update_position = 8;
 static const int cod_pedir_morph = 11;
-static const int cod_share_obj = 12;
+static const int cod_borrar_morph = 12;
+static const int cod_share_obj = 13;
 
 App::App(){
 	parser.setVM(&vm);
@@ -90,6 +91,14 @@ void App::run(int* fin){
 					proxy->enviarJson(json);*/
 					break;
 				}
+				case cod_borrar_morph :{
+-					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+-					std::string json = proxy->recibir(tamMensaje);
+-			                server -> update_lobby_data(this, cod_borrar_morph, json, 0);
+-					/*proxy->enviar(cod_pedir_morph,1);
+-					proxy->enviarJson(json);*/
+-					break;
+-				}
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
 					std::cout << "recibio: " << codigoMensaje << std::endl;
