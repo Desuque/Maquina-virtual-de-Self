@@ -36,6 +36,7 @@ class Slot: public Object{
 		void set_float_value(int id, float value);
 		void set_boolean_value(int id, bool value);
 		void set_string_value(int id, string value);
+                void set_error_value(int id, string value);
 		void set_int_method_value(int id, string name);
 		void add_slot(Slot* slot);
 		bool name_is(string name);

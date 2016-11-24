@@ -182,6 +182,13 @@ Slot* VM::create_nil(){
 	return sl;
 }
 
+Slot* VM::create_error(string msg){
+	Slot* sl = new Slot(get_id_slots(), msg);
+	sl -> set_error_value(get_id_slots(), msg);
+	add_basic_slots(sl, msg);
+	return sl;
+}
+
 Slot* VM::create_int(int value){
 	Slot* sl = new Slot(get_id_slots(), std::to_string(value));
 	sl -> set_int_value(get_id_slots(), value);

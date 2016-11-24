@@ -7,6 +7,7 @@
 #include "server_sub.h"
 #include "server_div.h"
 #include "server_nil.h"
+#include "server_error.h"
 #include "server_equal.h"
 #include "server_not_equal.h"
 #include "server_boolean.h"
@@ -67,7 +68,13 @@ void Slot::set_string_value(int id, string value){
 		throw ErrorType(this -> name);
  	this -> value = new String(id, value);
 }
- 
+
+void Slot::set_error_value(int id, string value){
+	if (this -> type)
+		throw ErrorType(this -> name);
+ 	this -> value = new Error(id, value);
+}
+
 void Slot::set_boolean_value(int id, bool value){
 	if (this -> type)
 		throw ErrorType(this -> name);

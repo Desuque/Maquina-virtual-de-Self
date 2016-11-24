@@ -36,6 +36,7 @@ class VM{
 		Slot* search_obj_id(int id);
 		Slot* create_object();
 		Slot* create_nil();
+                Slot* create_error(string msg);
                 Slot* create_int(int value);
 		Slot* create_float(float value);
 		Slot* create_string(string value);
