@@ -99,6 +99,8 @@ Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_Te
 	m_TextView(m_TextView), textViewCodigoAsociado(codigoAsociado) {
 	this->posX = posX;
 	this->posY = posY;
+	// hacer esto cuando haya solo una clase slots, para aprovechar el constructor.
+	// Morph(unSlot, m_textView, codigoAsociado);
 	this->id = unSlot->get_id();
 	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 	refTextViewCodigoAsociado->set_text("");
@@ -114,7 +116,7 @@ Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_Te
 	Pango::FontDescription font;
 	font.set_family("Monospace");
 	font.set_weight(Pango::WEIGHT_BOLD);
-	auto layout = create_pango_layout(this->nombreObjeto);
+	auto layout = create_pango_layout(this->nombreParaMostrar);
 	layout->set_font_description(font);
 	int text_width;
 	int text_height;

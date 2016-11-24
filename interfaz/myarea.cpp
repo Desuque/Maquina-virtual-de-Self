@@ -192,12 +192,12 @@ void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
   if(i_slots.size()){
     Morph* morph = obtenerMorphPorId(i_slots[0]->get_id());
     if (!morph){
-      Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
+      Morph* nuevoMorph = new Morph(i_slots[0],250.,300.,m_TextView, textViewCodAsociado);
       morphs.push_back(nuevoMorph);
       queue_draw();
       return;
     }
-    actual = morph;
+    //actual = morph;
     queue_draw();
     return;
   }
