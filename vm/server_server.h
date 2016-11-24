@@ -30,6 +30,8 @@ class Server : public Thread{
 		~Server();
                 
 	private:
+		void recv_app_create(ProxyClient* proxy);
+		void recv_app_load(ProxyClient* proxy);
                 void update_clients(string json_share, string lobby_des);
                 void update_app(string str_parser_code_share, string lobby_des);
 		int execute_file(App* app, string file_name);
