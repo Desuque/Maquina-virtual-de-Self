@@ -3,6 +3,7 @@
 #define PARSER_H_
 
 #include "server_linker.h"
+#include "server_null_linker.h"
 #include "server_virtual_machine.h"
 #include <vector>
 
@@ -10,6 +11,7 @@ class Parser {
 private:
 	VM* vm;
 	Linker* linker;
+	nLinker* null_linker;
 	std::string msg;
 	std::string op;
 	int flag;
@@ -23,6 +25,7 @@ public:
 	virtual ~Parser();
 private:
 	void set_linker(Linker* linker);
+	void set_linker(nLinker* null_linker);
 	bool null_parser(std::string codigo, std::string id);
 
 	Slot* parsear(std::string codigo);

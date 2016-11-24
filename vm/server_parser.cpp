@@ -4,6 +4,7 @@
 #include <regex>
 #include "server_parser.h"
 #include "server_linker.h"
+#include "server_null_linker.h"
 #include "server_virtual_machine.h"
 
 #define NOT_SET -1
@@ -132,8 +133,12 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 		*posicion = codigo->tellg();
 		codigo->seekg(*posicion, std::ios::beg);
 
-		//Parser null_parser;
-		if(script(codigo, posicion)) {
+		//Null parser para evitar que se ejecute codigo
+		Parser null_parser;
+		nLinker n_linker;
+		null_parser.set_linker(&n_linker);
+
+		if(null_parser.script(codigo, posicion)) {
 			posSalida = *posicion;
 			codigo->seekg(posInicio, std::ios::beg);
 			for(unsigned int i = posInicio; i<posSalida; i++) {
@@ -1055,6 +1060,10 @@ bool Parser::null_parser(std::string codigo, std::string id) {
 
 void Parser::set_linker(Linker* linker) {
 	this->linker = linker;
+}
+
+void Parser::set_linker(nLinker* linker) {
+	this->null_linker = linker;
 }
 
 Slot* Parser::parsear(std::string codigo, std::string id) {
