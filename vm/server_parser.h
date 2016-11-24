@@ -22,6 +22,8 @@ public:
 	Slot* parsear(std::string codigo, std::string id);
 	virtual ~Parser();
 private:
+	bool null_parser(std::string codigo, std::string id);
+
 	Slot* parsear(std::string codigo);
 	bool script(std::stringstream* codigo, int* posicion);
 	bool expression(std::stringstream* codigo, int* posicion, Slot** slot);

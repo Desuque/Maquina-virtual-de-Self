@@ -803,7 +803,7 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 			slot_receiver = linker.get_object_by_name(msg_receiver);
 		}
 		if(operador(codigo, posicion)) {
-			std::string op1 = get_op();
+			std::string op = get_op();
 			if(expressionCP(codigo, posicion, &slot_expCP)) {
 				//Si la expressionCP era un name, queda guardado en la variable msg_name
 				//Busco el slot correspondiente a ese name
@@ -811,7 +811,6 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 				if(msg_expCP.size() != 0) {
 					slot_expCP = linker.get_object_by_name(msg_expCP);
 				}
-				std::string op = get_op();
 				*slot = linker.create_binary_message(slot_receiver, op, slot_expCP);
 				return true;
 			}
@@ -1007,11 +1006,20 @@ Slot* Parser::parsear(std::string codigo) {
 	}
 }
 
+bool Parser::null_parser(std::string codigo, std::string id) {
+	std::cout<<"Entre"<<std::endl;
+	Parser null_parser;
+	null_parser.parsear(codigo);
+	return true;
+}
+
 Slot* Parser::parsear(std::string codigo, std::string id) {
-	//Seteo el ID del contexto donde se va a trabajar
-	linker.setID(id);
-	//Parseo como un script comun
-	return parsear(codigo);
+	//if(null_parser(codigo, id)) {
+		//Seteo el ID del contexto donde se va a trabajar
+		linker.setID(id);
+		//Parseo como un script comun
+		return parsear(codigo);
+	//}
 }
 
 void Parser::set_msg(std::string msg) {
