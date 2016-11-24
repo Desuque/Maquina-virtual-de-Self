@@ -23,6 +23,9 @@ class JsonReader{
         void read_position(string json, int& id, double& posX, double& posY); 
         void read_id_morph_id_slot(string json, int& id_morph, int& id_slot);
         void read_id_morph(string json, int& id_morph);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 };
 

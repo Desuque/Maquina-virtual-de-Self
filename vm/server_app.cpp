@@ -11,7 +11,11 @@ static const int cod_generic = 5;
 static const int cod_update_position = 8;
 static const int cod_pedir_morph = 11;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 static const int cod_share_obj = 12;
+=======
+static const int cod_borrar_morph = 12;
+>>>>>>> Stashed changes
 =======
 static const int cod_borrar_morph = 12;
 >>>>>>> Stashed changes
