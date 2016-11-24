@@ -61,7 +61,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        //test_example();
+        test_example();
 	while (true){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
@@ -325,6 +325,11 @@ void App::test_example(){
 	vm.add_slot(X97, "", X100);
         vm.keyword_message(X96, "_RemoveSlots", X97);
         
+        Slot* l = vm.search_obj_by_name("lobby",0);
+        std::cout << "LOBBY " << vm.get_slots(0,l) << std::endl;
+        Slot* clone = vm.clone_obj_by_name("punto", 0);
+        std::cout << "CLONE " << vm.get_slots(0,clone) << std::endl;
+        std::cout << "CLONE GET" << get_slots("1337") << std::endl;
         /*
         Slot* y = vm.search_obj_by_name("y",116);
         vm.unary_message(y, "print");

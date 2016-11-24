@@ -81,8 +81,8 @@ string VM::get_slots(int id_base, Slot* sl){
         }
         
         string json = sl -> get_value() -> get_json_slots(id_base);
-        if (json == empty_slot && sl -> get_value() -> empty())
-                return json;
+        /*if (json == empty_slot && sl -> get_value() -> empty())
+                return json;*/
         
         if ( json != empty_slot &&  (sl -> get_name() != garbage_name))
                 return json;
@@ -378,6 +378,14 @@ string VM::get_slot_to_share(int id){
 string VM::get_json_id(int id){
         Slot* sl = search_obj_id(id);
         return get_slot(idx_global, sl);
+}
+
+Slot* VM::clone_obj_by_name(string name, int context){
+        Slot* sl_to_clone = search_obj_by_name(name,context);
+        Slot* sl_clone = create_object();
+        Slot* sl_clone_cont = sl_to_clone -> get_value() -> clone(*this);
+        add_slot(sl_clone, sl_to_clone -> get_name(), sl_clone_cont);
+        return sl_clone;
 }
 
 VM::~VM(){

@@ -49,6 +49,7 @@ class VM{
 		Slot* binary_message(Slot* sl_recv, string msg, Slot* sl);
 		Slot* keyword_message(Slot* sl_recv, string obj_id, Slot* sl);
                 Slot* search_obj_by_name(string name, int context);
+                Slot* clone_obj_by_name(string name, int context);
                 string get_slot_to_share(int id);
 		string get_json_id(int id);
 		~VM();
