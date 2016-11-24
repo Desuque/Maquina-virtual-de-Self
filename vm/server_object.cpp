@@ -134,7 +134,7 @@ void Object::get_self_slots(string& slots_self){
 
 string Object::get_full_self_slots(string slot_name){
         SelfWriter self_writer;
-	return self_writer.write_full(slot_name, slots);
+	return self_writer.write_full(this, slots, slot_name);
 }
 		
 Slot* Object::clone(VM& vm){

@@ -44,9 +44,13 @@ bool SelfWriter::valid_slot(string name){
         return (name != "" && name != "_Name" && name !="_Self");
 }
 
-string SelfWriter::write_full(string slot_name, m_slots& slots){
+string SelfWriter::write_full(Object* sl, m_slots& slots, string slot_name){
         string slots_self = start + inic + slot_name + equal;
-        get_full(slots, slots_self);
+        if (sl -> empty()){
+            slots_self += sl -> as_string();
+        }else{
+            get_full(slots, slots_self);
+        }
         slots_self += end;
         return slots_self;
 }
@@ -61,14 +65,15 @@ void SelfWriter::get_full(m_slots& slots, string& slots_self){
                 }
                     
                 if (!sl->is_base_slot(sl) && !sl->is_num_slot(sl)){
-			if (sl -> get_name() != "" )
+                        if (sl -> get_name() != "" )
                                 slots_self += " " + sl -> get_name() + " =";
 			if ( sl -> is_code()){
-				slots_self += " (|| ";
+                                
+                        	slots_self += " (|| ";
 				slots_self += sl -> get_value() -> as_string();
 				slots_self += " ).";
 			}else{
-				sl -> get_value() -> get_self_slots(slots_self);
+                        	sl -> get_value() -> get_self_slots(slots_self);
 			}
 		}
 		
