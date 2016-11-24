@@ -6,6 +6,7 @@
 #include <fstream>
 
 static const int cod_error = 0;
+static const int cod_get_slots = 2;
 static const int cod_create_app = 1;
 static const int cod_get_apps_name = 6;
 static const int cod_load_app = 7;
@@ -52,40 +53,47 @@ void Server::run(int* fin){
         } catch (const std::exception e){continue;}
 
                 if (codigoMensaje == cod_create_app){
-                        
-                        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-                        string app_name = proxy->recibir(tamMensaje);
-                        
-                        if ( apps.find(app_name) == apps.end()){
-                                proxy->enviar(cod_create_app, 1);
-                                App* new_app = new App(app_name, this, proxy);
-                                apps.insert (std::pair<string,App*>(app_name, new_app));
-                                proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
-                                new_app -> start();
-                        } else {
-                                //Enviar Error, ese nombre ya existe
-                                proxy->enviar(cod_error, 1);
-                                // ahora se queda esperando que le envien un nombre
-                                // valido.
-                        }
+                        recv_app_create(proxy);
                 }else if (codigoMensaje == cod_get_apps_name){
-                        string json = get_json_apps_name();
-                        proxy->enviarJson(json);
-                        codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
-                        if (codigoMensaje == cod_load_app){
-                                uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-                                string app_name = proxy->recibir(tamMensaje);
-                                App* new_app = new App(app_name, this, proxy);
-                                apps.insert (std::pair<string,App*>(app_name, new_app));
-                                proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
-                                execute_file(new_app, app_name);
-                                new_app -> start();
-                                proxy->enviar(cod_load_app, 1);
-                        }
+                        recv_app_load(proxy);
                 }
                 join_threads();
         }
         delete proxy;
+}
+
+void Server::recv_app_create(ProxyClient* proxy){
+        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+        string app_name = proxy->recibir(tamMensaje);
+                        
+        if ( apps.find(app_name) == apps.end()){
+                proxy->enviar(cod_create_app, 1);
+                App* new_app = new App(app_name, this, proxy);
+                apps.insert (std::pair<string,App*>(app_name, new_app));
+                proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
+                new_app -> start();
+        } else {
+                //Enviar Error, ese nombre ya existe
+                proxy->enviar(cod_error, 1);
+                // ahora se queda esperando que le envien un nombre
+                // valido.
+        }
+}
+
+void Server::recv_app_load(ProxyClient* proxy){
+        string json = get_json_apps_name();
+        proxy->enviarJson(json);
+        uint32_t codigoMensaje = proxy->recibirCodigoMensaje(msg_size);
+        if (codigoMensaje == cod_load_app){
+                uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+                string app_name = proxy->recibir(tamMensaje);
+                App* new_app = new App(app_name, this, proxy);
+                apps.insert (std::pair<string,App*>(app_name, new_app));
+                proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
+                execute_file(new_app, app_name);
+                new_app -> start();
+                proxy->enviar(cod_load_app, 1);
+        }        
 }
 
 void Server::join_threads(){
@@ -149,8 +157,8 @@ void Server::update_clients(string json_share, string lobby_des){
          for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
                 if (lobby_des == it->first){                   
                             //Enviar codigo a la interfaz para que lo ejecute
-                            //(it->second)->enviar(2, 1);
-                            //(it->second) -> enviarJson(json_share);
+                            (it->second) -> enviar(cod_get_slots, 1);
+                            (it->second) -> enviarJson(json_share);
                 }
         }
 }
