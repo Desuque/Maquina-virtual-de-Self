@@ -31,6 +31,7 @@ class Slot: public Object{
 		void set_type(bool val);
 		void set_value(Object* obj);
 		void set_obj_value(int id);
+                void set_nil_value(int id);
 		void set_int_value(int id, int value);
 		void set_float_value(int id, float value);
 		void set_boolean_value(int id, bool value);

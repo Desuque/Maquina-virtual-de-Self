@@ -6,6 +6,7 @@
 #include "server_mult.h"
 #include "server_sub.h"
 #include "server_div.h"
+#include "server_nil.h"
 #include "server_equal.h"
 #include "server_not_equal.h"
 #include "server_boolean.h"
@@ -42,7 +43,13 @@ void Slot::set_obj_value(int id){
 		throw ErrorType(this -> name);
  	this -> value = new Object(id);
 }
- 
+
+void Slot::set_nil_value(int id){
+        if (this -> type)
+		throw ErrorType(this -> name);
+ 	this -> value = new Nil(id);
+}
+
 void Slot::set_int_value(int id, int value){
 	if (this -> type)
 		throw ErrorType(this -> name);

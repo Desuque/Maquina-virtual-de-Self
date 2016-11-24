@@ -9,6 +9,7 @@
 
 static const char* global_obj = "lobby";
 static const char* name_slot = "_Name";
+static const char* nil = "nil";
 static const char* self_slot = "_Self";
 static const char* print = "print";
 static const char* obj_name = "object";
@@ -171,6 +172,13 @@ Slot* VM::create_object(){
 	Slot* sl = new Slot(get_id_slots(), obj_name);
 	sl -> set_obj_value(get_id_slots());
 	add_basic_slots(sl, obj_name);
+	return sl;
+}
+
+Slot* VM::create_nil(){
+	Slot* sl = new Slot(get_id_slots(), nil);
+	sl -> set_nil_value(get_id_slots());
+	add_basic_slots(sl, nil);
 	return sl;
 }
 
