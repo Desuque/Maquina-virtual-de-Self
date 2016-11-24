@@ -238,6 +238,10 @@ Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended, st
 	return NULL;
 }
 
+Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended) {
+	return linker.create_slot(object, slot_name_extended);	
+}
+
 bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
 
@@ -249,6 +253,21 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 
 	if(slot_name_extended(codigo, posicion)) {
 		std::string slot_name_extended = get_msg();
+
+		//Elimino posibles espacios
+		erase_white_spaces(codigo, posicion);
+		//Leo todo el valor desde la posicion indicada
+		codigo->seekg(*posicion, std::ios::beg);
+		char c;
+		codigo->get(c);
+
+		//Si un slot no se lo inicializa por default Self crea 
+		//un slot mutable inicializado con el objeto ​nil
+		if(c == '.') {
+			*slot = process_slot_list(*slot, slot_name_extended);
+			*posicion = codigo->tellg();
+			return true;
+		}
 		if(slot_operator(codigo, posicion)) {
 			std::string op = get_op();
 			if(expression(codigo, posicion, &exp)) {
@@ -303,17 +322,32 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 	return false;
 }
 
-bool Parser::nil(std::stringstream* codigo, int* posicion) {
+Slot* Parser::process_nil() {
+	return vm->create_nil();
+}
+
+bool Parser::nil(std::stringstream* codigo, int* posicion, Slot** slot) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-	*codigo>>valor;
 
-	if(valor == "nil") {
-		*posicion = codigo->tellg();
+	char c;
+	std::string auxiliar;
+	while(codigo->get(c)) {
+		if ((c == 'n') || (c == 'i') || (c == 'l')) {
+			auxiliar += c;
+			*posicion = codigo->tellg();
+		} else {
+			break;
+		}
+	}
+
+	if(auxiliar == "nil") {
+		*slot = process_nil();
 		return true;
 	}
 
@@ -506,9 +540,9 @@ bool Parser::constant(std::stringstream* codigo, int* posicion, Slot** slot) {
 	if(object(codigo, posicion, slot)) {
 		return true;
 	}
-/**	if(nil(codigo, posicion)) {
+	if(nil(codigo, posicion, slot)) {
 		return true;
-	}**/
+	}
 	if(name(codigo, posicion)) {
 		return true;
 	}

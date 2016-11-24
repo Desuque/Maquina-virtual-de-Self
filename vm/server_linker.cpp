@@ -72,6 +72,19 @@ Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::str
 	return object;
 }
 
+Slot* Linker::create_slot(Slot* object, std::string slot_name_extended) {
+	Slot* X1 = vm->create_object();
+	Slot* X2 = vm->create_nil();
+	vm->add_slot(X1, slot_name_extended, X2);
+	vm->add_slot(object, "", X1);
+
+	return object;
+}
+
+Slot* Linker::create_nil() {
+	return vm->create_nil();
+}
+
 Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	        //lobby _RemoveSlots: (| prueba1. prueba2. |).
 	if(slot == NULL) {

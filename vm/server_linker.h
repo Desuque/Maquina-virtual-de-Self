@@ -21,6 +21,8 @@ public:
 	Slot* create_binary_message(Slot* receiver, std::string op, Slot* expCP);
 	Slot* create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP);
 	Slot* create_slot(Slot* slot, std::string slot_name_extended, std::string op, Slot* exp);
+	Slot* create_slot(Slot* object, std::string slot_name_extended);
+	Slot* create_nil();
 	Slot* create_object();
 	Slot* collect();
 	Slot* get_object_by_name(std::string name);
