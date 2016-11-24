@@ -247,8 +247,9 @@ void App::test_example(){
 	Slot* cont4 = vm.create_object();
         Slot* X32 = vm.create_object();
 	Slot* X33 = vm.create_object();
-	Slot* X34 = vm.create_string("((x*x)+(y*y))");
-	Slot* X35 = vm.create_string("print x");
+	//Slot* X34 = vm.create_string("((x*x)+(y*y))");
+	Slot* X34 = vm.create_string("(y*y).");
+        Slot* X35 = vm.create_string("print x");
 	//Slot* X3Y = vm.create_int(7);
 	//vm.immutable_object(X3Y);
 	vm.add_code(X33, "print", X35);
@@ -259,8 +260,8 @@ void App::test_example(){
 	vm.keyword_message(X31, "_AddSlots", cont4);
 	
 	//punto print.   #Print Method Object
-	Slot* X36 = vm.search_obj("punto");
-	vm.unary_message(X36, "print");
+	/*Slot* X36 = vm.search_obj("punto");
+	vm.unary_message(X36, "print");*/
 	
 	Slot* X37 = vm.search_obj("punto1");
 	Slot* X38 = vm.search_obj("punto");
