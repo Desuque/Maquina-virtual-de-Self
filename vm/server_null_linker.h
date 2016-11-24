@@ -8,7 +8,6 @@
 class nLinker : public Linker {
 public:
 	nLinker();
-
 	Slot* create_number(std::string number);
 	Slot* create_string(std::string string);
 	Slot* create_unary_message(Slot* receiver, std::string name);

@@ -1,7 +1,5 @@
 
 #include "server_null_linker.h"
-#include <iostream>
-#include <sstream>
 
 nLinker::nLinker() {
 }
@@ -59,7 +57,6 @@ Slot* nLinker::remove_slots(Slot* slot, std::string slot_to_erase) {
 }
 
 Slot* nLinker::only_name(std::string name, Slot* slot) {
-	std::cout<<"Entra aca"<<std::endl;
 	return NULL;
 }
 
