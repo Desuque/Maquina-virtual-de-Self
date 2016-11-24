@@ -1,18 +1,9 @@
 
 #include "server_null_linker.h"
-#include "server_virtual_machine.h"
 #include <iostream>
 #include <sstream>
 
-nLinker::nLinker() : vm(NULL), id("-1") {
-}
-
-void nLinker::setVM(VM* vm) {
-	this->vm = vm;
-}
-
-void nLinker::setID(std::string id) {
-	this->id = id;
+nLinker::nLinker() {
 }
 
 Slot* nLinker::create_number(std::string number) {
@@ -64,6 +55,7 @@ Slot* nLinker::remove_slots(Slot* slot, std::string slot_to_erase) {
 }
 
 Slot* nLinker::only_name(std::string name, Slot* slot) {
+	std::cout<<"Entra aca"<<std::endl;
 	return NULL;
 }
 

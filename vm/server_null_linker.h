@@ -3,17 +3,11 @@
 #define NULL_LINKER_H_
 
 #include "server_virtual_machine.h"
-#include <vector>
+#include "server_linker.h"
 
-class nLinker {
-private:
-	VM* vm;
-	std::string id;
-
+class nLinker : public Linker {
 public:
 	nLinker();
-	void setVM(VM* vm);
-	void setID(std::string id);
 
 	Slot* create_number(std::string number);
 	Slot* create_string(std::string string);

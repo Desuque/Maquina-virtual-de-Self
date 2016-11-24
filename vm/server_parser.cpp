@@ -134,10 +134,11 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 		codigo->seekg(*posicion, std::ios::beg);
 
 		//Null parser para evitar que se ejecute codigo
+		std::cout<<"Antes de crear el parser null"<<std::endl;
 		Parser null_parser;
 		nLinker n_linker;
 		null_parser.set_linker(&n_linker);
-
+		std::cout<<"Fin de creaciones"<<std::endl;
 		if(null_parser.script(codigo, posicion)) {
 			posSalida = *posicion;
 			codigo->seekg(posInicio, std::ios::beg);
@@ -249,10 +250,7 @@ bool Parser::object_intro(std::stringstream* codigo, int* posicion) {
 }
 
 Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
-	if(exp != NULL) {
-		return linker->create_slot(object, slot_name_extended, op, exp);
-	}
-	return NULL;
+	return linker->create_slot(object, slot_name_extended, op, exp);
 }
 
 Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended) {
@@ -324,10 +322,13 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 				return true;
 			}
 			if (pipe_with_script(codigo, posicion, &object)) {
-				//Se encontró que no hay un parentesis luego de la barra
-				//Se guarda el script sin comprobar su sintaxis
-				*slot = object;
-				return true;
+				std::cout<<"Entro al pipe with script"<<std::endl;
+				if(object_end(codigo, posicion)) {
+					//Se encontró que no hay un parentesis luego de la barra
+					//Se guarda el script sin comprobar su sintaxis
+					*slot = object;
+					return true;
+				}
 			}
 		}
 	}
@@ -737,10 +738,10 @@ bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot)
 }
 
 Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
-	if((receiver != NULL) && (expCP != NULL)) {
+	//if((receiver != NULL) && (expCP != NULL)) {
 		return linker->create_keyword_message(receiver, lower_or_cap, expCP);
-	}
-	return NULL;
+	//}
+	//return NULL;
 }
 
 bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** slot) {
@@ -827,9 +828,8 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						
 						 * Fin carga de cap_keyword
 						 */
-						if(*slot != NULL) {
-							return true;
-						}
+						return true;
+						
 					}
 				}
 			}
@@ -844,10 +844,10 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 }
 
 Slot* Parser::process_binary_message(Slot* receiver, std::string op, Slot* expCP) {
-	if((receiver != NULL) && (expCP != NULL)) {
+	//if((receiver != NULL) && (expCP != NULL)) {
 		return linker->create_binary_message(receiver, op, expCP);
-	}
-	return NULL;
+	//}
+	//return NULL;
 }
 
 bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slot) {
@@ -884,10 +884,10 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 }
 
 Slot* Parser::process_unary_message(Slot* receiver, std::string name) {
-	if(receiver != NULL) {
+	//if(receiver != NULL) {
 		return linker->create_unary_message(receiver, name);
-	}
-	return NULL;
+	//}
+	//return NULL;
 }
 
 bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot) {
@@ -934,11 +934,15 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 
 bool Parser::only_name(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
-
+	std::cout<<"Entro"<<std::endl;
 	if (name(codigo, posicion)) {
+		std::cout<<"Aca tambien"<<std::endl;
 		std::string msg_name = get_msg();
 		if(msg_name.size() != 0) {
+			std::cout<<"Entro al linker trucho"<<std::endl;
+			std::cout<<"Memoria del linker trucho: "<<linker<<std::endl;
 			*slot = linker->only_name(msg_name, *slot);	
+			std::cout<<"Salgo del linker trucho"<<std::endl;
 			return true;
 		}
 	}
@@ -1003,9 +1007,11 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	//Por cada script, se devuelve un Slot
 	Slot* slot = NULL;
 	int posicionOriginal = *posicion;
-
+	std::cout<<"Paso por aca"<<std::endl;
 	if(only_name(codigo, posicion, &slot)) {
+		std::cout<<"ENtro"<<std::endl;
 		if(final(codigo, posicion)) {
+			std::cout<<"Paso el final"<<std::endl;
 			slots_to_process.push_back(slot);
 			if (!codigo->eof()) {
 				script(codigo, posicion);
@@ -1017,6 +1023,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	} else {
 		*posicion = posicionOriginal;
 	}
+	std::cout<<"Y por Paso por aca"<<std::endl;
 
 	if(expression(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
@@ -1050,28 +1057,26 @@ Slot* Parser::parsear(std::string codigo) {
 		return NULL;
 	}
 }
-
+/**
 bool Parser::null_parser(std::string codigo, std::string id) {
 	std::cout<<"Entre"<<std::endl;
 	Parser null_parser;
 	null_parser.parsear(codigo);
 	return true;
 }
+**/
 
 void Parser::set_linker(Linker* linker) {
 	this->linker = linker;
 }
 
-void Parser::set_linker(nLinker* linker) {
-	this->null_linker = linker;
-}
-
 Slot* Parser::parsear(std::string codigo, std::string id) {
 	//if(null_parser(codigo, id)) {
+
 	//Seteo el linker a usar
 	Linker linker;
 	set_linker(&linker);
-	
+
 	//Seteo el ID del contexto donde se va a trabajar
 	linker.setID(id);
 	linker.setVM(vm);

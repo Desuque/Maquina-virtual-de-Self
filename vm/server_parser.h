@@ -11,7 +11,7 @@ class Parser {
 private:
 	VM* vm;
 	Linker* linker;
-	nLinker* null_linker;
+	nLinker* nlinker;
 	std::string msg;
 	std::string op;
 	int flag;
@@ -25,8 +25,7 @@ public:
 	virtual ~Parser();
 private:
 	void set_linker(Linker* linker);
-	void set_linker(nLinker* null_linker);
-	bool null_parser(std::string codigo, std::string id);
+	//bool null_parser(std::string codigo, std::string id);
 
 	Slot* parsear(std::string codigo);
 	bool script(std::stringstream* codigo, int* posicion);
