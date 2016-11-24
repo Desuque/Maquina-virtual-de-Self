@@ -247,8 +247,8 @@ void App::test_example(){
 	Slot* cont4 = vm.create_object();
         Slot* X32 = vm.create_object();
 	Slot* X33 = vm.create_object();
-	//Slot* X34 = vm.create_string("((x*x)+(y*y))");
-	Slot* X34 = vm.create_string("(y*y).");
+	//Slot* X34 = vm.create_string("( y * y ).");
+	Slot* X34 = vm.create_string("(( y * y ) + ( x * x )).");
         Slot* X35 = vm.create_string("print x");
 	//Slot* X3Y = vm.create_int(7);
 	//vm.immutable_object(X3Y);
@@ -267,9 +267,10 @@ void App::test_example(){
 	Slot* X38 = vm.search_obj("punto");
 	vm.add_parent(X37, "padre", X38);
 	
-	//punto1 square_norm.   #Print Method Object
-	Slot* X39 = vm.search_obj("punto1");
-	vm.unary_message(X39, "square_norm");
+	//punto11 square_norm.   #Print Method Object
+	Slot* X39 = vm.search_obj("punto11");
+	Slot* a = vm.unary_message(X39, "square_norm");
+        std::cout << "SQUARE_NORM " << vm.get_slots(0, a) << std::endl;
 	/*
         //(punto y) print.
 	Slot* X40 = vm.search_obj("punto");
