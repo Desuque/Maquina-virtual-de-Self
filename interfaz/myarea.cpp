@@ -96,6 +96,31 @@ void MyArea::iniciar(){
     i_slots[i] -> print_attr();
     actual->agregarSlot(i_slots[i]);
   }
+  
+  /*int size = i_slots.size();
+  for (int i = 0; i < size ; i++){
+    i_slots[i] -> print_attr();
+
+    if(i_slots[i]->estaDibujadoComoMorph()){
+        for (int j = 0; j < morphs.size() ; ++j){
+          if (morphs[j]->tieneElMismoIdQueEsteSlot(i_slots[i])){
+            Referencia* referenciaNueva = new Referencia(morphs[j],i_slots[i]);
+            morphs[j]->referencias.push_back(referenciaNueva);
+            referencias.push_back(referenciaNueva);
+            i_slots[i]->setReferencia(referenciaNueva);
+            queue_draw();
+            return;
+          }
+        }
+        Morph* nuevoMorph = new Morph(i_slots[i], m_TextView, textViewCodAsociado);
+        morphs.push_back(nuevoMorph); 
+        Referencia* referenciaNueva = new Referencia(nuevoMorph,i_slots[i]);
+        nuevoMorph->referencias.push_back(referenciaNueva);
+        referencias.push_back(referenciaNueva);
+        i_slots[i]->setReferencia(referenciaNueva);
+    }
+    //actual->agregarSlot(i_slots[i]);
+  }*/
 
   for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
     delete* it;  

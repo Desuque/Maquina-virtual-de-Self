@@ -12,6 +12,7 @@ static const int cod_update_position = 8;
 static const int cod_pedir_morph = 11;
 static const int cod_borrar_morph = 12;
 static const int cod_share_obj = 13;
+static const int cod_garbage = 14;
 
 App::App(){
 	parser.setVM(&vm);
@@ -83,7 +84,6 @@ void App::run(int* fin){
                                         rcv_share_obj();
                                         break;
 				case cod_pedir_morph :{
-					std::cout << "reenvio el mensaje" << std::endl;
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
 			        server -> update_lobby_data(this, cod_pedir_morph, json, 0);
@@ -94,7 +94,7 @@ void App::run(int* fin){
 				case cod_borrar_morph :{
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
-			                server -> update_lobby_data(this, cod_borrar_morph, json, 0);
+			        server -> update_lobby_data(this, cod_borrar_morph, json, 0);
 					/*proxy->enviar(cod_pedir_morph,1);
 					proxy->enviarJson(json);*/
 					break;
@@ -115,7 +115,7 @@ void App::run(int* fin){
         reader.read_garbage_ids(json, vec);
         int size = vec.size();
         for (int i = 0; i< size; i++)
-                std::cout << vec[i] << std::endl;*/
+        std::cout << vec[i] << std::endl;*/
  	*fin = 1;
 }
 

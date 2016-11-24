@@ -81,8 +81,8 @@ string VM::get_slots(int id_base, Slot* sl){
         }
         
         string json = sl -> get_value() -> get_json_slots(id_base);
-        if (json == empty_slot && sl -> get_value() -> empty())
-                return json;
+        //if (json == empty_slot && sl -> get_value() -> empty())
+        //        return json;
         
         if ( json != empty_slot &&  (sl -> get_name() != garbage_name))
                 return json;
