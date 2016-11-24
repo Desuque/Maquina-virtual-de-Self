@@ -120,8 +120,8 @@ Slot* Linker::set_object_script(Slot* slot, std::string script) {
 **/
 
 Slot* Linker::only_name(std::string name, Slot* slot) {
-	Slot* X1 = get_object_by_name(name);
-	return create_unary_message(X1, "print");
+	return get_object_by_name(name);
+	//return create_unary_message(X1, "print");
 }
 
 Slot* Linker::get_object_by_name(std::string name) {
