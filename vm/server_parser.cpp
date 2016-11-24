@@ -152,7 +152,7 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 			return false;
 		}
 	}
-	
+
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
@@ -1011,7 +1011,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	Slot* slot = NULL;
 	
 	int posicionOriginal = *posicion;
-	/**
+
 	if(only_name(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
 			slots_to_process.push_back(slot);
@@ -1025,21 +1025,17 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	} else {
 		*posicion = posicionOriginal;
 	}
-	**/
+
 	if(expression(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
 			codigo->seekg(*posicion, std::ios::beg);
 			std::string valor;
 			*codigo>>valor;
 			//Guardo el slot a retornar a la VM en la lista de slots procesados
-			std::cout<<"Lo guardo y todo"<<std::endl;
-			std::cout<<"SLOT AL FINAL DEL OTODO: "<<slot<<std::endl;
-
 			slots_to_process.push_back(slot);
 			if (!codigo->eof()) {
 				script(codigo, posicion);
 			}
-			std::cout<<"Ultima linea!"<<std::endl;
 			return true;
 		}
 	}
