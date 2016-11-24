@@ -309,7 +309,7 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
 		
-		if(slot_list(codigo, posicion, &object)) { //|| (empty(codigo, posicion))) {
+		if(slot_list(codigo, posicion, &object)) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
 			bool nextSlot = true;
@@ -780,7 +780,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 				*codigo>>valor;
 
 				if(lower_key == "_RemoveSlots") {
-					
+					std::cout<<"Entro aca!"<<std::endl;
 					if(remove_slots(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
@@ -788,8 +788,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					} else {
 						//Si no hay coincidencia, vuelvo el puntero a su posicion original
 						*posicion = posicionOriginal;
-						*slot = NULL;
-						clean_flag();
 						return false;
 					}
 
