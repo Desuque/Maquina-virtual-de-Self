@@ -26,6 +26,7 @@ class App : public Thread{
 		string execute(string msg);
                 string get_name();
 		int execute_file(string file_name);
+                void update_app(string str_parser_code_share);
                 void run(int* fin);
                 ProxyClient* get_proxy();
 		~App();

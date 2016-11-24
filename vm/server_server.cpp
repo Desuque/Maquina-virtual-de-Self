@@ -138,14 +138,26 @@ string Server::get_json_apps_name(){
         return writer.write_files_name(names);
 }
 
-void Server::share_obj_to(string str_parser_code_share, string lobby_des){
-        for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
+void Server::update_app(string str_parser_code_share, string lobby_des){
+         for (map_apps::iterator it = apps.begin(); it != apps.end(); ++it){
+                if (lobby_des == it->first)
+                            (it->second) -> update_app(str_parser_code_share);
+        }
+}
+
+void Server::update_clients(string json_share, string lobby_des){
+         for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
                 if (lobby_des == it->first){                   
                             //Enviar codigo a la interfaz para que lo ejecute
                             //(it->second)->enviar(2, 1);
-                            //(it->second) -> enviarJson(str_parser_code_share);
+                            //(it->second) -> enviarJson(json_share);
                 }
         }
+}
+
+void Server::share_obj_to(string str_parser_code_share, string json_share, string lobby_des){
+        update_app(str_parser_code_share, lobby_des);
+        update_clients(json_share, lobby_des);
 }
 
 int Server::execute(string file_name){

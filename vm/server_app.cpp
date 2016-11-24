@@ -145,7 +145,12 @@ void App::rcv_share_obj(){
         JsonReader reader;
         reader.read_share_data(data, id, lobby_des);
         string str_parser_share = vm.get_slot_to_share(id);
-        server -> share_obj_to(str_parser_share, lobby_des);
+        string json_share = vm.get_json_id(id);
+        server -> share_obj_to(str_parser_share, json_share, lobby_des);
+}
+
+void App::update_app(string str_parser_code_share){
+        parser.parsear(str_parser_code_share, "0");
 }
 
 ProxyClient* App::get_proxy(){

@@ -375,6 +375,11 @@ string VM::get_slot_to_share(int id){
         return obj -> get_full_self_slots(obj_name);
 }
 
+string VM::get_json_id(int id){
+        Slot* sl = search_obj_id(id);
+        return get_slot(idx_global, sl);
+}
+
 VM::~VM(){
 	for (map_slots::iterator it = slots.begin(); it != slots.end();++it)
 		delete (it->second);
