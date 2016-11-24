@@ -184,10 +184,22 @@ void borrarSlot(Morph* actual,int idSlot, std::vector<Referencia*>& referencias)
 }
 
 void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
-  if(i_slots.size()){
+  /*if(i_slots.size()){
     Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
     morphs.push_back(nuevoMorph);
     queue_draw();
+  }*/
+  if(i_slots.size()){
+    Morph* morph = obtenerMorphPorId(i_slots[0]->get_id());
+    if (!morph){
+      Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,m_TextView, textViewCodAsociado);
+      morphs.push_back(nuevoMorph);
+      queue_draw();
+      return;
+    }
+    actual = morph;
+    queue_draw();
+    return;
   }
 }
 
@@ -219,25 +231,32 @@ void MyArea::do_it_event(){
   proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
 }
 
-void MyArea::close_event(){
-  if (actual == nullptr){
-    std::cout << "Error: seleccione el Morph que desea borrar\n";
-    return;
-  }  
+Morph* MyArea::obtenerMorphPorId(int id_morph){
+  for (int i=0; i < morphs.size() ; ++i){
+    if(morphs[i]->get_id() == id_morph){
+      return morphs[i];
+    }
+  }
+  return nullptr;
+}
+
+void MyArea::borrarReferenciasDeMorph(Morph* morph){
   for (int v=0; v < referencias.size(); ++v){
-    for (int j=0; j < actual->referencias.size(); ++j){
-      if ((actual->referencias)[j] == referencias[v]){
+    for (int j=0; j < morph->referencias.size(); ++j){
+      if ((morph->referencias)[j] == referencias[v]){
         referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
         referencias.erase(referencias.begin()+v);
         --v;
       }
     }
   }
+}
+
+void MyArea::borrarReferenciasDeLosSlotsDeMorph(Morph* morph){
   for (int j=0; j < actual->slots.size(); ++j){
     for (int v=0; v < referencias.size(); ++v){
       if ((actual->slots)[j]->referencia != nullptr){    
         if ((actual->slots)[j]->referencia == referencias[v]){
-          //referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
           (actual->slots)[j]->setEstaDibujadoComoMorph(false);
           referencias.erase(referencias.begin()+v);
           --v;
@@ -245,15 +264,50 @@ void MyArea::close_event(){
       }  
     }
   }
-  for (int i =0; i < morphs.size() ; ++i){
-    if(*(morphs[i]) == *actual){
+}
+
+void MyArea::closeMorph(int id_morph){
+  Morph* morph = obtenerMorphPorId(id_morph);
+  if(!morph) return;
+
+  borrarReferenciasDeMorph(morph);
+  borrarReferenciasDeLosSlotsDeMorph(actual);
+  borrarMorph(morph);
+  
+  // pongo a lobby como actual.
+  //actual = obtenerMorphPorId(0);
+  actual = nullptr;
+  queue_draw();
+}
+
+void MyArea::borrarMorph(Morph* morph){
+  for (int i=0; i < morphs.size() ; ++i){
+    if(*(morphs[i]) == *morph){
       delete morphs[i];
       morphs.erase(morphs.begin()+i);
       break;
     }
-  }  
-  actual = nullptr;
-  queue_draw();
+  }
+}
+
+void MyArea::close_event(){
+  if (actual == nullptr){
+    std::cout << "Error: seleccione el Morph que desea borrar\n";
+    return;
+  }
+  JsonWriter writer;
+  std::string json = writer.write_id_morph(actual->get_id());
+  // refactorizar
+  proxyServer->enviar(12,1);
+  proxyServer->enviarJson(json);
+
+  /*actual = obtenerMorphPorId(actual->get_id());  
+  borrarReferenciasDeMorph(actual);
+  borrarReferenciasDeLosSlotsDeMorph(actual);
+  borrarMorph(actual);
+
+  actual = nullptr;*/
+  //queue_draw();
 }
 
 //released : process mouse button event

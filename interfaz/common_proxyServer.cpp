@@ -9,6 +9,7 @@
 #define PEDIR_SLOTS 2
 #define AGREGAR_SLOT 3
 #define PEDIR_MORPH 11
+#define BORRAR_MORPH 12
 
 
 ProxyServer::ProxyServer(const char* hostname, const unsigned int puerto){
@@ -186,10 +187,6 @@ std::string ProxyServer::recibirSlotsDe(std::string objeto){
 	char buff[5];
 	bzero(buff,5);
 
-	/*uint32_t idMensaje = PEDIR_SLOTS;
-	memcpy(buff,&idMensaje ,sizeof(idMensaje));
-	sktCliente.send(buff,sizeof(idMensaje));*/
-
     this->enviar(PEDIR_SLOTS,sizeof(char));
 
 	uint32_t tamMensaje = objeto.length();
@@ -226,6 +223,18 @@ void ProxyServer::pedirMorphDeEsteSlot(int id_morph, int id_slot){
     this->enviar(PEDIR_MORPH,sizeof(char));
 
     this->enviarJson(json);
+}
+
+void ProxyServer::closeMorph(uint32_t id_morph){
+	this->enviar(BORRAR_MORPH,sizeof(char));
+	
+	char buff[5];
+	bzero(buff,5);
+
+	id_morph = htonl(id_morph);
+	memcpy(buff,&id_morph ,sizeof(uint32_t));
+	
+	sktCliente.send(buff,sizeof(uint32_t));
 }
 
 void ProxyServer::pedirSlotsDe(std::string idObjeto){

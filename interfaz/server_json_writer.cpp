@@ -41,6 +41,16 @@ string JsonWriter::write_id_morph_id_slot(int id_morph, int id_slot){
 	return s.GetString();
 }
 
+string JsonWriter::write_id_morph(int id_morph){
+	StringBuffer s;
+	Writer<StringBuffer> writer(s);
+	writer.StartObject();
+	writer.Key("id_morph");
+	writer.Int(id_morph);
+	writer.EndObject();
+	return s.GetString();
+}
+
 string JsonWriter::write_garbage_ids(v_ids& ids){
         StringBuffer s;
 	Writer<StringBuffer> writer(s);

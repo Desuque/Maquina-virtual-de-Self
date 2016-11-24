@@ -6,6 +6,7 @@
 #define GET_IT 9
 #define DO_IT 10
 #define PEDIR_MORPH 11
+#define BORRAR_MORPH 12
 
 Cliente::Cliente(ProxyServer& proxy, MyArea* myArea) : proxy(proxy), myArea(myArea) {}
 		
@@ -103,11 +104,21 @@ void Cliente::run() {
 			case DO_IT : {
 				//....
 				break;
+			}
+			case BORRAR_MORPH : {
+				uint32_t tamMensaje = proxy.recibirTamanioDeMensaje(4);
+				std::string json = proxy.recibir(tamMensaje);	
+				std::cout << json << std::endl;	
+				JsonReader jsonReader;
+				int id = -1;
+				jsonReader.read_id_morph(json, id);
+				std::cout << id << std::endl;
+				myArea->closeMorph(id);
 			}					
 			case ACTUALIZAR_VISTA : {
 				//....
 				uint32_t tamMensaje = proxy.recibirTamanioDeMensaje(4);
-				std::string json = proxy.recibir(tamMensaje);	
+				std::string json = proxy.recibir(tamMensaje);
 				JsonReader jsonReader;
 				int id = -1;
 				double posX = 0, posY = 0;

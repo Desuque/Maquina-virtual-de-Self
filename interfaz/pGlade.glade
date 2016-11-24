@@ -221,7 +221,7 @@
       </object>
     </child>
   </object>
-  <object class="GtkTextBuffer" id="textbuffer1">
+  <object class="GtkTextBuffer" id="textbuffer1m">
     <property name="text" translatable="yes">sintaxis:
    nombreSlot = contenido . 
    nombreSlot &lt;- contenido .</property>
@@ -281,7 +281,7 @@
             <property name="resize_mode">immediate</property>
             <property name="wrap_mode">word-char</property>
             <property name="indent">-7</property>
-            <property name="buffer">textbuffer1</property>
+            <property name="buffer">textbuffer1m</property>
           </object>
           <packing>
             <property name="expand">False</property>

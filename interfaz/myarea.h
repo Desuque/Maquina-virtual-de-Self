@@ -60,13 +60,20 @@ public:
   }
 
   void actualizarPosicionAMoprh(int id, int posX, int posY);
+  void closeMorph(int id_morph);
 
   virtual ~MyArea();
 
 protected:
   //Override default signal handler:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-  
+
+private:
+  Morph* obtenerMorphPorId(int id_morph);
+  void borrarReferenciasDeMorph(Morph* morph);
+  void borrarReferenciasDeLosSlotsDeMorph(Morph* morph);
+  void borrarMorph(Morph* morph);
+
 };
 
 #endif
