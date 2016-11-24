@@ -10,8 +10,7 @@ static const int cod_get_slots = 2;
 static const int cod_generic = 5;
 static const int cod_update_position = 8;
 static const int cod_pedir_morph = 11;
-static const int cod_borrar_morph = 12;
-static const int cod_share_obj = 13;
+static const int cod_share_obj = 12;
 
 App::App(){
 	parser.setVM(&vm);
@@ -61,7 +60,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        test_example();
+        //test_example();
 	while (true){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
@@ -83,17 +82,10 @@ void App::run(int* fin){
                                         rcv_share_obj();
                                         break;
 				case cod_pedir_morph :{
+					std::cout << "reenvio el mensaje" << std::endl;
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
 			        server -> update_lobby_data(this, cod_pedir_morph, json, 0);
-					/*proxy->enviar(cod_pedir_morph,1);
-					proxy->enviarJson(json);*/
-					break;
-				}
-				case cod_borrar_morph :{
-					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-					std::string json = proxy->recibir(tamMensaje);
-			        server -> update_lobby_data(this, cod_borrar_morph, json, 0);
 					/*proxy->enviar(cod_pedir_morph,1);
 					proxy->enviarJson(json);*/
 					break;

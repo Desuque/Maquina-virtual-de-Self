@@ -35,6 +35,7 @@ class Object{
 		bool is_base_slot(Slot* sl);
 		bool is_num_slot(Slot* sl);
 		bool is_container();
+		bool empty();
 		Slot* as_slot();
 		virtual int as_int();
                 virtual float as_float();

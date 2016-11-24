@@ -192,6 +192,12 @@ Slot* Object::as_slot(){
 	return NULL;
 }
 
+bool Object::empty(){
+        if (slots.size() <= default_slots_size)
+            return true;
+        return false;
+}
+
 bool Object::is_container(){
         if (slots.size() == default_slots_size)
             return false;
