@@ -3,7 +3,6 @@
 #define LINKER_H_
 
 #include "server_virtual_machine.h"
-#include <vector>
 
 class Linker {
 private:
@@ -29,6 +28,7 @@ public:
 	virtual Slot* get_context(std::string name);
 	virtual Slot* remove_slots(Slot* slot, std::string slot_to_erase);
 	virtual Slot* only_name(std::string name, Slot* slot);
+	virtual Slot* create_error(std::string msg_error);
 	virtual ~Linker();
 private:
 	virtual Slot* create_float(std::string number);

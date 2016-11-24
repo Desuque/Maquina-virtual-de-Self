@@ -23,6 +23,7 @@ public:
 	Slot* get_context(std::string name);
 	Slot* remove_slots(Slot* slot, std::string slot_to_erase);
 	Slot* only_name(std::string name, Slot* slot);
+	Slot* create_error(std::string msg_error);
 	virtual ~nLinker();
 private:
 	Slot* create_float(std::string number);

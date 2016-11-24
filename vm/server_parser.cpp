@@ -1039,18 +1039,32 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 	return false;
 }
 
+Slot* Parser::process_error(std::string msg_error) {
+	return linker->create_error(msg_error);
+}
+
 Slot* Parser::parsear(std::string codigo) {
 	std::stringstream scripts(codigo);
 	int posicion = scripts.tellg();
 	scripts.seekp(posicion, std::ios::beg);
 
-	if(script(&scripts, &posicion)) {
+	//Primero se parsea todo el algoritmo utilizando un null parser para evitar modificar la VM
+	Parser null_parser;
+	nLinker n_linker;
+	null_parser.set_linker(&n_linker);
+	int posAux = posicion;
+	
+	if(null_parser.script(&scripts, &posAux)) {
+		//Si todas las instrucciones son validas, procedemos a parsear creando los
+		//objetos en la VM
+		script(&scripts, &posicion);
 		std::cout<<"Se completa el script papa!"<<std::endl;
 		Slot* ret = slots_to_process.at(slots_to_process.size()-1);
 		std::cout<<"Algo pasa aca?"<<std::endl;
-		return ret; //HARDCODEADO, DEVUELVE SIEMPRE EL PRIMERO!!!
+		return ret; //HARDCODEADO, DEVUELVE SIEMPRE EL PRIMERO!!!		
 	} else {
 		std::cout<<"No es un script dog, lo siento"<<std::endl;
+		Slot* error = process_error("Sintax error.");
 		setFlag("Error");
 		return NULL;
 	}

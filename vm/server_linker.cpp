@@ -85,6 +85,10 @@ Slot* Linker::create_nil() {
 	return vm->create_nil();
 }
 
+Slot* Linker::create_error(std::string msg_error) {
+	return vm->create_error(msg_error);
+}
+
 Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	if(slot == NULL) {
 		slot = vm->create_object();

@@ -11,7 +11,6 @@ class Parser {
 private:
 	VM* vm;
 	Linker* linker;
-	nLinker* nlinker;
 	std::string msg;
 	std::string op;
 	int flag;
@@ -25,8 +24,6 @@ public:
 	virtual ~Parser();
 private:
 	void set_linker(Linker* linker);
-	//bool null_parser(std::string codigo, std::string id);
-
 	Slot* parsear(std::string codigo);
 	bool script(std::stringstream* codigo, int* posicion);
 	bool expression(std::stringstream* codigo, int* posicion, Slot** slot);
@@ -36,15 +33,14 @@ private:
 	Slot* process_slot_list(Slot* object, std::string slot_name_extended, std::string op, Slot* exp);
 	Slot* process_slot_list(Slot* object, std::string slot_name_extended);
 	Slot* process_nil();
+	Slot* process_error(std::string msg_error);
 	bool unary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool binary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool keyword_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool expressionCP(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool receiver(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool constant(std::stringstream* codigo, int* posicion, Slot** slot);
-
 	bool only_name(std::stringstream* codigo, int* posicion, Slot** slot);
-
 	bool expressionP(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool number(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool text(std::stringstream* codigo, int* posicion, Slot** slot);
@@ -70,9 +66,8 @@ private:
 	void set_op(std::string op);
 	std::string get_op();
 	void erase_white_spaces(std::stringstream* codigo, int* posicion);
-
+	
 	void clean_flag();
-
 };
 
 #endif /* PARSER_H_ */

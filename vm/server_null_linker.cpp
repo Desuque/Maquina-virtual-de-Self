@@ -50,6 +50,10 @@ Slot* nLinker::create_nil() {
 	return NULL;
 }
 
+Slot* nLinker::create_error(std::string msg_error) {
+	return NULL;
+}
+
 Slot* nLinker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	return NULL;
 }
