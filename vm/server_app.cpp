@@ -92,13 +92,13 @@ void App::run(int* fin){
 					break;
 				}
 				case cod_borrar_morph :{
--					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
--					std::string json = proxy->recibir(tamMensaje);
--			                server -> update_lobby_data(this, cod_borrar_morph, json, 0);
--					/*proxy->enviar(cod_pedir_morph,1);
--					proxy->enviarJson(json);*/
--					break;
--				}
+					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					std::string json = proxy->recibir(tamMensaje);
+			                server -> update_lobby_data(this, cod_borrar_morph, json, 0);
+					/*proxy->enviar(cod_pedir_morph,1);
+					proxy->enviarJson(json);*/
+					break;
+				}
 				default:
 					std::cout << "error en default switch ejconconexion" << std::endl;
 					std::cout << "recibio: " << codigoMensaje << std::endl;
@@ -128,13 +128,13 @@ void App::rcv_msg_get_slots(){
 
 void App::rcv_msg_generic(){
 	uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-    std::string nombreObjeto = proxy->recibir(tamMensaje);
-    tamMensaje = proxy->recibirTamMensaje(4);
-    std::string codigoAEjecutar = proxy->recibir(tamMensaje);
+        std::string nombreObjeto = proxy->recibir(tamMensaje);
+        tamMensaje = proxy->recibirTamMensaje(4);
+        std::string codigoAEjecutar = proxy->recibir(tamMensaje);
 
-    string result = execute(codigoAEjecutar);
-    int flag = parser.getFlag();
-    server -> update_lobby_data(this, cod_generic, result, flag);
+        string result = execute(codigoAEjecutar);
+        int flag = parser.getFlag();
+        server -> update_lobby_data(this, cod_generic, result, flag);
 }
 
 void App::rcv_share_obj(){
