@@ -253,11 +253,11 @@ void MyArea::borrarReferenciasDeMorph(Morph* morph){
 }
 
 void MyArea::borrarReferenciasDeLosSlotsDeMorph(Morph* morph){
-  for (int j=0; j < actual->slots.size(); ++j){
+  for (int j=0; j < morph->slots.size(); ++j){
     for (int v=0; v < referencias.size(); ++v){
-      if ((actual->slots)[j]->referencia != nullptr){    
-        if ((actual->slots)[j]->referencia == referencias[v]){
-          (actual->slots)[j]->setEstaDibujadoComoMorph(false);
+      if ((morph->slots)[j]->referencia != nullptr){    
+        if ((morph->slots)[j]->referencia == referencias[v]){
+          (morph->slots)[j]->setEstaDibujadoComoMorph(false);
           referencias.erase(referencias.begin()+v);
           --v;
         }
@@ -270,13 +270,21 @@ void MyArea::closeMorph(int id_morph){
   Morph* morph = obtenerMorphPorId(id_morph);
   if(!morph) return;
 
+  if(actual){
+    if(actual->get_id() == morph->get_id()){
+      // si el que se borra es el que tengo seleccionado
+      // queda como seleccionado el lobby.
+      actual = obtenerMorphPorId(0);
+    }
+  }
+
   borrarReferenciasDeMorph(morph);
-  borrarReferenciasDeLosSlotsDeMorph(actual);
+  borrarReferenciasDeLosSlotsDeMorph(morph);
   borrarMorph(morph);
   
   // pongo a lobby como actual.
   //actual = obtenerMorphPorId(0);
-  actual = nullptr;
+  //actual = nullptr;
   queue_draw();
 }
 

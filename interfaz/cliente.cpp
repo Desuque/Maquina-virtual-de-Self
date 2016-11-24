@@ -114,6 +114,7 @@ void Cliente::run() {
 				jsonReader.read_id_morph(json, id);
 				std::cout << id << std::endl;
 				myArea->closeMorph(id);
+				break;
 			}					
 			case ACTUALIZAR_VISTA : {
 				//....
