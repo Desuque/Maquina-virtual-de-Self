@@ -86,7 +86,6 @@ Slot* Linker::create_nil() {
 }
 
 Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
-	        //lobby _RemoveSlots: (| prueba1. prueba2. |).
 	if(slot == NULL) {
 		slot = vm->create_object();
 	}
@@ -95,16 +94,6 @@ Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	vm->add_slot(X2, slot_to_erase, X3);
 	vm->add_slot(slot, "", X2);
 	return slot;
-
-/**
-	Slot* X1 = vm->create_object();
-	Slot* X2 = vm->create_object();
-	Slot* X3 = vm->create_string(slot_to_erase);
-	vm->add_slot(X2, slot_to_erase, X3);
-	vm->add_slot(X1, "", X2);
-
-	return X1;
-	**/
 }
 
 /**

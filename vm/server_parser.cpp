@@ -303,14 +303,12 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 			}
 			if (pipe_without_script(codigo, posicion)) {
 				//Quiere decir que se encontro una barra y un parentesis
-				std::cout<<"La direccion del object: "<<object<<std::endl;
 				*slot = object;
 				return true;
 			}
 			if (pipe_with_script(codigo, posicion, &object)) {
 				//Se encontró que no hay un parentesis luego de la barra
 				//Se guarda el script sin comprobar su sintaxis
-				std::cout<<"No tendria que entrar aca"<<std::endl;
 				*slot = object;
 				return true;
 			}
@@ -397,42 +395,54 @@ bool Parser::name(std::stringstream* codigo, int* posicion) {
 
 bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
-
+	//Elimino posibles espacios
+	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
-	std::string valor;
-	*codigo>>valor;
 
-	if(valor.at(0) == ':') {
-		*posicion = posicionOriginal + 2;
-		codigo->seekg(*posicion, std::ios::beg);
+	char c;
+	codigo->get(c);
+	
+	//No se van a implementar argumentos por el momento
+	if(c == ':') {
+		*posicion = codigo->tellg();
 		if(name(codigo, posicion)) {
+			std::cout<<"Cumple con el argumento!"<<std::endl;
 			return true;
 		}
 	}
 
-	if(valor.at(valor.size()-1) == '*') {
-		//Guardo todo en un sstream auxiliar para comprobar que lo que sigue
-		//es un name, si cumple, actualizo la posicion real
-		std::stringstream auxiliar;
-		for(unsigned int i=0; i<valor.size()-1; i++) {
-			auxiliar << valor.at(i);
-		}
-		int inicio = 0;
-		if(name(&auxiliar, &inicio)) {
+	//Si no se cumple retorno a la posicion inicial
+	*posicion = posicionOriginal;
+
+	//Compruebo si se trata de un parent
+	if(name(codigo, posicion)) {
+		//Elimino posibles espacios
+		erase_white_spaces(codigo, posicion);
+		//Leo todo el valor desde la posicion indicada
+		codigo->seekg(*posicion, std::ios::beg);
+
+		char c;
+		codigo->get(c);
+		if(c == '*') {
+			std::cout<<"Cumplo con el parent"<<std::endl;
 			*posicion = codigo->tellg();
 			return true;
 		}
 	}
+
+	//Si no se cumple retorno a la posicion inicial
+	*posicion = posicionOriginal;
+
+	//Compruebo si se trata de un name normal
 	if(name(codigo, posicion)) {
-		//*posicion = codigo->tellg();
+		std::cout<<"Era un name normal"<<std::endl;
 		return true;
 	}
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
-
 }
 
 /**
