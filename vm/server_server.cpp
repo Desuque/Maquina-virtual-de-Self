@@ -63,6 +63,7 @@ void Server::run(int* fin){
 }
 
 void Server::recv_app_create(ProxyClient* proxy){
+    try {
         // le doy tres intentos al usuario para que 
         // ingrese el nombre de un lobby distinto.
         for(int i=0; i < 3 ; ++i){
@@ -82,6 +83,11 @@ void Server::recv_app_create(ProxyClient* proxy){
                     // valido.
             }
         }
+    } catch (const std::exception e){
+        // El cliente se desconecto sin 
+        // ingresar el noombre del lobby.
+        return;
+    }
 }
 
 void Server::recv_app_load(ProxyClient* proxy){
