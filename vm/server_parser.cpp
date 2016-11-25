@@ -10,7 +10,7 @@
 #define NOT_SET -1
 #define ADD_SLOTS 3
 #define REMOVE_SLOTS 4
-#define COLLECT 13
+#define COLLECT 14
 #define ERROR 0
 
 Parser::Parser() : vm(NULL) {
