@@ -123,6 +123,8 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag){
                                     (it->second)->enviar(flag, 1);
                                 } else if (flag == 4) {
                                     (it->second)->enviar(flag, 1);
+                                } else if (flag == 14) {
+                                    (it->second)->enviar(flag, 1);
                                 } else {
                                 //hardcodeo el 5 porque devuelve -1 por defecto 
                                 //    para tener un caso no seteado
