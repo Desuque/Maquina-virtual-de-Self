@@ -33,16 +33,19 @@ void DialogoNombreLobby::botonOkNombre(){
 	std::string nombreLobby = std::string(entryNombreLobby->get_text());
 	std::cout << nombreLobby << std::endl;
 	
-	uint32_t respuesta = proxy->enviarString(nombreLobby);
+	proxy->enviarJson(nombreLobby);
+	uint32_t respuesta =proxy->recibirCodigoMensaje();
 
 	if (respuesta == 0){
 		// el lobby ya existe lanzar un error y volver a pedir 
 		// el nombre.
 		//consultar
 		//entryNombreLobby->override_background_color(Gdk::RGBA(0.0, 1.0, 0.0, 1.0), Gtk::STATE_FLAG_NORMAL);
-		entryNombreLobby->set_text("NOMBRE EXISTENTE REINICIE LA APP");
-		std::cout << "ERROR: Nombre de lobby existente, por favor reinicie la aplicacion\n";
-		proxy->cerrarConexion();
+		entryNombreLobby->set_text("");
+		//std::cout << "ERROR: Nombre de lobby existente, por favor ingrese otro\n";
+		Gtk::MessageDialog dialog(*this, "ERROR: Nombre de lobby existente, por favor ingrese otro");
+  		dialog.run();
+		//proxy->cerrarConexion();
 		return;
 	}
 	hide();

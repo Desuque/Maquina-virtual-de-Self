@@ -18,6 +18,7 @@ class ProxyServer : public Proxy {
 		void enviarJson(std::string jsonAEnviar);
 		void enviar(uint32_t entero, size_t cantidad);
 		uint32_t recibirCodigo(size_t cantidad);
+		uint32_t recibirCodigoMensaje();
 		uint32_t recibirTamanioDeMensaje(size_t cantidad);
 		// habria que sacarla
 		void pedirMorphDeEsteSlot(int id_morph, int id_slot);

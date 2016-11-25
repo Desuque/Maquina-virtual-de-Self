@@ -11,6 +11,7 @@
 #define AGREGAR_SLOT 3
 #define PEDIR_MORPH 11
 #define BORRAR_MORPH 12
+#define TAM_CODIGO_MENSAJE 1
 
 
 ProxyServer::ProxyServer(const char* hostname, const unsigned int puerto){
@@ -259,6 +260,13 @@ void ProxyServer::pedirSlotsDe(std::string idObjeto){
 
 }
 
+uint32_t ProxyServer::recibirCodigoMensaje(){
+	char respuestaComando='0';
+	if (sktCliente.receive(&respuestaComando,TAM_CODIGO_MENSAJE) < 0){
+		throw std::exception();
+	}
+	return (uint32_t)respuestaComando;
+}
 
 void ProxyServer::enviar(uint32_t entero, size_t cantidad){
 	Proxy::enviarCantidad(sktCliente, entero, cantidad);

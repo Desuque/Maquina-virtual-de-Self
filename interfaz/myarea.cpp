@@ -8,7 +8,7 @@
 #include "client_json_reader.h"
 #include "server_json_writer.h"
 
-
+#define ACTUALIZAR_VISTA 8
 #define COD_SHARE_OBJ 13
 #define PEDIR_LISTA_LOBBYS 15
 #define GET_IT 16
@@ -540,7 +540,7 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
     int XMouse=event->x;
     int YMouse=event->y;
     if(actual != nullptr){
-      proxyServer->enviar(8,1);
+      proxyServer->enviar(ACTUALIZAR_VISTA,1);
       JsonWriter jsonwriter;
       std::string json = jsonwriter.write_position(actual->get_id(), (event->x+offXMouse), (event->y+offYMouse));
       proxyServer->enviarJson(json);

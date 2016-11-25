@@ -13,15 +13,16 @@ class ProxyClient : public Proxy {
 		explicit ProxyClient(const unsigned int puerto);
 		explicit ProxyClient(Socket& socket);
 		void bindAndListen(const unsigned int puerto);
-                void aceptarCliente(ProxyClient* proxy);
-                void set_socket(Socket& socket);
+        void aceptarCliente(ProxyClient* proxy);
+        void set_socket(Socket& socket);
 		void cerrarConexion();
+		
 		void enviarJson(std::string json);
-		//void enviar(std::string mensaje, size_t cantidad);
-		void enviar(uint32_t entero, size_t cantidad);
-		std::string recibir(size_t cantidad);
-		uint32_t recibirCodigoMensaje(size_t cantidad);
-		uint32_t recibirTamMensaje(size_t cantidad);
+		std::string recibirJson();
+		uint32_t recibirCodigoMensaje();
+		void enviarCodigoMensaje(uint32_t codigoMensaje);
+		uint32_t recibirTamMensaje();
+
 		ProxyClient(ProxyClient&& other);
 		ProxyClient& operator=(ProxyClient&& other);
 		~ProxyClient();

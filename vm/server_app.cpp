@@ -68,11 +68,12 @@ void App::run(int* fin){
         //test_example();
 	while (true){
                 try {    
-			uint32_t codigoMensaje = proxy->recibirCodigoMensaje(1);
+			uint32_t codigoMensaje = proxy->recibirCodigoMensaje();
 			switch (codigoMensaje){
 				case cod_update_position: {
-					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-					std::string json = proxy->recibir(tamMensaje);
+					//uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					//std::string json = proxy->recibir(tamMensaje);
+					std::string json = proxy->recibirJson();
 					server -> update_lobby_data(this,cod_update_position , json, 0, 0);
 					break;
 				}
@@ -87,22 +88,24 @@ void App::run(int* fin){
 					rcv_share_obj();
 					break;
 				case cod_pedir_lista_lobbys:{
-					proxy->enviar(cod_pedir_lista_lobbys,1);
+					proxy->enviarCodigoMensaje(cod_pedir_lista_lobbys);
 					string json = server->get_json_apps_name();
 					proxy->enviarJson(json);
 					break;
 				}
 				case cod_pedir_morph :{
-					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-					std::string json = proxy->recibir(tamMensaje);
-                                        server -> update_lobby_data(this, cod_pedir_morph, json, 0, 0);
+					//uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					//std::string json = proxy->recibir(tamMensaje);
+					std::string json = proxy->recibirJson();
+                    server -> update_lobby_data(this, cod_pedir_morph, json, 0, 0);
 					/*proxy->enviar(cod_pedir_morph,1);
 					proxy->enviarJson(json);*/
 					break;
 				}
 				case cod_borrar_morph :{
-					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-					std::string json = proxy->recibir(tamMensaje);
+					//uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+					//std::string json = proxy->recibir(tamMensaje);
+					std::string json = proxy->recibirJson();
                     server -> update_lobby_data(this, cod_borrar_morph, json, 0, 0 );
 					/*proxy->enviar(cod_pedir_morph,1);
 					proxy->enviarJson(json);*/
@@ -129,19 +132,21 @@ void App::run(int* fin){
 }
 
 void App::rcv_msg_get_slots(){
-        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-        std::string nombreObjeto = proxy->recibir(tamMensaje);
+        //uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+        std::string nombreObjeto = proxy->recibirJson();
         string string_to_send = get_slots(nombreObjeto);
         server -> update_lobby_data(this, cod_get_slots, string_to_send, 0, 0);
 }
 
 void App::rcv_msg_generic(){
-		int accion = proxy->recibirCodigoMensaje(1);
-		uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-		std::string nombreObjeto = proxy->recibir(tamMensaje);
+		int accion = proxy->recibirCodigoMensaje();
+		//uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+		//std::string nombreObjeto = proxy->recibir(tamMensaje);
+		std::string nombreObjeto = proxy->recibirJson();
+		
 		//tamMensaje = proxy->recibirTamMensaje(4);
-		tamMensaje = proxy->recibirTamMensaje(4);
-		std::string codigoAEjecutar = proxy->recibir(tamMensaje);
+		//std::string codigoAEjecutar = proxy->recibir(tamMensaje);
+		std::string codigoAEjecutar = proxy->recibirJson();
 
 		string result = execute(codigoAEjecutar);
 		int flag = parser.getFlag();
@@ -149,8 +154,9 @@ void App::rcv_msg_generic(){
 }
 
 void App::rcv_share_obj(){
-        uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-        std::string data = proxy->recibir(tamMensaje);
+        //uint32_t tamMensaje = proxy->recibirTamMensaje(4);
+        //std::string data = proxy->recibir(tamMensaje);
+        std::string data = proxy->recibirJson();
         int id;
         string lobby_des;
         JsonReader reader;

@@ -79,9 +79,7 @@ void Cliente::run() {
 				break;
 		    }
 			case GENERIC : { 
-				std::cout << "generic" << std::endl;
 				int accion = proxy.recibirCodigo(1);
-				std::cout << accion << std::endl;
 				std::string json = proxy.recibirJson();
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
@@ -91,7 +89,8 @@ void Cliente::run() {
 					myArea->crearMorphs(i_slots);
 				} else {
 					if (accion == DO_IT) {
-						std::cout << i_slots[0]->get_value() << std::endl;
+						if (i_slots.size())
+							std::cout << i_slots[0]->get_value() << std::endl;
 					}
 				}
 				for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  

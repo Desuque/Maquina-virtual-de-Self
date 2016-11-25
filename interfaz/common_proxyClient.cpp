@@ -4,6 +4,8 @@
 #include <strings.h>
 #include <string.h>
 
+#define TAM_INT_MENSAJE 4
+#define TAM_CODIGO_MENSAJE 1
 
 ProxyClient::ProxyClient(const unsigned int puerto){
 	server.bindAndListen(puerto);
@@ -22,21 +24,9 @@ ProxyClient& ProxyClient::operator=(ProxyClient&& other) {
 	return *this;
 }
 
-void ProxyClient::enviarJson(std::string json){
-	uint32_t tamMensaje = json.length();
-	char buff[5];
-	bzero(buff,5);
-	tamMensaje = htonl(tamMensaje);
-	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
-	
-	server.send(buff,sizeof(uint32_t));
-	server.send(json.c_str(), json.length());
-}
-
-
 void ProxyClient::aceptarCliente(ProxyClient* proxy){
 	Socket socket = server.accept();
-        proxy -> set_socket(socket);
+    proxy -> set_socket(socket);
 }
 
 void ProxyClient::set_socket(Socket& socket){
@@ -47,28 +37,54 @@ void ProxyClient::cerrarConexion(){
 	server.shutdown();
 }
 
-/*void ProxyClient::enviar(uint32_t entero, size_t cantidad){
-	Proxy::enviarCantidad(server, entero, cantidad);
-}*/
+void ProxyClient::enviarJson(std::string json){
+	uint32_t tamMensaje = json.length();
+	char buff[TAM_INT_MENSAJE+1];
+	bzero(buff,TAM_INT_MENSAJE+1);
 
-/*void ProxyClient::enviar(std::string mensaje, size_t cantidad){
-	Proxy::enviar(server, mensaje, cantidad);
-}*/
-
-void ProxyClient::enviar(uint32_t entero, size_t cantidad){
-	Proxy::enviarCantidad(server, entero, cantidad);
+	tamMensaje = htonl(tamMensaje);
+	memcpy(buff,&tamMensaje ,sizeof(uint32_t));
+	
+	server.send(buff,sizeof(uint32_t));
+	server.send(json.c_str(), json.length());
 }
 
-std::string ProxyClient::recibir(size_t cantidad){
-	return Proxy::recibir(server,cantidad);
+std::string ProxyClient::recibirJson(){
+	uint32_t tamMensaje = this->recibirTamMensaje();
+
+	char* infoSlots = new char[tamMensaje+1];
+	bzero(infoSlots,tamMensaje+1);
+
+	server.receive(infoSlots,tamMensaje);
+
+	std::string str_infoSlots = std::string(infoSlots);
+
+	delete[] infoSlots;
+	return str_infoSlots;
 }
 
-uint32_t ProxyClient::recibirCodigoMensaje(size_t cantidad){
-	return Proxy::recibirCantidad(server,cantidad);
+uint32_t ProxyClient::recibirCodigoMensaje(){
+	char respuestaComando='0';
+	if (server.receive(&respuestaComando,TAM_CODIGO_MENSAJE) < 0){
+		throw std::exception();
+	}
+	return (uint32_t)respuestaComando;
 }
 
-uint32_t ProxyClient::recibirTamMensaje(size_t cantidad){
-	return Proxy::recibirCantidad(server,cantidad);
+void ProxyClient::enviarCodigoMensaje(uint32_t codigoMensaje){
+	char codigo = (char) codigoMensaje;
+	server.send(&codigo, TAM_CODIGO_MENSAJE);
+}
+
+uint32_t ProxyClient::recibirTamMensaje(){
+	char respuestaComando[TAM_INT_MENSAJE+1];
+	bzero(respuestaComando,TAM_INT_MENSAJE+1);
+	if (server.receive(respuestaComando,TAM_INT_MENSAJE) < 0){
+		throw std::exception();
+	}
+	uint32_t ui=0;
+	memcpy(&ui, respuestaComando,TAM_INT_MENSAJE);
+	return ntohl(ui);
 }
 
 ProxyClient::~ProxyClient(){
