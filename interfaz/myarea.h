@@ -52,6 +52,7 @@ public:
   void agregarSlots(std::vector<InterfaceSlot*> i_slots);
   void borrarSlots(std::vector<InterfaceSlot*> i_slots);
   void crearMorphs(std::vector<InterfaceSlot*> i_slots);
+  void crearMorphsError(std::vector<InterfaceSlot*> i_slots);
   void mostrarEsteSlotComoMorph(int id_morph, int id_slot);
   void setProxy(ProxyServer* proxy){
     this->proxyServer = proxy;

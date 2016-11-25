@@ -176,8 +176,6 @@ std::string ProxyServer::recibirJson(){
 	/*char infoSlots[tamMensaje+1];
 	bzero(infoSlots,tamMensaje+1);*/
 
-	std::cout << tamMensaje << std::endl;
-
 	char* infoSlots = new char[tamMensaje+1];
 	bzero(infoSlots,tamMensaje+1);
 

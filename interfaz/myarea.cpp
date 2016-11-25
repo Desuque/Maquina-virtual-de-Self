@@ -199,6 +199,22 @@ void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
   }
 }
 
+void MyArea::crearMorphsError(std::vector<InterfaceSlot*> i_slots){
+  if(i_slots.size()){
+    Morph* morph = obtenerMorphPorId(i_slots[0]->get_id());
+    if (!morph){
+      Morph* nuevoMorph = new Morph(i_slots[0],250.,300.,m_TextView, textViewCodAsociado);
+      //nuevoMorph->resaltarMorph();
+      morphs.push_back(nuevoMorph);
+      queue_draw();
+      return;
+    }
+    //actual = morph;
+    queue_draw();
+    return;
+  }
+}
+
 void MyArea::get_it_event(){
   std::string textoAEnviar = actual->get_it();
   

@@ -143,7 +143,12 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	cr -> rectangle(this->posX, this -> posY,this->width, this->height);
 	//cr ->fill();
 	cr-> stroke();
-
+	
+	if(this->nombreObjeto=="Sintax error." ){	
+		cr->set_source_rgba(0.5, 0, 0,0.5);
+		cr -> rectangle(this->posX, this -> posY,this->width, this->height);
+		cr-> fill();
+	}
 	for (int i=0; i < slots.size(); ++i){
 		slots[i] -> draw(cr);
 	}

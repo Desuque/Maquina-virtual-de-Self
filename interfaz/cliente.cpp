@@ -3,13 +3,16 @@
 #include "dialogoSeleccionLobby.h"
 
 #define TAM_COD 1
+#define PEDIR_SLOT 2
+#define AGREGAR_SLOT 3
+#define BORRAR_SLOT 4
+#define GENERIC 5
 #define ACTUALIZAR_VISTA 8
 #define GET_IT 9
 #define DO_IT 10
 #define PEDIR_MORPH 11
 #define BORRAR_MORPH 12
 #define GARBAGE 14
-#define GENERIC 5
 #define PEDIR_LISTA_LOBBYS 15
 
 typedef  std::vector<int> v_ints;
@@ -28,7 +31,7 @@ void Cliente::run() {
 		}
 		std::cout << codigo << std::endl;
 		switch (codigo){	
-			case 2: {
+			case PEDIR_SLOT: {
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
 				std::cout << tamMensaje << std::endl;
 				std::string json = proxy.recibir(tamMensaje);
@@ -44,7 +47,7 @@ void Cliente::run() {
 			  	}
 				break;
 			}
-			case 3: {
+			case AGREGAR_SLOT : {
 				// recibe el tamanio del mensaje, cambiar nombre
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
 				std::string json = proxy.recibir(tamMensaje);
@@ -59,7 +62,7 @@ void Cliente::run() {
 			  	}
 				break;
 		    }
-		    case 4: {
+		    case BORRAR_SLOT : {
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
 				std::string json = proxy.recibir(tamMensaje);
 				std::cout << json << std::endl;
@@ -153,6 +156,16 @@ void Cliente::run() {
 			}
 			case 0 :{
 				std::cout << "Error" << std::endl;
+				std::string json = proxy.recibirJson();
+				std::vector<InterfaceSlot*> i_slots;
+				JsonReader slots_reader;
+				std::cout << i_slots.size() << std::endl;
+				slots_reader.read(i_slots, json);
+				myArea->crearMorphsError(i_slots);
+				for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
+			    	delete* it;  
+			    	it = i_slots.erase(it);
+			  	}				break;
 			}
 			default: {
 				std::cout << "recibi comando desconocido\n";

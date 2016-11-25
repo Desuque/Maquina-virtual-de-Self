@@ -135,13 +135,13 @@ void App::rcv_msg_get_slots(){
 
 void App::rcv_msg_generic(){
 	uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-        std::string nombreObjeto = proxy->recibir(tamMensaje);
-        tamMensaje = proxy->recibirTamMensaje(4);
-        std::string codigoAEjecutar = proxy->recibir(tamMensaje);
+	std::string nombreObjeto = proxy->recibir(tamMensaje);
+	tamMensaje = proxy->recibirTamMensaje(4);
+	std::string codigoAEjecutar = proxy->recibir(tamMensaje);
 
-        string result = execute(codigoAEjecutar);
-        int flag = parser.getFlag();
-        server -> update_lobby_data(this, cod_generic, result, flag);
+	string result = execute(codigoAEjecutar);
+	int flag = parser.getFlag();
+	server -> update_lobby_data(this, cod_generic, result, flag);
 }
 
 void App::rcv_share_obj(){
