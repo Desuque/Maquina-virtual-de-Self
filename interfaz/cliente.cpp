@@ -8,8 +8,8 @@
 #define BORRAR_SLOT 4
 #define GENERIC 5
 #define ACTUALIZAR_VISTA 8
-#define GET_IT 9
-#define DO_IT 10
+#define GET_IT 16
+#define DO_IT 17
 #define PEDIR_MORPH 11
 #define BORRAR_MORPH 12
 #define GARBAGE 14
@@ -79,12 +79,21 @@ void Cliente::run() {
 				break;
 		    }
 			case GENERIC : { 
+				std::cout << "generic" << std::endl;
+				int accion = proxy.recibirCodigo(1);
+				std::cout << accion << std::endl;
 				std::string json = proxy.recibirJson();
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
 				std::cout << i_slots.size() << std::endl;
 				slots_reader.read(i_slots, json);
-				myArea->crearMorphs(i_slots);
+				if(accion == GET_IT){
+					myArea->crearMorphs(i_slots);
+				} else {
+					if (accion == DO_IT) {
+						std::cout << i_slots[0]->get_value() << std::endl;
+					}
+				}
 				for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
 			    	delete* it;  
 			    	it = i_slots.erase(it);

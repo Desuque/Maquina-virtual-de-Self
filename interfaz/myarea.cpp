@@ -11,6 +11,8 @@
 
 #define COD_SHARE_OBJ 13
 #define PEDIR_LISTA_LOBBYS 15
+#define GET_IT 16
+#define DO_IT 17
 
 MyArea::MyArea()
 {
@@ -141,7 +143,8 @@ void MyArea::botonGuardarNuevoSlotEvent(){
   JsonWriter writer;
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
   
-  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
+  //se manda DO_IT para respetar el protocolo pero no varia en este caso.
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json, DO_IT);  
   //m_builder->Gtk::Builder::get_widget("dialog4", d_add_slot);
 
   textSlot->get_buffer()->set_text("");
@@ -225,7 +228,7 @@ void MyArea::get_it_event(){
   JsonWriter writer;
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
 
-  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json, GET_IT);  
 }
 
 void MyArea::do_it_event(){
@@ -240,7 +243,7 @@ void MyArea::do_it_event(){
   JsonWriter writer;
   string json = writer.write_code(actual->get_id_to_string(), textoAEnviar);
 
-  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json);  
+  proxyServer->enviarCodigoAEjecutar(actual->get_id_to_string(), json, DO_IT);  
 }
 
 Morph* MyArea::obtenerMorphPorId(int id_morph){

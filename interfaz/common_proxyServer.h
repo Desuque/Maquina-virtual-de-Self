@@ -25,7 +25,7 @@ class ProxyServer : public Proxy {
 		std::string recibirSlotsDe(std::string lobbyId);
 		void pedirSlotsDe(std::string idObjeto);
 		uint32_t recibirCodigoMensaje(size_t cantidad);
-		void enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar);
+		void enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar, int accion);
 		std::string agregarSlotA(std::string idObjeto, std::string textoAEnviar);
 		ProxyServer(Socket& socket);
 		ProxyServer(ProxyServer&& other);

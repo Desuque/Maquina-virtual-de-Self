@@ -7,6 +7,7 @@
 #include "server_json_writer.h"
 
 #define PEDIR_SLOTS 2
+#define GENERIC 5
 #define AGREGAR_SLOT 3
 #define PEDIR_MORPH 11
 #define BORRAR_MORPH 12
@@ -70,10 +71,11 @@ void ProxyServer::enviarJson(std::string textoAEnviar){
 }
 
 
-void ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar){
+void ProxyServer::enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar, int accion){
 	// modificar cuando sea generico
-	
-    this->enviar(5,sizeof(char));
+
+    this->enviar(GENERIC,sizeof(char));
+	this->enviar(accion,sizeof(char));
 
 	char buff[5];
 	bzero(buff,5);
@@ -254,20 +256,6 @@ void ProxyServer::pedirSlotsDe(std::string idObjeto){
 	sktCliente.send(buff,sizeof(uint32_t));
 
 	sktCliente.send(idObjeto.c_str(), idObjeto.length());
-
-	/*tamMensaje = 0;
-	bzero(buff,5);
-	sktCliente.receive(buff, sizeof(tamMensaje));
-	memcpy(&tamMensaje, buff,sizeof(tamMensaje));
-	tamMensaje = ntohl(tamMensaje);
-
-	 hacer new
-	char infoSlots[tamMensaje+1];
-	bzero(infoSlots,tamMensaje+1);
-	
-	sktCliente.receive(infoSlots,tamMensaje);
-
-	return std::string(infoSlots);*/
 
 }
 
