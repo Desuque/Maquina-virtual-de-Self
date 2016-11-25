@@ -115,13 +115,15 @@ bool Parser::text(std::stringstream* codigo, int* posicion, Slot** slot) {
 	return false;
 }
 
-bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot) {
+bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, std::string msg_slot_name_extended) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 	//Elimino posibles espacios
 	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
+
+	std::cout<<"ESte name extended llega al pipe with script: "<<msg_slot_name_extended<<std::endl;
 
 	char c;
 	std::string msg_script;
@@ -151,7 +153,7 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 			std::cout<<"Esta es la posicion de salida: "<<*posicion<<" y el tellg: "<<codigo->tellg()<<std::endl;
 			std::cout<<"Este es el script ingresado: "<<msg_script<<std::endl;
 			*posicion = codigo->tellg();
-			//*slot = linker->set_object_script(*slot, script);
+			*slot = linker->set_object_script(*slot, msg_script, msg_slot_name_extended);
 			return true;		
 		} else {
 			//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -259,6 +261,14 @@ Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended) {
 	return linker->create_slot(object, slot_name_extended);	
 }
 
+void Parser::set_script_name(std::string slot_name_ext) {
+	this->script_name = slot_name_ext;
+}
+
+std::string Parser::get_script_name() { 
+	return this->script_name;
+}
+
 bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
 
@@ -270,6 +280,7 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 
 	if(slot_name_extended(codigo, posicion)) {
 		std::string slot_name_extended = get_msg();
+		set_script_name(slot_name_extended);
 
 		//Elimino posibles espacios
 		erase_white_spaces(codigo, posicion);
@@ -309,7 +320,9 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 	Slot* object = linker->create_object();
 	Slot* script = NULL;
 
-	std::cout<<"Vemos que trae el flag de msg: "<<get_msg()<<std::endl;
+	
+	std::string msg_aux = get_script_name();
+	std::cout<<"Vemos que trae el flag de msg: "<<msg_aux<<std::endl;
 
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
@@ -329,7 +342,7 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 				*slot = object;
 				return true;
 			}
-			if (pipe_with_script(codigo, posicion, &object)) {
+			if (pipe_with_script(codigo, posicion, &object, msg_aux)) {
 				std::cout<<"Entro al pipe with script"<<std::endl;
 				//Elimino posibles espacios
 				erase_white_spaces(codigo, posicion);
@@ -896,10 +909,11 @@ bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slo
 }
 
 Slot* Parser::process_unary_message(Slot* receiver, std::string name) {
-	//if(receiver != NULL) {
-		return linker->create_unary_message(receiver, name);
-	//}
-	//return NULL;
+	return linker->create_unary_message(receiver, name);
+}
+
+Slot* Parser::process_clone_object(std::string receiver) {
+	return linker->clone_obj_by_name(receiver);
 }
 
 bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot) {
@@ -932,6 +946,9 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 					*slot = linker->collect();
 					setFlag(msg_name);
 				}
+			} 
+			if(msg_name == "clone") {
+				*slot = process_clone_object(msg_receiver);
 			} else {
 				//Actualizo la referencia al slot final creado
 				*slot = process_unary_message(slot_receiver, msg_name);

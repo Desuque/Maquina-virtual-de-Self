@@ -13,6 +13,7 @@ private:
 	Linker* linker;
 	std::string msg;
 	std::string op;
+	std::string script_name;
 	int flag;
 	std::vector<Slot*> slots_to_process;
 
@@ -34,6 +35,8 @@ private:
 	Slot* process_slot_list(Slot* object, std::string slot_name_extended);
 	Slot* process_nil();
 	Slot* process_error(std::string msg_error);
+	Slot* process_clone_object(std::string receiver);
+
 	bool unary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool binary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool keyword_message(std::stringstream* codigo, int* posicion, Slot** slot);
@@ -58,13 +61,16 @@ private:
 	bool final(std::stringstream *codigo, int* posicion);
 	bool empty(std::stringstream* codigo, int* posicion);
 	bool pipe_without_script(std::stringstream* codigo, int* posicion);
-	bool pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, std::string msg_slot_name_extended);
 	bool remove_slots(std::stringstream* codigo, int* posicion, Slot** slot);
 	void setFlag(std::string valor);
 	void set_msg(std::string msg);
 	std::string get_msg();
 	void set_op(std::string op);
 	std::string get_op();
+	void set_script_name(std::string slot_name_ext);
+	std::string get_script_name();
+
 	void erase_white_spaces(std::stringstream* codigo, int* posicion);
 	
 	void clean_flag();

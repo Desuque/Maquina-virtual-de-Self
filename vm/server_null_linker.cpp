@@ -56,6 +56,14 @@ Slot* nLinker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	return NULL;
 }
 
+Slot* nLinker::set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended) {
+	return NULL;
+}
+
+Slot* nLinker::clone_obj_by_name(std::string receiver) {
+	return NULL;
+}
+
 Slot* nLinker::only_name(std::string name, Slot* slot) {
 	return NULL;
 }

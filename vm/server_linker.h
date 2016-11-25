@@ -29,7 +29,8 @@ public:
 	virtual Slot* remove_slots(Slot* slot, std::string slot_to_erase);
 	virtual Slot* only_name(std::string name, Slot* slot);
 	virtual Slot* create_error(std::string msg_error);
-	virtual Slot* set_object_script(Slot* slot, std::string script);
+	virtual Slot* set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended);
+	virtual Slot* clone_obj_by_name(std::string receiver);
 
 	virtual ~Linker();
 private:
