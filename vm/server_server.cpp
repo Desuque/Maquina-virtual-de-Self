@@ -133,7 +133,7 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag, int 
                                 }
                                 std::cout << "devolucion: " << json << std::endl;
                     
-                                if(flag != 0)
+                                //if(flag != 0)
                                     (it->second)->enviarJson(json);
                         }                        
                 }
