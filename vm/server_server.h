@@ -27,6 +27,7 @@ class Server : public Thread{
                 int  execute(string file_name);
                 void update_lobby_data(App* or_app, int code, string json, int flag);
 		void share_obj_to(string str_parser_code_share, string json_share, string lobby_des);                
+                string get_json_apps_name();
 		~Server();
                 
 	private:
@@ -36,7 +37,6 @@ class Server : public Thread{
                 void update_app(string str_parser_code_share, string lobby_des);
 		int execute_file(App* app, string file_name);
                 void load_file_names();
-                string get_json_apps_name();
 		void join_threads();
 
 };

@@ -7,6 +7,10 @@
 #define DO_IT 10
 #define PEDIR_MORPH 11
 #define BORRAR_MORPH 12
+#define GARBAGE 14
+#define PEDIR_LISTA_LOBBYS 15
+
+typedef  std::vector<int> v_ints;
 
 Cliente::Cliente(ProxyServer& proxy, MyArea* myArea) : proxy(proxy), myArea(myArea) {}
 		
@@ -84,6 +88,18 @@ void Cliente::run() {
 			  	}
 				break;
 			}
+			case GARBAGE: {
+				JsonReader reader;
+				v_ints vec;
+				uint32_t tamMensaje = proxy.recibirCodigo(4);
+				std::string json = proxy.recibir(tamMensaje);
+
+				reader.read_garbage_ids(json, vec);
+				int size = vec.size();
+				for (int i = 0; i< size; i++)
+					std::cout << vec[i] << std::endl;
+				break;
+			}
 			case PEDIR_MORPH: {
 				std::cout << "pedi morph" << std::endl;
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
@@ -126,6 +142,22 @@ void Cliente::run() {
 				jsonReader.read_position(json, id, posX, posY);
 				myArea->actualizarPosicionAMoprh(id, posX, posY);
 				break;
+			}
+			case PEDIR_LISTA_LOBBYS:{
+				std::cout << "pedir morph" << std::endl;
+				std::string json = proxy.recibirJson();
+				std::cout << json << std::endl;
+				std::vector<string> names;
+				JsonReader reader;
+				reader.read_names(json, names);
+				for (int i = 0; i < names.size(); ++i){  
+			    	std::cout << names[i] << std::endl;
+			  	}
+				myArea->mostarListaLobbys(names);	
+				break;				
+			}
+			case 0 :{
+				std::cout << "Error" << std::endl;
 			}
 			default: {
 				std::cout << "recibi comando desconocido\n";

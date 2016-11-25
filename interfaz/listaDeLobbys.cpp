@@ -22,9 +22,9 @@ ListaDeLobbys::ListaDeLobbys(BaseObjectType* cobject,
 
     append_column("Nombre", m_Columns.m_col_name);
     
-    Gtk::Button* buttonOk = nullptr; 
+    /*Gtk::Button* buttonOk = nullptr; 
     m_builder->Gtk::Builder::get_widget("button12", buttonOk);
-    buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&ListaDeLobbys::on_button_ok));
+    buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&ListaDeLobbys::on_button_ok));*/
     //m_Button_Ok.signal_clicked().connect( sigc::mem_fun(*this,
       //                    &ListaDeLobbys::on_button_ok) );
 }
@@ -61,18 +61,7 @@ std::string ListaDeLobbys::obtenerLobbySeleccionado(){
   return "";
 }
 
-void ListaDeLobbys::on_button_ok(){
-  /*auto refSelection = get_selection();
-  if(refSelection)
-  {
-    Gtk::TreeModel::iterator iter = refSelection->get_selected();
-    if(iter) {
-
-      std::cout << (*iter)[m_Columns.m_col_name] <<  std::endl;
-      Glib::ustring s = (*iter)[m_Columns.m_col_name];
-      std::string s2 = s;
-       std::cout << s2 <<  std::endl;
-    }
-  }
-  hide();*/
+void ListaDeLobbys::reestablecer(){
+  /*m_refTreeModel = Gtk::ListStore::create(m_Columns);
+  set_model(m_refTreeModel);*/
 }

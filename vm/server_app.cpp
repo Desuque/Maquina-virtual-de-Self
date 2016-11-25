@@ -12,6 +12,7 @@ static const int cod_update_position = 8;
 static const int cod_pedir_morph = 11;
 static const int cod_borrar_morph = 12;
 static const int cod_share_obj = 13;
+static const int cod_pedir_lista_lobbys = 15;
 static const int cod_garbage = 14;
 
 App::App(){
@@ -80,9 +81,15 @@ void App::run(int* fin){
                                         rcv_msg_generic();
                                         save_vm(this->name);
 					break;
-                                case cod_share_obj:
-                                        rcv_share_obj();
-                                        break;
+				case cod_share_obj:
+					rcv_share_obj();
+					break;
+				case cod_pedir_lista_lobbys:{
+					proxy->enviar(cod_pedir_lista_lobbys,1);
+					string json = server->get_json_apps_name();
+					proxy->enviarJson(json);
+					break;
+				}
 				case cod_pedir_morph :{
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);

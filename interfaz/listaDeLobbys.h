@@ -15,6 +15,7 @@ public:
              bool is_glad); 
   
   virtual ~ListaDeLobbys();
+  void reestablecer();
   void on_button_ok();
   void setLista(std::vector<std::string> listaLobbys);
   std::string obtenerLobbySeleccionado();

@@ -7,7 +7,11 @@
 #include "client_interface_slot.h"
 #include "client_json_reader.h"
 #include "server_json_writer.h"
+#include "listaDeLobbys.h"
+#include "dialogoSeleccionLobby.h"
 
+#define COD_SHARE_OBJ 13
+#define PEDIR_LISTA_LOBBYS 15
 
 MyArea::MyArea()
 {
@@ -29,9 +33,13 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   // ::: Create popup menu :::
 
   // conecto agregarSlot
-  MenuItemAgregarSlot.set_label("Agregar Slot");
-  MenuItemAgregarSlot.signal_activate().connect(sigc::mem_fun(*this,&MyArea::agregarSlot_event));
-  m_Menu_Popup.append(MenuItemAgregarSlot);
+  itemAgregarSlot.set_label("Agregar Slot");
+  itemAgregarSlot.signal_activate().connect(sigc::mem_fun(*this,&MyArea::agregarSlot_event));
+  m_Menu_Popup.append(itemAgregarSlot);
+  
+  itemEnviarMorphA.set_label("Enviar a...");
+  itemEnviarMorphA.signal_activate().connect(sigc::mem_fun(*this,&MyArea::enviarMorphAlobby));
+  m_Menu_Popup.append(itemEnviarMorphA);
 
   m_Menu_Popup.show_all();
 
@@ -41,8 +49,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   Gtk::Button* botonGuardar = nullptr;
   m_builder-> Gtk::Builder::get_widget("button6", botonGuardar);
   if (botonGuardar == NULL) std::cout << "error" << std::endl;
-  sigcButtonGuardar = botonGuardar->signal_clicked().connect
-            ( sigc::mem_fun(*this,&MyArea::botonGuardarNuevoSlotEvent));  
+  botonGuardar->signal_clicked().connect(sigc::mem_fun(*this,&MyArea::botonGuardarNuevoSlotEvent));  
 
   Gtk::Button* botonSalir = nullptr;
   m_builder-> Gtk::Builder::get_widget("button7", botonSalir);
@@ -97,31 +104,6 @@ void MyArea::iniciar(){
     actual->agregarSlot(i_slots[i]);
   }
   
-  /*int size = i_slots.size();
-  for (int i = 0; i < size ; i++){
-    i_slots[i] -> print_attr();
-
-    if(i_slots[i]->estaDibujadoComoMorph()){
-        for (int j = 0; j < morphs.size() ; ++j){
-          if (morphs[j]->tieneElMismoIdQueEsteSlot(i_slots[i])){
-            Referencia* referenciaNueva = new Referencia(morphs[j],i_slots[i]);
-            morphs[j]->referencias.push_back(referenciaNueva);
-            referencias.push_back(referenciaNueva);
-            i_slots[i]->setReferencia(referenciaNueva);
-            queue_draw();
-            return;
-          }
-        }
-        Morph* nuevoMorph = new Morph(i_slots[i], m_TextView, textViewCodAsociado);
-        morphs.push_back(nuevoMorph); 
-        Referencia* referenciaNueva = new Referencia(nuevoMorph,i_slots[i]);
-        nuevoMorph->referencias.push_back(referenciaNueva);
-        referencias.push_back(referenciaNueva);
-        i_slots[i]->setReferencia(referenciaNueva);
-    }
-    //actual->agregarSlot(i_slots[i]);
-  }*/
-
   for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
     delete* it;  
     it = i_slots.erase(it);
@@ -140,6 +122,58 @@ void MyArea::liberarMemoria(){
 }
 
 MyArea::~MyArea(){}
+
+
+void MyArea::enviarMorphAlobby(){
+ proxyServer->enviar(PEDIR_LISTA_LOBBYS,sizeof(char));
+
+  //std::vector<string> names = {"lobby1","lobby2"};
+
+  /*Gtk::Button* buttonOk = nullptr; 
+  m_builder->Gtk::Builder::get_widget("button12", buttonOk);
+    buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&MyArea::botonOkSeleccionLobby));
+
+  DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
+  m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
+  dSeleccionarLobby->setListaLobbys(names);
+  //dSeleccionarLobby->setProxy(proxy);
+  dSeleccionarLobby->run();*/
+}
+
+void MyArea::mostarListaLobbys(std::vector<std::string> names){
+  Gtk::Button* buttonOk = nullptr; 
+  m_builder->Gtk::Builder::get_widget("button12", buttonOk);
+  if(!buttonOk){
+    return;
+  }
+  buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&MyArea::botonOkSeleccionLobby));
+
+  DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
+  m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
+  //dSeleccionarLobby->setListaLobbys(names);
+  //dSeleccionarLobby->setProxy(proxy);
+  dSeleccionarLobby->run();
+}
+void MyArea::botonOkSeleccionLobby(){
+  ListaDeLobbys* listaDeLobbys = nullptr; 
+  m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
+  
+  std::string seleccion = listaDeLobbys->obtenerLobbySeleccionado();
+  std::cout << seleccion << std::endl;
+
+  JsonWriter writer;
+  std::string json = writer.write_share_obj(actual->get_id(), seleccion);
+    std::cout << json << std::endl;
+
+  proxyServer->enviar(COD_SHARE_OBJ,1);
+  proxyServer->enviarJson(json);
+
+  listaDeLobbys->hide();
+  DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
+  m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
+  dSeleccionarLobby->hide();
+}
+
 
 void MyArea::botonSalirNuevoSlotEvent(){
   Gtk::Dialog* d_add_slot = nullptr;

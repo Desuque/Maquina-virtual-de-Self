@@ -4,7 +4,7 @@
 #include "dialogoSeleccionLobby.h"
 #include <iostream>
 #include <vector>
-
+#include "listaDeLobbys.h"
 #define CREAR_MAQUINA_VIRTUAL 0x01
 #define CARGAR_MAQUINA_VIRTUAL 0x06
 
@@ -27,8 +27,8 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
   	if (botonCargarLobby == nullptr) std::cout << "error" << std::endl;
     botonCargarLobby->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::cargarLobbyClick));
     //this->signal_delete_event().connect(sigc::mem_fun(*this,&DialogoInicial::cerrarDialogoClick));
-
-    
+ 
+	
     Gtk::Button* botonSalir = nullptr;
 	m_builder-> Gtk::Builder::get_widget("button13", botonSalir);
   	if (botonSalir == nullptr) std::cout << "error glade" << std::endl;
@@ -77,18 +77,31 @@ void DialogoInicial::cargarLobbyClick(){
 	}
 	hide();
 
+	Gtk::Button* buttonOk = nullptr; 
+	m_builder->Gtk::Builder::get_widget("button12", buttonOk);
+    sigcBotonOk = buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::botonOkLobby));
+
 	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
 	dSeleccionarLobby->setListaLobbys(names);
-	dSeleccionarLobby->setProxy(proxy);
+	//dSeleccionarLobby->setProxy(proxy);
 	dSeleccionarLobby->run();
+}
 
-	/*if(names.size()){
-		proxy->enviar(7, 1);
-		proxy->enviarString(names[0]);
-		std::cout << "envie"<<std::endl;
-	}*/
-	//dSeleccionarLobby->run();
+void DialogoInicial::botonOkLobby(){
+	std::cout << "Ok" << std::endl;
+	sigcBotonOk.disconnect();
+	ListaDeLobbys* listaDeLobbys = nullptr; 
+	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
+	std::string seleccion = listaDeLobbys->obtenerLobbySeleccionado();
+	std::cout << seleccion << std::endl;
+	proxy -> enviar(7,1);
+	proxy->enviarString(seleccion);
+	listaDeLobbys->hide();
+
+	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
+	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
+	dSeleccionarLobby->hide();
 }
 
 bool DialogoInicial::cerrarDialogoClick(GdkEventAny*){

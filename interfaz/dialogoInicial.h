@@ -8,6 +8,7 @@ class DialogoInicial : public Gtk::Dialog {
 	protected:
 		Glib::RefPtr<Gtk::Builder> m_builder;
 		ProxyServer* proxy;
+		sigc::connection sigcBotonOk;
 	public:	
 		DialogoInicial();
 		DialogoInicial(BaseObjectType* cobject, 	
@@ -20,6 +21,7 @@ class DialogoInicial : public Gtk::Dialog {
 		void cargarLobbyClick();
 		bool cerrarDialogoClick(GdkEventAny*);
 		void salirClick();
+		void botonOkLobby();
 		virtual ~DialogoInicial();
 };
 

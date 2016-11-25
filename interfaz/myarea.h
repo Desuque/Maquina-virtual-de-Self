@@ -11,14 +11,14 @@ class MyArea : public Gtk::DrawingArea
 protected:
 	Glib::RefPtr<Gtk::Builder> m_builder;
   Gtk::Menu m_Menu_Popup;
-  Gtk::MenuItem MenuItemAgregarSlot;
+  Gtk::MenuItem itemAgregarSlot;
+  Gtk::MenuItem itemEnviarMorphA;
 
   Gtk::Label* lNombreObjeto;
 	Gtk::Button* m_pButton;
   Gtk::Button* m_pButton2;
   Gtk::Button* m_pButton3;
 
-  sigc::connection sigcButtonGuardar;
   Gtk::TextView* m_TextView;
   Gtk::TextView* textViewCodAsociado;
 
@@ -58,9 +58,11 @@ public:
   void setProxy(ProxyServer* proxy){
     this->proxyServer = proxy;
   }
+  void mostarListaLobbys(std::vector<std::string> names);
 
   void actualizarPosicionAMoprh(int id, int posX, int posY);
   void closeMorph(int id_morph);
+  void enviarMorphAlobby();
 
   virtual ~MyArea();
 
@@ -73,6 +75,7 @@ private:
   void borrarReferenciasDeMorph(Morph* morph);
   void borrarReferenciasDeLosSlotsDeMorph(Morph* morph);
   void borrarMorph(Morph* morph);
+  void botonOkSeleccionLobby();
 
 };
 
