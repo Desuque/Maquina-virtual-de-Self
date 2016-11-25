@@ -45,6 +45,7 @@ Slot* Linker::create_string(std::string string) {
 }
 
 Slot* Linker::create_unary_message(Slot* receiver, std::string name) {
+	std::cout<<"Entro al unary"<<std::endl;
 	return vm->unary_message(receiver, name);
 }
 
@@ -100,13 +101,12 @@ Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	return slot;
 }
 
-/**
 Slot* Linker::set_object_script(Slot* slot, std::string script) {
-	Slot* X34 = vm.create_string("((x*x)+(y*y))");
+	Slot* X34 = vm->create_string(script);
 	
 
 	return vm->create_string(script);
-
+/**
 
 	Slot* X31 = vm.search_obj("lobby");
 	Slot* cont4 = vm.create_object();
@@ -122,8 +122,7 @@ Slot* Linker::set_object_script(Slot* slot, std::string script) {
 	vm.add_slot(X32, "punto", X33);
         vm.add_slot(cont4,"",X32);
 	vm.keyword_message(X31, "_AddSlots", cont4);
-}
-**/
+**/}
 
 Slot* Linker::only_name(std::string name, Slot* slot) {
 	return get_object_by_name(name);

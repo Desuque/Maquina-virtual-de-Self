@@ -106,6 +106,7 @@ bool Parser::text(std::stringstream* codigo, int* posicion, Slot** slot) {
 
 	if(found_text) {
 		*slot = linker->create_string(auxiliar);
+		std::cout<<"El string de texto se crea y existe!"<<std::endl;
 		return true;
 	}
 
@@ -150,7 +151,7 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 			std::cout<<"Esta es la posicion de salida: "<<*posicion<<" y el tellg: "<<codigo->tellg()<<std::endl;
 			std::cout<<"Este es el script ingresado: "<<msg_script<<std::endl;
 			*posicion = codigo->tellg();
-			//*slot = linker->set_object_script(script);
+			//*slot = linker->set_object_script(*slot, script);
 			return true;		
 		} else {
 			//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -307,13 +308,19 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 
 	Slot* object = linker->create_object();
 	Slot* script = NULL;
+
+	std::cout<<"Vemos que trae el flag de msg: "<<get_msg()<<std::endl;
+
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
 		
-		if(slot_list(codigo, posicion, &object)) {
+		if(slot_list(codigo, posicion, &object) || empty(codigo, posicion)) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
 			bool nextSlot = true;
+			
+			//ESTE WHILE NO ME DEJA SALIR SI NO HAY SLOTS!!!!!!! REVISAR!!!
+
 			while(nextSlot) {
 				nextSlot = slot_list(codigo, posicion, &object);
 			}
@@ -324,9 +331,15 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 			}
 			if (pipe_with_script(codigo, posicion, &object)) {
 				std::cout<<"Entro al pipe with script"<<std::endl;
-				if(object_end(codigo, posicion)) {
-					//Se encontró que no hay un parentesis luego de la barra
-					//Se guarda el script sin comprobar su sintaxis
+				//Elimino posibles espacios
+				erase_white_spaces(codigo, posicion);
+				//Leo todo el valor desde la posicion indicada
+				codigo->seekg(*posicion, std::ios::beg);
+
+				char c;
+				codigo->get(c);
+				if(c == ')') {
+					*posicion = codigo->tellg();
 					*slot = object;
 					return true;
 				}
@@ -466,7 +479,7 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 
 /**
  * Este metodo no modifica la posicion del puntero en el codigo ya que
- * solo se quiere comprobar que el mismo representa un vacio
+ * solo se quiere comprobar que se trata de un objeto sin slots
  */
 bool Parser::empty(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
