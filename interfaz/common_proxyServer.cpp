@@ -175,12 +175,18 @@ std::string ProxyServer::recibirJson(){
 
 	/*char infoSlots[tamMensaje+1];
 	bzero(infoSlots,tamMensaje+1);*/
-	char infoSlots[1024];
-	bzero(infoSlots,1024);
 
-	sktCliente.receive(infoSlots, tamMensaje);
+	std::cout << tamMensaje << std::endl;
 
-	return std::string(infoSlots);
+	char* infoSlots = new char[tamMensaje+1];
+	bzero(infoSlots,tamMensaje+1);
+
+	sktCliente.receive(infoSlots,tamMensaje);
+
+	std::string str_infoSlots = std::string(infoSlots);
+
+	delete[] infoSlots;
+	return str_infoSlots;
 }
 
 std::string ProxyServer::recibirSlotsDe(std::string objeto){

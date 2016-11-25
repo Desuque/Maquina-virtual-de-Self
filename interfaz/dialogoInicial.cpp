@@ -7,6 +7,7 @@
 #include "listaDeLobbys.h"
 #define CREAR_MAQUINA_VIRTUAL 0x01
 #define CARGAR_MAQUINA_VIRTUAL 0x06
+#define COD_LOAD_APP 0x07
 
 DialogoInicial::DialogoInicial(){
 
@@ -28,7 +29,6 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
     botonCargarLobby->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::cargarLobbyClick));
     //this->signal_delete_event().connect(sigc::mem_fun(*this,&DialogoInicial::cerrarDialogoClick));
  
-	
     Gtk::Button* botonSalir = nullptr;
 	m_builder-> Gtk::Builder::get_widget("button13", botonSalir);
   	if (botonSalir == nullptr) std::cout << "error glade" << std::endl;
@@ -43,17 +43,17 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
 
 void DialogoInicial::salirClick(){
     std::cout << "Click en salir dialogo" << std::endl;
-	proxy->cerrarConexion();
+	if(proxy){
+		proxy->cerrarConexion();
+	}
 	hide();
 }
 
 void DialogoInicial::nuevoLobbyClick(){
-    std::cout << "Click en nuevo lobby" << std::endl;
     //Gtk::Dialog dialogoNombreLobby = nullptr;
 	//m_builder->get_widget("dialog2", dialogoNombreLobby);
     proxy->enviar(CREAR_MAQUINA_VIRTUAL,sizeof(char));
 	hide();
-	// proxy->recibirCodigo(1);
 
 	DialogoNombreLobby* dialogNombre = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog2", dialogNombre);
@@ -95,9 +95,8 @@ void DialogoInicial::botonOkLobby(){
 	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
 	std::string seleccion = listaDeLobbys->obtenerLobbySeleccionado();
 	std::cout << seleccion << std::endl;
-	proxy -> enviar(7,1);
+	proxy -> enviar(COD_LOAD_APP,1);
 	proxy->enviarString(seleccion);
-	listaDeLobbys->hide();
 
 	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);

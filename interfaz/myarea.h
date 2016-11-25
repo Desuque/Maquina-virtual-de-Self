@@ -35,7 +35,6 @@ protected:
   ProxyServer* proxyServer;
 
 public:
-  MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder, bool warning);
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   MyArea();
   void iniciar();
@@ -50,7 +49,6 @@ public:
   void agregarSlot_event();
   void botonSalirNuevoSlotEvent();
   void botonGuardarNuevoSlotEvent();
-  void liberarMemoria();
   void agregarSlots(std::vector<InterfaceSlot*> i_slots);
   void borrarSlots(std::vector<InterfaceSlot*> i_slots);
   void crearMorphs(std::vector<InterfaceSlot*> i_slots);
@@ -58,12 +56,11 @@ public:
   void setProxy(ProxyServer* proxy){
     this->proxyServer = proxy;
   }
-  void mostarListaLobbys(std::vector<std::string> names);
-
   void actualizarPosicionAMoprh(int id, int posX, int posY);
   void closeMorph(int id_morph);
-  void enviarMorphAlobby();
+  void recolectarMorphs(std::vector<int> vectorIds);
 
+  void liberarMemoria();
   virtual ~MyArea();
 
 protected:

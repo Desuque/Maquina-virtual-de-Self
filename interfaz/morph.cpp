@@ -4,44 +4,14 @@
 #include <gtkmm.h>
 #include <pangomm/layout.h>
 
-Morph::Morph(double posX, double posY) : m_TextView(nullptr), refTextViewConsola(nullptr) {
-	this->posX = posX;
-	this->posY = posY;
-	this -> nombreObjeto = "que?";
-	//this->referencia=nullptr;
-}
 
-Morph::Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView){
-	this->posX = posX;
-	this->posY = posY;
-	this->width = width;
-	this->height = height;
-	this -> nombreObjeto = "";
-	this->m_TextView=m_TextView;
-	refTextViewConsola = Gtk::TextBuffer::create();
-	refTextViewConsola->set_text("");
-	//this->referencia=nullptr;
-}
+Morph::Morph(){}
 
-Morph::Morph(std::string nombreObjeto, double posX, double posY) : 
-	nombreObjeto(nombreObjeto), posX(posX), posY(posY), /*referencia(nullptr),*/ m_TextView(nullptr) {
-	Pango::FontDescription font;
-	font.set_family("Monospace");
-	font.set_weight(Pango::WEIGHT_BOLD);
-	// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
-	auto layout = create_pango_layout(this->nombreObjeto);
-	layout->set_font_description(font);
-	int text_width;
-	int text_height;
-	layout->get_pixel_size(text_width, text_height);
-	this->width = 2*text_width;
-	this->height = 2*text_height;
-	refTextViewConsola = Gtk::TextBuffer::create();
-	refTextViewConsola->set_text("");
+// se usa para comparar morph por posiciones.
+Morph::Morph(double posX, double posY) : 
+	m_TextView(nullptr), refTextViewConsola(nullptr), 
+	posX(posX), posY(posY){}
 
-}
-
-// SE USA ESTE SIEMPRE VER LOS DEMAS ELIMINAR
 Morph::Morph(std::string nombreObjeto, int id, double posX, double posY, 
 		Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) : 
 		nombreObjeto(nombreObjeto), nombreParaMostrar(nombreObjeto), 
@@ -128,31 +98,6 @@ Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_Te
 	refTextViewConsola->set_text("");
 } 
 
-Morph::Morph(std::string nombreObjeto, double posX, double posY, int width, int height) 
-	: m_TextView(nullptr) {
-	Pango::FontDescription font;
-	font.set_family("Monospace");
-	font.set_weight(Pango::WEIGHT_LIGHT);
-	// http://developer.gnome.org/pangomm/unstable/classPango_1_1Layout.html
-	auto layout = create_pango_layout(this->nombreObjeto);
-	layout->set_font_description(font);
-	int text_width;
-	int text_height;
-	layout->get_pixel_size(text_width, text_height);
-	this->height = text_height;
-	this->posX = posX;
-	this->posY = posY;
-	this->width = width;
-	this->nombreObjeto = nombreObjeto;
-	refTextViewConsola = Gtk::TextBuffer::create();
-	refTextViewConsola->set_text("");
-	//this->referencia=nullptr;
-	//referencia = new Morph(posX-8,posY,8,8,m_TextView);
-}
-
-Morph::Morph(){
-}
-
 std::string Morph::get_id_to_string(){
 	return std::to_string(this->id);
 }
@@ -220,10 +165,7 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 Slot* Morph::obtenerSlot(int posX,int posY){     
 	for (int i=0; i < slots.size(); ++i){         
-		// guardar cuando agregue poli         
-		if ((posX >= (slots[i]->posX) + (slots[i]->width) -10) && (posY >= (slots[i]->posY) + 2)
-			&& (posX <= (((slots[i]->posX) + (slots[i]->width))-2)) && (posY <=
-			((slots[i]->posY)+slots[i]->height-2))) {   
+		if (slots[i]->clikEnObtenerSlot(posX, posY)) {   
 				return slots[i];     
 		}     
 	}     
@@ -233,26 +175,19 @@ Slot* Morph::obtenerSlot(int posX,int posY){
 Slot* Morph::obtenerSlotConId(int id_slot){     
 	for (int i=0; i < slots.size(); ++i){         
 		// guardar cuando agregue poli         
-		if (slots[i]->get_id() == id_slot){   
-			return slots[i];     
-		}     
+		if (slots[i]->tieneEsteId(id_slot)){   
+			return slots[i];    
+		}      
 	}     
 	return nullptr; 
 }
 
 
 bool Morph::tieneElMismoIdQueEsteSlot(Slot* unSlot){
-	return (unSlot->get_id() == this->id);
-}
-
-bool Morph::tieneElMismoIdQueEsteSlot(InterfaceSlot* unSlot){
-	return (unSlot->get_id() == this->id);
+	return (unSlot->tieneEsteId(this->id));
 }
 
 void Morph::mostrarDescripcionMorph(){
-	//Glib::RefPtr<Gtk::TextBuffer> m_refTextBuffer1;
-	//m_refTextBuffer1 = Gtk::TextBuffer::create();
-	//refTextViewConsola->set_text("");
 	if (m_TextView && refTextViewConsola){
 		m_TextView -> set_buffer(refTextViewConsola);
 	}
@@ -298,7 +233,14 @@ void Morph::agregarReferencia(Referencia* unaReferencia){
 	this->referencias.push_back(unaReferencia);
 }
 
-
+void Morph::borrarReferencia(Referencia* referencia){
+	for (int i=0; i < referencias.size(); ++i){
+		if (referencias[i] == referencia){
+			referencias.erase(referencias.begin()+i);
+			--i;
+		}
+	}
+}
 
 Morph::~Morph(){
 	for (int i=0; i < slots.size(); ++i){

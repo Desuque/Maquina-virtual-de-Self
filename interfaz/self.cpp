@@ -35,14 +35,8 @@ int main(int argc, char *argv[])
 
 	VentanaPrincipal* window = nullptr;
 	refBuilder->get_widget_derived("window1", window);
-	window->set_default_size(800,800);
-	
-	window->add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
-
-	DialogoInicial* dialogoInicial = nullptr;
-	refBuilder->Gtk::Builder::get_widget_derived("dialog1", dialogoInicial);
-	dialogoInicial->setProxy(&proxy);
-	dialogoInicial->run();
+	window->setProxy(&proxy);
+	window->iniciarDialogos();
 
 	MyArea* myArea = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
@@ -67,6 +61,6 @@ int main(int argc, char *argv[])
 
 void example(){
 	printf("Ejemplos: \n");;
-	printf("\t ./client_self -p <port> -ip <direccion ip>\n");
+	printf("\t ./client_self -ip <direccion ip> -p <port>\n");
 	printf("\t ./client_self -ip 127.0.0.1 -p 8080 \n");
 }

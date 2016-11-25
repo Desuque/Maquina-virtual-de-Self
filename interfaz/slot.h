@@ -26,7 +26,7 @@ public:
 	Referencia* referencia;
 
 public:	
-	Slot(){}
+	//Slot(){}
 	
 	Slot(InterfaceSlot* interfaceSlot, double posX, double posY, int width, int height){
 		this->dibujadoComoMorph = false;
@@ -45,6 +45,10 @@ public:
 
 	std::string get_name(){
 		return this->name;
+	}
+
+	bool tieneEsteId(int id){
+		return (this->id == id);
 	}
 
 	int get_id(){

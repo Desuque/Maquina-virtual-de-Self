@@ -11,22 +11,8 @@ ListaDeLobbys::ListaDeLobbys(BaseObjectType* cobject,
     m_refTreeModel = Gtk::ListStore::create(m_Columns);
     set_model(m_refTreeModel);
 
-    /*Gtk::TreeModel::Row row = *(m_refTreeModel->append());
-    row[m_Columns.m_col_name] = "lobby1";
-
-    row = *(m_refTreeModel->append());
-    row[m_Columns.m_col_name] = "lobby2";
-
-    row = *(m_refTreeModel->append());
-    row[m_Columns.m_col_name] = "lobby3";*/
-
     append_column("Nombre", m_Columns.m_col_name);
     
-    /*Gtk::Button* buttonOk = nullptr; 
-    m_builder->Gtk::Builder::get_widget("button12", buttonOk);
-    buttonOk->signal_clicked().connect(sigc::mem_fun(*this,&ListaDeLobbys::on_button_ok));*/
-    //m_Button_Ok.signal_clicked().connect( sigc::mem_fun(*this,
-      //                    &ListaDeLobbys::on_button_ok) );
 }
 
 ListaDeLobbys::ListaDeLobbys(BaseObjectType* cobject, 

@@ -23,7 +23,10 @@ DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject,
 }
 
 void DialogoNombreLobby::botonOkNombre(){
-	if(!proxy) std::cout << "Error no hay proxy en DialogoNombreLobby" << std::endl;
+	if(!proxy){
+		std::cout << "Error no hay proxy en DialogoNombreLobby" << std::endl;
+		return;
+	}	
 	Gtk::Entry* entryNombreLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget("entry1", entryNombreLobby);
 	if(!entryNombreLobby) std::cout << "Error m_builder DialogoNombreLobby::botonOkNombre" << std::endl;
@@ -31,8 +34,7 @@ void DialogoNombreLobby::botonOkNombre(){
 	std::cout << nombreLobby << std::endl;
 	
 	uint32_t respuesta = proxy->enviarString(nombreLobby);
-	std::cout << "Respuesta de enviar nombreLobby: " 
-			  << respuesta << std::endl;
+
 	if (respuesta == 0){
 		// el lobby ya existe lanzar un error y volver a pedir 
 		// el nombre.
@@ -47,7 +49,9 @@ void DialogoNombreLobby::botonOkNombre(){
 }
 
 void DialogoNombreLobby::botonSalir(){
-	proxy->cerrarConexion();
+	if(proxy){
+		proxy->cerrarConexion();
+	}
 	hide();
 }
 

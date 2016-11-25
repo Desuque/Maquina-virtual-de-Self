@@ -25,19 +25,10 @@ class Morph : public Gtk::DrawingArea{
 	
 	public:
 		Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
-		Morph(double posX, double posY, int width, int height,Gtk::TextView* m_TextView);
-		Morph(std::string nombreObjeto, double posX, double posY, int width, int height);
-		Morph(std::string nombreObjeto, double posX, double posY);
 		Morph(std::string nombreObjeto, int id, double posX, double posY, 
 			Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
 		Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado);
-		void borrarReferencia(Referencia* referencia){
-			for (int i=0; i < referencias.size(); ++i){
-				if (referencias[i] == referencia){
-					referencias.erase(referencias.begin()+i);
-				}
-			}
-		}
+		void borrarReferencia(Referencia* referencia);
 		std::string get_id_to_string();
 		int get_id(){
     		return this->id;

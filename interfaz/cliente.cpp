@@ -1,5 +1,6 @@
 #include "cliente.h"
 #include "client_json_reader.h"
+#include "dialogoSeleccionLobby.h"
 
 #define TAM_COD 1
 #define ACTUALIZAR_VISTA 8
@@ -8,11 +9,13 @@
 #define PEDIR_MORPH 11
 #define BORRAR_MORPH 12
 #define GARBAGE 14
+#define GENERIC 5
 #define PEDIR_LISTA_LOBBYS 15
 
 typedef  std::vector<int> v_ints;
 
-Cliente::Cliente(ProxyServer& proxy, MyArea* myArea) : proxy(proxy), myArea(myArea) {}
+Cliente::Cliente(ProxyServer& proxy, MyArea* myArea) : 
+		proxy(proxy), myArea(myArea) {}
 		
 void Cliente::run() {
 	uint32_t codigo = 0;
@@ -23,9 +26,9 @@ void Cliente::run() {
 			// error de conexion.
 			return;
 		}
+		std::cout << codigo << std::endl;
 		switch (codigo){	
 			case 2: {
-				std::cout << "recibi slot" << std::endl;
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
 				std::cout << tamMensaje << std::endl;
 				std::string json = proxy.recibir(tamMensaje);
@@ -72,11 +75,8 @@ void Cliente::run() {
 			  	}
 				break;
 		    }
-			case 5: { 
-				uint32_t tamMensaje = proxy.recibirCodigo(4);
-				std::cout << "tamanio mensaje: " << tamMensaje << std::endl;
-				std::string json = proxy.recibir(tamMensaje);
-				std::cout << json << std::endl;
+			case GENERIC : { 
+				std::string json = proxy.recibirJson();
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
 				std::cout << i_slots.size() << std::endl;
@@ -91,17 +91,12 @@ void Cliente::run() {
 			case GARBAGE: {
 				JsonReader reader;
 				v_ints vec;
-				uint32_t tamMensaje = proxy.recibirCodigo(4);
-				std::string json = proxy.recibir(tamMensaje);
-
+				std::string json = proxy.recibirJson();
 				reader.read_garbage_ids(json, vec);
-				int size = vec.size();
-				for (int i = 0; i< size; i++)
-					std::cout << vec[i] << std::endl;
+				myArea->recolectarMorphs(vec);
 				break;
 			}
 			case PEDIR_MORPH: {
-				std::cout << "pedi morph" << std::endl;
 				uint32_t tamMensaje = proxy.recibirCodigo(4);
 				std::string json = proxy.recibir(tamMensaje);
 				std::cout << json << std::endl;
@@ -109,7 +104,6 @@ void Cliente::run() {
 				JsonReader ids_reader;
 				int id_morph = -1, id_slot = -1;
 				ids_reader.read_id_morph_id_slot(json, id_morph, id_slot);
-				//myArea->agregarSlots(i_slots);
 				myArea->mostrarEsteSlotComoMorph(id_morph, id_slot);
 				break;
 			}
@@ -143,8 +137,9 @@ void Cliente::run() {
 				myArea->actualizarPosicionAMoprh(id, posX, posY);
 				break;
 			}
+			//esto para compartir objetos.
+			// no anda
 			case PEDIR_LISTA_LOBBYS:{
-				std::cout << "pedir morph" << std::endl;
 				std::string json = proxy.recibirJson();
 				std::cout << json << std::endl;
 				std::vector<string> names;
@@ -153,7 +148,7 @@ void Cliente::run() {
 				for (int i = 0; i < names.size(); ++i){  
 			    	std::cout << names[i] << std::endl;
 			  	}
-				myArea->mostarListaLobbys(names);	
+			  	//myArea->mostarListaLobbys(names);
 				break;				
 			}
 			case 0 :{

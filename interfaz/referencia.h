@@ -2,14 +2,10 @@
 #define Referencia_H
 #include "morph.h"
 #include "slot.h"
-class Referencia : public Morph{
-public:
+class Referencia : public Morph {
+private:
 	Morph* apuntoAMorph;
 	Slot* perteneceASlot;
-	/*int posX;
-	int posY;*/
-	/*int width;
-	int height;*/
 
 public:	
 	Referencia(Morph* apuntoAMorph, Slot* perteneceASlot) {
@@ -38,12 +34,15 @@ public:
 		cr-> stroke();
 	}
 
+	void setSlotEstaDibujadoComoMorph(bool flag){
+		this->perteneceASlot->setEstaDibujadoComoMorph(flag);
+	}
+
 	void apuntaAEsteMorph(Morph* apuntar){
 		this->apuntoAMorph = apuntar;
 	}
 
 	void borrarReferenciaAnterior(){
-		//std::vector<Referencia*> refs = this->apuntoAMorph->referencias;
 		this->apuntoAMorph->borrarReferencia(this);
 	}
 	
