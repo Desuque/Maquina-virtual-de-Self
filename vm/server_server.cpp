@@ -110,7 +110,7 @@ void Server::join_threads(){
         }
 }
 
-void Server::update_lobby_data(App* or_app, int cod, string json, int flag){
+void Server::update_lobby_data(App* or_app, int cod, string json, int flag, int action){
         for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
                 if (or_app -> get_name() == it->first){                        
                         if (cod == 2 || cod == 8 || cod == 11 || cod == 12){
@@ -129,6 +129,7 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag){
                                 //hardcodeo el 5 porque devuelve -1 por defecto 
                                 //    para tener un caso no seteado
                                     (it->second)->enviar(5, 1);
+                                    (it->second)->enviar(action, 1);
                                 }
                                 std::cout << "devolucion: " << json << std::endl;
                     

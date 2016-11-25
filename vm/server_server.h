@@ -25,7 +25,7 @@ class Server : public Thread{
                 void run(int* fin);
                 void shutdown();
                 int  execute(string file_name);
-                void update_lobby_data(App* or_app, int code, string json, int flag);
+                void update_lobby_data(App* or_app, int code, string json, int flag, int action);
 		void share_obj_to(string str_parser_code_share, string json_share, string lobby_des);                
                 string get_json_apps_name();
 		~Server();
