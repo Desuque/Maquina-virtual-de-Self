@@ -947,15 +947,11 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 
 bool Parser::only_name(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
-	std::cout<<"Entro"<<std::endl;
 	if (name(codigo, posicion)) {
-		std::cout<<"Aca tambien"<<std::endl;
 		std::string msg_name = get_msg();
+		std::cout<<"Este name se trae de onli name: "<<msg_name<<std::endl;
 		if(msg_name.size() != 0) {
-			std::cout<<"Entro al linker trucho"<<std::endl;
-			std::cout<<"Memoria del linker trucho: "<<linker<<std::endl;
 			*slot = linker->only_name(msg_name, *slot);	
-			std::cout<<"Salgo del linker trucho"<<std::endl;
 			return true;
 		}
 	}
@@ -1081,25 +1077,15 @@ Slot* Parser::parsear(std::string codigo) {
 		std::cout<<"No es un script dog, lo siento"<<std::endl;
 		Slot* error = process_error("Sintax error.");
 		setFlag("Error");
-		return NULL;
+		return error;
 	}
 }
-/**
-bool Parser::null_parser(std::string codigo, std::string id) {
-	std::cout<<"Entre"<<std::endl;
-	Parser null_parser;
-	null_parser.parsear(codigo);
-	return true;
-}
-**/
 
 void Parser::set_linker(Linker* linker) {
 	this->linker = linker;
 }
 
 Slot* Parser::parsear(std::string codigo, std::string id) {
-	//if(null_parser(codigo, id)) {
-
 	//Seteo el linker a usar
 	Linker linker;
 	set_linker(&linker);
@@ -1109,7 +1095,6 @@ Slot* Parser::parsear(std::string codigo, std::string id) {
 	linker.setVM(vm);
 	//Parseo como un script comun
 	return parsear(codigo);
-	//}
 }
 
 void Parser::set_msg(std::string msg) {
