@@ -12,8 +12,10 @@ static const int cod_update_position = 8;
 static const int cod_pedir_morph = 11;
 static const int cod_borrar_morph = 12;
 static const int cod_share_obj = 13;
-static const int cod_pedir_lista_lobbys = 15;
 static const int cod_garbage = 14;
+static const int cod_pedir_lista_lobbys = 15;
+static const int cod_get_it = 16;
+static const int cod_do_it = 17;
 
 App::App(){
 	parser.setVM(&vm);
@@ -71,7 +73,7 @@ void App::run(int* fin){
 				case cod_update_position: {
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
-					server -> update_lobby_data(this,cod_update_position , json, 0);
+					server -> update_lobby_data(this,cod_update_position , json, 0, 0);
 					break;
 				}
 				case cod_get_slots:
@@ -93,7 +95,7 @@ void App::run(int* fin){
 				case cod_pedir_morph :{
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
-			        server -> update_lobby_data(this, cod_pedir_morph, json, 0);
+                                        server -> update_lobby_data(this, cod_pedir_morph, json, 0, 0);
 					/*proxy->enviar(cod_pedir_morph,1);
 					proxy->enviarJson(json);*/
 					break;
@@ -101,7 +103,7 @@ void App::run(int* fin){
 				case cod_borrar_morph :{
 					uint32_t tamMensaje = proxy->recibirTamMensaje(4);
 					std::string json = proxy->recibir(tamMensaje);
-			        server -> update_lobby_data(this, cod_borrar_morph, json, 0);
+                                        server -> update_lobby_data(this, cod_borrar_morph, json, 0, 0 );
 					/*proxy->enviar(cod_pedir_morph,1);
 					proxy->enviarJson(json);*/
 					break;
@@ -130,18 +132,20 @@ void App::rcv_msg_get_slots(){
         uint32_t tamMensaje = proxy->recibirTamMensaje(4);
         std::string nombreObjeto = proxy->recibir(tamMensaje);
         string string_to_send = get_slots(nombreObjeto);
-        server -> update_lobby_data(this, cod_get_slots, string_to_send, 0);
+        server -> update_lobby_data(this, cod_get_slots, string_to_send, 0, 0);
 }
 
 void App::rcv_msg_generic(){
 	uint32_t tamMensaje = proxy->recibirTamMensaje(4);
-	std::string nombreObjeto = proxy->recibir(tamMensaje);
-	tamMensaje = proxy->recibirTamMensaje(4);
-	std::string codigoAEjecutar = proxy->recibir(tamMensaje);
+        std::string nombreObjeto = proxy->recibir(tamMensaje);
+        tamMensaje = proxy->recibirTamMensaje(4);
+        std::string accion = proxy->recibir(tamMensaje);
+        tamMensaje = proxy->recibirTamMensaje(4);
+        std::string codigoAEjecutar = proxy->recibir(tamMensaje);
 
-	string result = execute(codigoAEjecutar);
-	int flag = parser.getFlag();
-	server -> update_lobby_data(this, cod_generic, result, flag);
+        string result = execute(codigoAEjecutar);
+        int flag = parser.getFlag();
+        server -> update_lobby_data(this, cod_generic, result, flag, std::stoi(accion));
 }
 
 void App::rcv_share_obj(){
