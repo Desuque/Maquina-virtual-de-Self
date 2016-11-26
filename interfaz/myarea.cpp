@@ -13,10 +13,9 @@
 #define PEDIR_LISTA_LOBBYS 15
 #define GET_IT 16
 #define DO_IT 17
+#define BORRAR_MORPH 12
 
-MyArea::MyArea()
-{
-}
+MyArea::MyArea(){}
 
 MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::DrawingArea(cobject),
@@ -49,35 +48,59 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 
   Gtk::Button* botonGuardar = nullptr;
   m_builder-> Gtk::Builder::get_widget("button6", botonGuardar);
-  if (botonGuardar == NULL) std::cout << "error" << std::endl;
+  if (botonGuardar == nullptr){
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
   botonGuardar->signal_clicked().connect(sigc::mem_fun(*this,&MyArea::botonGuardarNuevoSlotEvent));  
 
   Gtk::Button* botonSalir = nullptr;
   m_builder-> Gtk::Builder::get_widget("button7", botonSalir);
-  if (botonGuardar == NULL) std::cout << "error" << std::endl;
+  if (botonGuardar == nullptr){
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
   botonSalir->signal_clicked().connect
             ( sigc::mem_fun(*this,&MyArea::botonSalirNuevoSlotEvent));
   
   m_builder-> Gtk::Builder::get_widget("LabelnombreObjeto", lNombreObjeto);
-  if (lNombreObjeto == nullptr) std::cout << "error" << std::endl;
+  if (lNombreObjeto == nullptr){
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
 
   m_builder-> Gtk::Builder::get_widget("button1", m_pButton);
-  if (m_pButton == nullptr) std::cout << "error" << std::endl;
+  if (m_pButton == nullptr) {
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
   m_pButton->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::get_it_event));
 
   m_builder-> Gtk::Builder::get_widget("button2", m_pButton2);
-  if (m_pButton2 == nullptr) std::cout << "error" << std::endl;
+  if (m_pButton2 == nullptr) {
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
   m_pButton2->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::do_it_event));
 
   m_builder-> Gtk::Builder::get_widget("button3", m_pButton3);
-  if (m_pButton3 == nullptr) std::cout << "error" << std::endl;
+  if (m_pButton3 == nullptr) {
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
   m_pButton3->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::close_event));
 
   m_builder-> Gtk::Builder::get_widget("textview2", m_TextView);
-  if (m_TextView == nullptr) std::cout << "error" << std::endl;
+  if (m_TextView == nullptr){
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
 
   m_builder-> Gtk::Builder::get_widget("textview1", textViewCodAsociado);
-  if (textViewCodAsociado == nullptr) std::cout << "error" << std::endl; 
+  if (textViewCodAsociado == nullptr) {
+    std::cout << "Error Glade" << std::endl;
+    throw new std::exception();
+  } 
 	
   resetFlag=true;
   queue_draw();
@@ -174,7 +197,6 @@ void borrarSlot(Morph* actual,int idSlot, std::vector<Referencia*>& referencias)
           }
           (actual->slots)[i]->referencia->borrarReferenciaAnterior();
         }
-        std::cout << "elimine slot" << std::endl;
         delete (actual->slots)[i];
         (actual->slots).erase((actual->slots).begin()+i);
       }
@@ -193,6 +215,9 @@ void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
     if (!morph){
       Morph* nuevoMorph = new Morph(i_slots[0],250.,300.,m_TextView, textViewCodAsociado);
       morphs.push_back(nuevoMorph);
+      if (!(i_slots[0]->elValorEsPrimitivo())){
+        proxyServer->pedirSlotsDe(nuevoMorph->get_id_to_string());
+      }
       queue_draw();
       return;
     }
@@ -331,7 +356,7 @@ void MyArea::close_event(){
   JsonWriter writer;
   std::string json = writer.write_id_morph(actual->get_id());
   // refactorizar
-  proxyServer->enviar(12,1);
+  proxyServer->enviarCodigoMensaje(BORRAR_MORPH);
   proxyServer->enviarJson(json);
 
   /*actual = obtenerMorphPorId(actual->get_id());  
@@ -370,7 +395,6 @@ bool MyArea::on_button_release_event(GdkEventButton *event)
 }
 
 void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
-  std::cout << "agregarSlots" <<std::endl;
   if(i_slots.size() == 0){
     return;
   }
@@ -537,14 +561,11 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
   // If the left button is pressed, move the view
   if (moveFlag){
     // Get mouse coordinates
-    int XMouse=event->x;
-    int YMouse=event->y;
     if(actual != nullptr){
-      proxyServer->enviar(ACTUALIZAR_VISTA,1);
+      proxyServer->enviarCodigoMensaje(ACTUALIZAR_VISTA);
       JsonWriter jsonwriter;
       std::string json = jsonwriter.write_position(actual->get_id(), (event->x+offXMouse), (event->y+offYMouse));
       proxyServer->enviarJson(json);
-      //actual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
     }
     if(refenciaActual != nullptr){
       refenciaActual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));

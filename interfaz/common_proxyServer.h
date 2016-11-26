@@ -11,23 +11,20 @@ class ProxyServer : public Proxy {
 		ProxyServer(){}
 		ProxyServer(const char* hostname, const unsigned int puerto);
 		void connect(const char* hostname, const unsigned int puerto);
-		std::string recibir(size_t cantidad);
-		uint32_t recibirId(size_t cantidad);
-		uint32_t enviarString(std::string textoAEnviar);
-		std::string recibirJson();
+		/* quedan */
 		void enviarJson(std::string jsonAEnviar);
-		void enviar(uint32_t entero, size_t cantidad);
-		uint32_t recibirCodigo(size_t cantidad);
+		std::string recibirJson();
 		uint32_t recibirCodigoMensaje();
-		uint32_t recibirTamanioDeMensaje(size_t cantidad);
+		void enviarCodigoMensaje(uint32_t codigoMensaje);
+		uint32_t recibirTamanioDeMensaje();
+		void enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar, int accion);
+		/* re ver */
+		//void enviar(uint32_t entero, size_t cantidad);
 		// habria que sacarla
 		void pedirMorphDeEsteSlot(int id_morph, int id_slot);
-		void closeMorph(uint32_t id_morph);
 		std::string recibirSlotsDe(std::string lobbyId);
 		void pedirSlotsDe(std::string idObjeto);
-		uint32_t recibirCodigoMensaje(size_t cantidad);
-		void enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar, int accion);
-		std::string agregarSlotA(std::string idObjeto, std::string textoAEnviar);
+		
 		ProxyServer(Socket& socket);
 		ProxyServer(ProxyServer&& other);
 		ProxyServer& operator=(ProxyServer&& other);

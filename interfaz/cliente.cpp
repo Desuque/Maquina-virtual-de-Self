@@ -24,17 +24,14 @@ void Cliente::run() {
 	uint32_t codigo = 0;
 	while (true){
 		try {
-			codigo = proxy.recibirCodigo(TAM_COD);
+			codigo = proxy.recibirCodigoMensaje();
 		} catch (const std::exception &e){
 			// error de conexion.
 			return;
 		}
-		std::cout << codigo << std::endl;
 		switch (codigo){	
 			case PEDIR_SLOT: {
-				uint32_t tamMensaje = proxy.recibirCodigo(4);
-				std::cout << tamMensaje << std::endl;
-				std::string json = proxy.recibir(tamMensaje);
+				std::string json = proxy.recibirJson();
 				std::cout << json << std::endl;
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
@@ -48,9 +45,7 @@ void Cliente::run() {
 				break;
 			}
 			case AGREGAR_SLOT : {
-				// recibe el tamanio del mensaje, cambiar nombre
-				uint32_t tamMensaje = proxy.recibirCodigo(4);
-				std::string json = proxy.recibir(tamMensaje);
+				std::string json = proxy.recibirJson();
 				std::cout << json << std::endl;
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
@@ -63,8 +58,7 @@ void Cliente::run() {
 				break;
 		    }
 		    case BORRAR_SLOT : {
-				uint32_t tamMensaje = proxy.recibirCodigo(4);
-				std::string json = proxy.recibir(tamMensaje);
+				std::string json = proxy.recibirJson();
 				std::cout << json << std::endl;
 
 				JsonReader slots_reader;
@@ -79,7 +73,7 @@ void Cliente::run() {
 				break;
 		    }
 			case GENERIC : { 
-				int accion = proxy.recibirCodigo(1);
+				int accion = proxy.recibirCodigoMensaje();
 				std::string json = proxy.recibirJson();
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
@@ -108,8 +102,7 @@ void Cliente::run() {
 				break;
 			}
 			case PEDIR_MORPH: {
-				uint32_t tamMensaje = proxy.recibirCodigo(4);
-				std::string json = proxy.recibir(tamMensaje);
+				std::string json = proxy.recibirJson();
 				std::cout << json << std::endl;
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader ids_reader;
@@ -126,9 +119,8 @@ void Cliente::run() {
 				//....
 				break;
 			}
-			case BORRAR_MORPH : {
-				uint32_t tamMensaje = proxy.recibirTamanioDeMensaje(4);
-				std::string json = proxy.recibir(tamMensaje);	
+			case BORRAR_MORPH : {	
+				std::string json = proxy.recibirJson();	
 				std::cout << json << std::endl;	
 				JsonReader jsonReader;
 				int id = -1;
@@ -138,9 +130,7 @@ void Cliente::run() {
 				break;
 			}					
 			case ACTUALIZAR_VISTA : {
-				//....
-				uint32_t tamMensaje = proxy.recibirTamanioDeMensaje(4);
-				std::string json = proxy.recibir(tamMensaje);
+				std::string json = proxy.recibirJson();
 				JsonReader jsonReader;
 				int id = -1;
 				double posX = 0, posY = 0;

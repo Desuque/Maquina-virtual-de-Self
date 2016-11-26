@@ -52,7 +52,7 @@ void DialogoInicial::salirClick(){
 void DialogoInicial::nuevoLobbyClick(){
     //Gtk::Dialog dialogoNombreLobby = nullptr;
 	//m_builder->get_widget("dialog2", dialogoNombreLobby);
-    proxy->enviar(CREAR_MAQUINA_VIRTUAL,sizeof(char));
+    proxy->enviarCodigoMensaje(CREAR_MAQUINA_VIRTUAL);
 	hide();
 
 	DialogoNombreLobby* dialogNombre = nullptr;
@@ -63,7 +63,7 @@ void DialogoInicial::nuevoLobbyClick(){
 
 void DialogoInicial::cargarLobbyClick(){
     std::cout << "Click en cargar lobby" << std::endl;
-    proxy->enviar(CARGAR_MAQUINA_VIRTUAL,sizeof(char));
+    proxy->enviarCodigoMensaje(CARGAR_MAQUINA_VIRTUAL);
     std::string json = proxy->recibirJson();
     std::cout << json << std::endl;
 	std::vector<string> names;
@@ -95,9 +95,13 @@ void DialogoInicial::botonOkLobby(){
 	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
 	std::string seleccion = listaDeLobbys->obtenerLobbySeleccionado();
 	std::cout << seleccion << std::endl;
-	proxy -> enviar(COD_LOAD_APP,1);
-	proxy->enviarString(seleccion);
-
+	proxy -> enviarCodigoMensaje(COD_LOAD_APP);
+	proxy->enviarJson(seleccion);
+	if(COD_LOAD_APP != proxy->recibirCodigoMensaje()){
+		std::cout << "Error al cargar lobby" << std::endl;
+		throw new std::exception();
+	}
+	
 	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
 	dSeleccionarLobby->hide();
