@@ -148,20 +148,18 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 		codigo->seekg(*posicion, std::ios::beg);
 
 		//Null parser para evitar que se ejecute codigo
-		std::cout<<"Antes de crear el parser null"<<std::endl;
 		Parser null_parser;
 		nLinker n_linker;
 		null_parser.set_linker(&n_linker);
-		std::cout<<"Fin de creaciones"<<std::endl;
-		if(null_parser.script(codigo, posicion)) {
+		std::vector<int> flags_aux;
+		
+		if(null_parser.script(codigo, posicion, flags_aux)) {
 			posSalida = *posicion;
 			codigo->seekg(posInicio, std::ios::beg);
 			for(unsigned int i = posInicio; i<posSalida; i++) {
 				codigo->get(c);
 				msg_script += c;
 			}
-			std::cout<<"Esta es la posicion de salida: "<<*posicion<<" y el tellg: "<<codigo->tellg()<<std::endl;
-			std::cout<<"Este es el script ingresado: "<<msg_script<<std::endl;
 			*posicion = codigo->tellg();
 			*slot = linker->set_object_script(*slot, msg_script, msg_slot_name_extended);
 			set_code_flag(true);
@@ -1042,7 +1040,7 @@ bool Parser::final(std::stringstream *codigo, int* posicion) {
 	return false;
 }
 
-bool Parser::script(std::stringstream *codigo, int* posicion) {
+bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& flags) {
 	//Por cada script, se devuelve un Slot
 	Slot* slot = NULL;
 	int posicionOriginal = *posicion;
@@ -1052,8 +1050,9 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 		if(final(codigo, posicion)) {
 			std::cout<<"Paso el final"<<std::endl;
 			slots_to_process.push_back(slot);
+			flags.push_back(getFlag());
 			if (!codigo->eof()) {
-				script(codigo, posicion);
+				script(codigo, posicion, flags);
 			}
 			return true;
 		} else {
@@ -1071,8 +1070,9 @@ bool Parser::script(std::stringstream *codigo, int* posicion) {
 			*codigo>>valor;
 			//Guardo el slot a retornar a la VM en la lista de slots procesados
 			slots_to_process.push_back(slot);
+			flags.push_back(getFlag());
 			if (!codigo->eof()) {
-				script(codigo, posicion);
+				script(codigo, posicion, flags);
 			}
 			return true;
 		}
@@ -1084,7 +1084,7 @@ Slot* Parser::process_error(std::string msg_error) {
 	return linker->create_error(msg_error);
 }
 
-Slot* Parser::parsear(std::string codigo) {
+std::vector<Slot*> Parser::parsear(std::string codigo, std::vector<int>& flags) {
 	std::stringstream scripts(codigo);
 	int posicion = scripts.tellg();
 	scripts.seekp(posicion, std::ios::beg);
@@ -1092,30 +1092,30 @@ Slot* Parser::parsear(std::string codigo) {
 	//Primero se parsea todo el algoritmo utilizando un null parser para evitar modificar la VM
 	Parser null_parser;
 	nLinker n_linker;
+	std::vector<int> flags_aux;
 	null_parser.set_linker(&n_linker);
 	int posAux = posicion;
 	
-	if(null_parser.script(&scripts, &posAux)) {
+	if(null_parser.script(&scripts, &posAux, flags_aux)) {
 		//Si todas las instrucciones son validas, procedemos a parsear creando los
 		//objetos en la VM
-		script(&scripts, &posicion);
+		script(&scripts, &posicion, flags);
 		std::cout<<"Se completa el script papa!"<<std::endl;
-		Slot* ret = slots_to_process.at(slots_to_process.size()-1);
-		std::cout<<"Algo pasa aca?"<<std::endl;
-		return ret; //HARDCODEADO, DEVUELVE SIEMPRE EL PRIMERO!!!		
 	} else {
 		std::cout<<"No es un script dog, lo siento"<<std::endl;
 		Slot* error = process_error("Sintax error.");
 		setFlag("Error");
-		return error;
+		flags.push_back(getFlag());
+		slots_to_process.push_back(error);
 	}
+	return slots_to_process;
 }
 
 void Parser::set_linker(Linker* linker) {
 	this->linker = linker;
 }
 
-Slot* Parser::parsear(std::string codigo, std::string id) {
+std::vector<Slot*> Parser::parsear(std::string codigo, std::string id, std::vector<int>& flags) {
 	//Seteo el linker a usar
 	Linker linker;
 	set_linker(&linker);
@@ -1124,7 +1124,7 @@ Slot* Parser::parsear(std::string codigo, std::string id) {
 	linker.setID(id);
 	linker.setVM(vm);
 	//Parseo como un script comun
-	return parsear(codigo);
+	return parsear(codigo, flags);
 }
 
 void Parser::set_msg(std::string msg) {

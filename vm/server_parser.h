@@ -22,12 +22,12 @@ public:
 	Parser();
 	void setVM(VM* vm);
 	int getFlag();
-	Slot* parsear(std::string codigo, std::string id);
+	std::vector<Slot*> parsear(std::string codigo, std::string id, std::vector<int>& flags);
 	virtual ~Parser();
 private:
 	void set_linker(Linker* linker);
-	Slot* parsear(std::string codigo);
-	bool script(std::stringstream* codigo, int* posicion);
+	std::vector<Slot*> parsear(std::string codigo, std::vector<int>& flags);
+	bool script(std::stringstream* codigo, int* posicion, std::vector<int>& flags);
 	bool expression(std::stringstream* codigo, int* posicion, Slot** slot);
 	Slot* process_unary_message(Slot* receiver, std::string name);
 	Slot* process_binary_message(Slot* receiver, std::string op, Slot* expCP);
