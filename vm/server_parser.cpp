@@ -895,7 +895,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 }
 
 Slot* Parser::process_keyword_message(std::string lower_or_cap, Slot* expCP) {
-	setFlag("_AddSlots");
 	return linker->create_keyword_message(lower_or_cap, expCP);
 }
 
@@ -924,7 +923,7 @@ bool Parser::keyword_message_without_receiver(std::stringstream* codigo, int* po
 			if(expressionCP(codigo, posicion, &slot_expCP)) {
 				std::cout<<"Proceso un keyword sin receiver!"<<std::endl;
 				*slot = process_keyword_message(lower_key, slot_expCP);
-				setFlag(lower_key);
+				setFlag("_AddSlots");
 				return true;
 			}
 		}
