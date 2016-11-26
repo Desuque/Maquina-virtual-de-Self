@@ -26,7 +26,7 @@ public:
 	virtual ~Parser();
 private:
 	void set_linker(Linker* linker);
-	std::vector<Slot*> parsear(std::string codigo, std::vector<int>& flags);
+	void parsear(std::string codigo, std::vector<int>& flags);
 	bool script(std::stringstream* codigo, int* posicion, std::vector<int>& flags);
 	bool expression(std::stringstream* codigo, int* posicion, Slot** slot);
 	Slot* process_unary_message(Slot* receiver, std::string name);

@@ -835,7 +835,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
-				
+						std::cout<<"IMPRIMIME EL FLAG: "<<lower_key<<std::endl;
 						/**
 						 * Puede haber o no cap_keyword
 												 
@@ -874,8 +874,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
-	*slot = NULL;
-	clean_flag();
 	return false;
 }
 
@@ -1048,12 +1046,17 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 	if(only_name(codigo, posicion, &slot)) {
 		std::cout<<"ENtro"<<std::endl;
 		if(final(codigo, posicion)) {
-			std::cout<<"Paso el final"<<std::endl;
-			slots_to_process.push_back(slot);
-			flags.push_back(getFlag());
-			if (!codigo->eof()) {
+			
+			*posicion = codigo->tellg();
+			codigo->seekg(*posicion, std::ios::beg);
+			if (!codigo->fail()) {
 				script(codigo, posicion, flags);
 			}
+
+			std::cout<<"Paso el final"<<std::endl;
+			this->slots_to_process.push_back(slot);
+			flags.push_back(getFlag());
+			
 			return true;
 		} else {
 			*posicion = posicionOriginal;
@@ -1065,18 +1068,21 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 
 	if(expression(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
+			
+			*posicion = codigo->tellg();
 			codigo->seekg(*posicion, std::ios::beg);
-			std::string valor;
-			*codigo>>valor;
-			//Guardo el slot a retornar a la VM en la lista de slots procesados
-			slots_to_process.push_back(slot);
-			flags.push_back(getFlag());
-			if (!codigo->eof()) {
+			if (!codigo->fail()) {
 				script(codigo, posicion, flags);
 			}
+			//Guardo el slot a retornar a la VM en la lista de slots procesados
+			this->slots_to_process.push_back(slot);
+			std::cout<<"FLAG QUE MANDO: "<<getFlag()<<std::endl;
+			flags.push_back(getFlag());
+			
 			return true;
 		}
 	}
+	std::cout<<"Tengo que salir por false!"<<std::endl;
 	return false;
 }
 
@@ -1084,7 +1090,7 @@ Slot* Parser::process_error(std::string msg_error) {
 	return linker->create_error(msg_error);
 }
 
-std::vector<Slot*> Parser::parsear(std::string codigo, std::vector<int>& flags) {
+void Parser::parsear(std::string codigo, std::vector<int>& flags) {
 	std::stringstream scripts(codigo);
 	int posicion = scripts.tellg();
 	scripts.seekp(posicion, std::ios::beg);
@@ -1097,6 +1103,7 @@ std::vector<Slot*> Parser::parsear(std::string codigo, std::vector<int>& flags) 
 	int posAux = posicion;
 	
 	if(null_parser.script(&scripts, &posAux, flags_aux)) {
+		scripts.clear();
 		//Si todas las instrucciones son validas, procedemos a parsear creando los
 		//objetos en la VM
 		script(&scripts, &posicion, flags);
@@ -1106,9 +1113,8 @@ std::vector<Slot*> Parser::parsear(std::string codigo, std::vector<int>& flags) 
 		Slot* error = process_error("Sintax error.");
 		setFlag("Error");
 		flags.push_back(getFlag());
-		slots_to_process.push_back(error);
+		this->slots_to_process.push_back(error);
 	}
-	return slots_to_process;
 }
 
 void Parser::set_linker(Linker* linker) {
@@ -1124,7 +1130,11 @@ std::vector<Slot*> Parser::parsear(std::string codigo, std::string id, std::vect
 	linker.setID(id);
 	linker.setVM(vm);
 	//Parseo como un script comun
-	return parsear(codigo, flags);
+	parsear(codigo, flags);
+
+	std::vector<Slot*> ret = slots_to_process;
+	slots_to_process.clear();
+	return ret;
 }
 
 void Parser::set_msg(std::string msg) {
