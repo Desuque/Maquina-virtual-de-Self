@@ -5,7 +5,7 @@
 #include <string>
 #include "server_virtual_machine.h"
 #include "common_thread.h"
-#include "../interfaz/common_proxyClient.h"
+#include "common_proxyClient.h"
 #include "server_parser.h"
 
 typedef std::vector<string> strings;

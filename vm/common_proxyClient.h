@@ -1,11 +1,10 @@
 
 #include "common_socket.h"
-#include "common_proxy.h"
 
 #ifndef PROXYCLIENT_H_
 #define PROXYCLIENT_H_
 
-class ProxyClient : public Proxy {
+class ProxyClient {
 	private:
 		Socket server;
 	public:

@@ -1,10 +1,9 @@
-#include "common_proxy.h"
 #include "common_socket.h"
 
 #ifndef PROXYSERVER_H_
 #define PROXYSERVER_H_
 
-class ProxyServer : public Proxy {
+class ProxyServer {
 	private:
 		Socket sktCliente;
 	public:

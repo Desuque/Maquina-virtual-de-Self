@@ -5,7 +5,7 @@
 #include <string>
 #include "server_app.h"
 #include "common_thread.h"
-#include "../interfaz/common_proxyClient.h"
+#include "common_proxyClient.h"
 #include <dirent.h>
 
 typedef std::string string;
