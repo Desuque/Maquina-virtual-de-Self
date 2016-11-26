@@ -1,4 +1,5 @@
 all:
+	sudo apt-get install libgtkmm-3.0-dev
 	cd interfaz && $(MAKE)
 	cd vm && $(MAKE)
 
@@ -6,7 +7,6 @@ PREFIX = /usr/local
 
 .PHONY: install
 install:
-	apt-get install libgtkmm-3.0-dev
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp interfaz/client_self $(DESTDIR)$(PREFIX)/bin/self_client
 	cp vm/server $(DESTDIR)$(PREFIX)/bin/self_server
