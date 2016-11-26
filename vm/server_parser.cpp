@@ -895,6 +895,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 }
 
 Slot* Parser::process_keyword_message(std::string lower_or_cap, Slot* expCP) {
+	setFlag("_AddSlots");
 	return linker->create_keyword_message(lower_or_cap, expCP);
 }
 
