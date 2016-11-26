@@ -1081,22 +1081,17 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 	//Por cada script, se devuelve un Slot
 	Slot* slot = NULL;
 	int posicionOriginal = *posicion;
-	std::cout<<"Paso por aca"<<std::endl;
+	
 	if(only_name(codigo, posicion, &slot)) {
-		std::cout<<"ENtro"<<std::endl;
 		if(final(codigo, posicion)) {
-
-			std::cout<<"Paso el final"<<std::endl;
 			this->slots_to_process.push_back(slot);
 			flags.push_back(getFlag());
-			
-			
+
 			*posicion = codigo->tellg();
 			codigo->seekg(*posicion, std::ios::beg);
 			if (!codigo->fail()) {
 				script(codigo, posicion, flags);
 			}
-
 			return true;
 		} else {
 			*posicion = posicionOriginal;
@@ -1104,7 +1099,6 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 	} else {
 		*posicion = posicionOriginal;
 	}
-	std::cout<<"Y por Paso por aca"<<std::endl;
 
 	if(expression(codigo, posicion, &slot)) {
 		if(final(codigo, posicion)) {
@@ -1112,7 +1106,6 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 			this->slots_to_process.push_back(slot);
 			flags.push_back(getFlag());
 			
-
 			*posicion = codigo->tellg();
 			codigo->seekg(*posicion, std::ios::beg);
 			if (!codigo->fail()) {
@@ -1122,7 +1115,6 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 			return true;
 		}
 	}
-	std::cout<<"Tengo que salir por false!"<<std::endl;
 	return false;
 }
 
