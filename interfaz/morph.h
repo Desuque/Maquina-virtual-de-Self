@@ -26,6 +26,7 @@ class Morph : public Gtk::DrawingArea{
 		int id;
 	
 	public:
+		Morph(Slot* unSlot);
 		Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
 		Morph(std::string nombreObjeto, int id, double posX, double posY, 
 			Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
@@ -67,6 +68,8 @@ class Morph : public Gtk::DrawingArea{
 	    bool operator!=(const Morph& rhs) const { 
 	    	return !(*this==rhs);
 	    }
+		void actualizarValores(Slot* unSlot);
+
 	    bool tieneElMismoIdQueEsteSlot(Slot* unSlot);
 	    bool tieneElMismoIdQueEsteSlot(InterfaceSlot* unSlot);
 	    void agregarReferencia(Referencia* unaReferencia);

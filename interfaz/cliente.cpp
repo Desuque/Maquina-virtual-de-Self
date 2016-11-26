@@ -1,5 +1,6 @@
 #include "cliente.h"
 #include "client_json_reader.h"
+#include "server_json_writer.h"
 #include "dialogoSeleccionLobby.h"
 
 #define TAM_COD 1
@@ -29,6 +30,7 @@ void Cliente::run() {
 			// error de conexion.
 			return;
 		}
+		std::cout << "codigo recibido: " << codigo << std::endl;
 		switch (codigo){	
 			case PEDIR_SLOT: {
 				std::string json = proxy.recibirJson();
@@ -149,6 +151,11 @@ void Cliente::run() {
 				for (int i = 0; i < names.size(); ++i){  
 			    	std::cout << names[i] << std::endl;
 			  	}
+			  	JsonWriter writer;
+			  	json = writer.write_share_obj(0,"nicolas");
+
+			  	proxy.enviarCodigoMensaje(13);
+			  	proxy.enviarJson(json);
 			  	//myArea->mostarListaLobbys(names);
 				break;				
 			}

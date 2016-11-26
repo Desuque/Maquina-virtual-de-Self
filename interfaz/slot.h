@@ -37,6 +37,8 @@ public:
 		this->id_base = interfaceSlot->get_id_base();
 	}
 
+	void actualizarValores(InterfaceSlot* interface_slot);
+
 	std::string get_name(){
 		return this->name;
 	}

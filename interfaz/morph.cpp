@@ -35,6 +35,51 @@ Morph::Morph(std::string nombreObjeto, int id, double posX, double posY,
 	this->id=id;
 }
 
+Morph::Morph(Slot* unSlot){
+	this->id = unSlot->get_id();
+	this->nombreObjeto = unSlot->get_name();
+	if(unSlot->has_code()){
+		this->nombreParaMostrar = unSlot->get_name();
+		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+		refTextViewCodigoAsociado->set_text(unSlot->get_value());
+	}else{
+		this->nombreParaMostrar = unSlot->get_value();
+	}
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	auto layout = create_pango_layout(this->nombreParaMostrar);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->width = 2*text_width;
+	this->height = 2*text_height;
+}
+
+void Morph::actualizarValores(Slot* unSlot){
+	//Morph(unSlot);
+	this->id = unSlot->get_id();
+	this->nombreObjeto = unSlot->get_name();
+	if(unSlot->has_code()){
+		this->nombreParaMostrar = unSlot->get_name();
+		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+		refTextViewCodigoAsociado->set_text(unSlot->get_value());
+	}else{
+		this->nombreParaMostrar = unSlot->get_value();
+	}
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	auto layout = create_pango_layout(this->nombreParaMostrar);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->width = 2*text_width;
+	this->height = 2*text_height;
+}
+
 Morph::Morph(Slot* unSlot, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado) :
 	m_TextView(m_TextView), textViewCodigoAsociado(codigoAsociado) {
 	this->posX = unSlot->posX + unSlot->width + 20;
@@ -137,6 +182,7 @@ void Morph::actualizarAlturaMorph(size_t alturaDeSlot){
 void Morph::agregarSlot(InterfaceSlot* interface_slot){
 	for(int i=0 ; i < slots.size() ; ++i){
 		if(slots[i]->get_name()==interface_slot->get_name()){
+			slots[i]->actualizarValores(interface_slot);
 			return;
 		}
 	}

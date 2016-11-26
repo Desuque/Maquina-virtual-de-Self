@@ -290,7 +290,6 @@ void MyArea::borrarReferenciasDeMorph(Morph* morph){
       if ((morph->referencias)[j] == referencias[v]){
         //referencias[v]->perteneceASlot->setEstaDibujadoComoMorph(false);
         referencias[v]->setSlotEstaDibujadoComoMorph(false);
-        
         referencias.erase(referencias.begin()+v);
         --v;
       }

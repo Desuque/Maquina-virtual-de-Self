@@ -36,6 +36,12 @@ public:
 		cr-> stroke();
 	}
 
+	void actualizarValoresAMorphApuntado(Slot* unSlot){
+		this->perteneceASlot = unSlot;
+		this->apuntoAMorph->actualizarValores(unSlot);
+	}
+
+
 	void setSlotEstaDibujadoComoMorph(bool flag){
 		this->perteneceASlot->setEstaDibujadoComoMorph(flag);
 	}
