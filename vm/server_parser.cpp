@@ -1032,7 +1032,6 @@ bool Parser::only_name(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
 	if (name(codigo, posicion)) {
 		std::string msg_name = get_msg();
-		std::cout<<"Este name se trae de onli name: "<<msg_name<<std::endl;
 		if(msg_name.size() != 0) {
 			*slot = linker->only_name(msg_name, *slot);	
 			return true;
@@ -1107,12 +1106,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 		if(final(codigo, posicion)) {
 			this->slots_to_process.push_back(slot);
 			flags.push_back(getFlag());
-
 			*posicion = codigo->tellg();
-			codigo->seekg(*posicion, std::ios::beg);
-			if (!codigo->fail()) {
-				script(codigo, posicion, flags);
-			}
 			return true;
 		} else {
 			*posicion = posicionOriginal;
@@ -1126,13 +1120,7 @@ bool Parser::script(std::stringstream *codigo, int* posicion, std::vector<int>& 
 			//Guardo el slot a retornar a la VM en la lista de slots procesados
 			this->slots_to_process.push_back(slot);
 			flags.push_back(getFlag());
-			
-			*posicion = codigo->tellg();
-			codigo->seekg(*posicion, std::ios::beg);
-			if (!codigo->fail()) {
-				script(codigo, posicion, flags);
-			}
-			
+			*posicion = codigo->tellg();		
 			return true;
 		}
 	}
@@ -1155,12 +1143,25 @@ void Parser::parsear(std::string codigo, std::vector<int>& flags) {
 	null_parser.set_linker(&n_linker);
 	int posAux = posicion;
 	
-	if(null_parser.script(&scripts, &posAux, flags_aux)) {
+	bool valid_script = true;
+	while((scripts) && (valid_script)) {
+		if(!scripts.fail()) {
+			valid_script = null_parser.script(&scripts, &posAux, flags_aux);		
+			
+		}
+		scripts.get();
+	}
+
+	//Si todas las instrucciones son validas, procedemos a parsear creando los
+	//objetos en la VM
+	if(valid_script) {
 		scripts.clear();
-		//Si todas las instrucciones son validas, procedemos a parsear creando los
-		//objetos en la VM
-		script(&scripts, &posicion, flags);
-		std::cout<<"Se completa el script papa!"<<std::endl;
+		while((scripts) && (valid_script)) {
+			if(!scripts.fail()) {
+				valid_script = script(&scripts, &posicion, flags);
+			}
+			scripts.get();
+		}
 	} else {
 		std::cout<<"No es un script dog, lo siento"<<std::endl;
 		Slot* error = process_error("Sintax error.");
@@ -1185,10 +1186,7 @@ std::vector<Slot*> Parser::parsear(std::string codigo, std::string id, std::vect
 	//Parseo como un script comun
 	parsear(codigo, flags);
 
-	for(unsigned int i = 0; i<flags.size(); i++) {
-		std::cout<<"Valor flag: "<<flags.at(i)<<std::endl;
-	}
-
+	//Se envia una copia y se eliminan los slots a procesar
 	std::vector<Slot*> ret = slots_to_process;
 	slots_to_process.clear();
 	return ret;
