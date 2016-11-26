@@ -30,7 +30,7 @@ void Cliente::run() {
 			// error de conexion.
 			return;
 		}
-		std::cout << "codigo recibido: " << codigo << std::endl;
+		//std::cout << "codigo recibido: " << codigo << std::endl;
 		switch (codigo){	
 			case PEDIR_SLOT: {
 				std::string json = proxy.recibirJson();
