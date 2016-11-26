@@ -70,6 +70,27 @@ Slot* Linker::create_object() {
 	return vm->create_object();
 }
 
+Slot* Linker::create_parent_slot(Slot* object, std::string slot_name_extended, std::string exp) {
+	std::cout<<"Este es el slot name parent: "<<slot_name_extended<<std::endl;
+
+	Slot* X1 = vm->create_object();
+	Slot* X26 = vm->search_obj(exp);
+	Slot* X27 = vm->create_object();
+	vm->add_parent(X27, slot_name_extended, X26);
+	vm->add_slot(object, "", X27);
+
+	return object;
+
+	//ES ASI
+		//lobby _AddSlots: (| punto1 = (| y <- 4. |). |).
+
+
+        //lobby _AddSlots: (| punto11 = (| padre* = punto1 . |). |).
+
+
+	//lobby _AddSlots: (| punto11 = (| x<-5. padre* = punto1 |)).
+}
+
 Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag) {
 	Slot* X1 = vm->create_object();
 	Slot* X2 = exp;

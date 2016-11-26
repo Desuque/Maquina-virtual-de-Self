@@ -15,6 +15,7 @@ private:
 	std::string op;
 	std::string script_name;
 	bool code_flag;
+	bool parent_flag;
 	int flag;
 	std::vector<Slot*> slots_to_process;
 
@@ -38,6 +39,7 @@ private:
 	Slot* process_nil();
 	Slot* process_error(std::string msg_error);
 	Slot* process_clone_object(std::string receiver);
+	Slot* process_parent_slot(Slot* object, std::string son, std::string parent);
 
 	bool unary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool binary_message(std::stringstream* codigo, int* posicion, Slot** slot);
@@ -75,6 +77,8 @@ private:
 	std::string get_script_name();
 	void set_code_flag(bool code_flag);
 	bool get_code_flag();
+	void set_parent_flag(bool parent_flag);
+	bool get_parent_flag();
 
 	void erase_white_spaces(std::stringstream* codigo, int* posicion);
 	

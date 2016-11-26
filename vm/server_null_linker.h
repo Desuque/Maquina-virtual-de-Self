@@ -16,6 +16,7 @@ public:
 	Slot* create_keyword_message(std::string lower_or_cap, Slot* expCP);
 	Slot* create_slot(Slot* slot, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag);
 	Slot* create_slot(Slot* object, std::string slot_name_extended);
+	Slot* create_parent_slot(Slot* object, std::string slot_name_extended, std::string son);
 	Slot* create_nil();
 	Slot* create_object();
 	Slot* collect();

@@ -125,6 +125,16 @@ void Parser::set_code_flag(bool code_flag) {
 	this->code_flag = code_flag;
 }
 
+bool Parser::get_parent_flag() {
+	bool aux = this->parent_flag;
+	this->parent_flag = false;
+	return aux;
+}
+
+void Parser::set_parent_flag(bool parent_flag) {
+	this->parent_flag = parent_flag;
+}
+
 bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, std::string msg_slot_name_extended) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
@@ -268,6 +278,10 @@ Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended, st
 	return linker->create_slot(object, slot_name_extended, op, exp, code_flag);
 }
 
+Slot* Parser::process_parent_slot(Slot* object, std::string son, std::string parent) {
+	return linker->create_parent_slot(object, son, parent);
+}
+
 Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended) {
 	return linker->create_slot(object, slot_name_extended);	
 }
@@ -310,8 +324,14 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 		if(slot_operator(codigo, posicion)) {
 			std::string op = get_op();
 			if(expression(codigo, posicion, &exp)) {
+				std::string msg_name = get_msg();
 				if(final(codigo, posicion)) {
-					*slot = process_slot_list(*slot, slot_name_extended, op, exp);
+					
+					if(get_parent_flag()) {
+						*slot = process_parent_slot(*slot, slot_name_extended, msg_name);
+					} else {
+						*slot = process_slot_list(*slot, slot_name_extended, op, exp);
+					}
 					*posicion = codigo->tellg();
 					return true;
 				}
@@ -481,6 +501,7 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 		char c;
 		codigo->get(c);
 		if(c == '*') {
+			set_parent_flag(true);
 			std::cout<<"Cumplo con el parent"<<std::endl;
 			*posicion = codigo->tellg();
 			return true;

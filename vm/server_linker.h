@@ -22,6 +22,7 @@ public:
 	virtual Slot* create_keyword_message(std::string lower_or_cap, Slot* expCP);
 	virtual Slot* create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag);
 	virtual Slot* create_slot(Slot* object, std::string slot_name_extended);
+	virtual Slot* create_parent_slot(Slot* object, std::string slot_name_extended, std::string son);
 	virtual Slot* create_nil();
 	virtual Slot* create_object();
 	virtual Slot* collect();
