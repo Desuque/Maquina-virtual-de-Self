@@ -37,7 +37,7 @@ public:
 		this->id_base = interfaceSlot->get_id_base();
 	}
 
-	void actualizarValores(InterfaceSlot* interface_slot);
+	void actualizarSlot(InterfaceSlot* interface_slot);
 
 	std::string get_name(){
 		return this->name;
@@ -53,6 +53,10 @@ public:
 
 	bool tieneEsteId(int id){
 		return (this->id == id);
+	}
+
+	bool tieneEsteNombre(std::string nombre){
+		return (this->name == nombre);
 	}
 
 	int get_id(){

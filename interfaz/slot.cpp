@@ -1,6 +1,6 @@
 #include "slot.h"
 #include "referencia.h"
-void Slot::actualizarValores(InterfaceSlot* interface_slot){
+void Slot::actualizarSlot(InterfaceSlot* interface_slot){
 	this->type = interface_slot->get_type();
 	this->code = interface_slot->has_code();
 	this->name = interface_slot->get_name();
@@ -8,6 +8,6 @@ void Slot::actualizarValores(InterfaceSlot* interface_slot){
 	this->id = interface_slot->get_id();
 	this->id_base = interface_slot->get_id();
 	if(estaDibujadoComoMorph()){
-		this->referencia->actualizarValoresAMorphApuntado(this);
+		this->referencia->actualizarMorphApuntado(this);
 	}
 }

@@ -49,6 +49,7 @@ class Morph : public Gtk::DrawingArea{
 
   		Slot* obtenerSlot(int posX,int posY);
   		Slot* obtenerSlotConId(int id_slot);    
+		Slot* obtenerSlotConEsteNombre(std::string nombre);
 
 		Morph(double posX, double posY);
 		Morph();

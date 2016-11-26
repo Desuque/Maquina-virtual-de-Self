@@ -408,10 +408,35 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
     }
   }
   if(aux){
-    //int size = 1;
     int size = i_slots.size();
     for (int i = 0; i < size ; i++){
       i_slots[i] -> print_attr();
+      Slot* slot = aux->obtenerSlotConEsteNombre(i_slots[i]->get_name());
+      if(slot){
+        slot->actualizarSlot(i_slots[i]);
+        if(slot->estaDibujadoComoMorph()){
+          slot->referencia->borrarReferenciaAnterior();
+          for (int j=0; j < referencias.size(); ++j){
+            if ((referencias)[j] == slot->referencia){
+              slot->setEstaDibujadoComoMorph(false);
+              referencias.erase(referencias.begin()+j);
+              --j;
+            }
+          }
+          mostrarEsteSlotComoMorph(aux->get_id(), slot->get_id());
+        }
+        continue;
+        /*if(slot->estaDibujadoComoMorph()){
+          Morph* nuevoMorph = new Morph(slot, m_TextView, textViewCodAsociado);
+          morphs.push_back(nuevoMorph); 
+          //Referencia* referenciaNueva = new Referencia(nuevoMorph,slot);
+          nuevoMorph->referencias.push_back(slot->referencia);
+          referencias.push_back(slot->referencia);
+          //slot->setReferencia(referenciaNueva);
+          queue_draw();
+          continue;
+        }*/
+      }
       aux->agregarSlot(i_slots[i]);
     }
   }
@@ -448,7 +473,7 @@ void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
     int size = i_slots.size();
     for (int i = 0; i < size ; i++){
       i_slots[i] -> print_attr();
-      aux->agregarSlot(i_slots[i]);
+      //aux->agregarSlot(i_slots[i]);
       borrarSlot(aux, i_slots[i]->get_id(), referencias);
     }
   }

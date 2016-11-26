@@ -182,7 +182,6 @@ void Morph::actualizarAlturaMorph(size_t alturaDeSlot){
 void Morph::agregarSlot(InterfaceSlot* interface_slot){
 	for(int i=0 ; i < slots.size() ; ++i){
 		if(slots[i]->get_name()==interface_slot->get_name()){
-			slots[i]->actualizarValores(interface_slot);
 			return;
 		}
 	}
@@ -249,6 +248,16 @@ Slot* Morph::obtenerSlotConId(int id_slot){
 	return nullptr; 
 }
 
+Slot* Morph::obtenerSlotConEsteNombre(std::string nombre){     
+	for (int i=0; i < slots.size(); ++i){         
+		// guardar cuando agregue poli         
+		if (slots[i]->tieneEsteNombre(nombre)){   
+			return slots[i];    
+		}      
+	}     
+	return nullptr; 
+}
+
 
 bool Morph::tieneElMismoIdQueEsteSlot(Slot* unSlot){
 	return (unSlot->tieneEsteId(this->id));
@@ -301,12 +310,15 @@ void Morph::agregarReferencia(Referencia* unaReferencia){
 }
 
 void Morph::borrarReferencia(Referencia* referencia){
+	std::cout << referencias.size() << std::endl;
 	for (int i=0; i < referencias.size(); ++i){
 		if (referencias[i] == referencia){
 			referencias.erase(referencias.begin()+i);
 			--i;
 		}
 	}
+	std::cout << referencias.size() << std::endl;
+
 }
 
 Morph::~Morph(){
