@@ -37,9 +37,9 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   itemAgregarSlot.signal_activate().connect(sigc::mem_fun(*this,&MyArea::agregarSlot_event));
   m_Menu_Popup.append(itemAgregarSlot);
   
-  /*itemEnviarMorphA.set_label("Enviar a...");
-  itemEnviarMorphA.signal_activate().connect(sigc::mem_fun(*this,&MyArea::enviarMorphAlobby));*/
-  //m_Menu_Popup.append(itemEnviarMorphA);
+  itemEnviarMorphA.set_label("Enviar a...");
+  itemEnviarMorphA.signal_activate().connect(sigc::mem_fun(*this,&MyArea::enviarMorphAlobby));
+  m_Menu_Popup.append(itemEnviarMorphA);
 
   m_Menu_Popup.show_all();
 
@@ -138,6 +138,10 @@ void MyArea::liberarMemoria(){
   for (int i=0; i < morphs.size(); ++i){  
     delete morphs[i];
   }
+}
+
+void MyArea::enviarMorphAlobby(){
+  proxyServer->enviarCodigoMensaje(PEDIR_LISTA_LOBBYS);
 }
 
 MyArea::~MyArea(){}

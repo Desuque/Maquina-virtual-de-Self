@@ -38,6 +38,7 @@ public:
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   MyArea();
   void iniciar();
+  void enviarMorphAlobby();
   // Override mouse events
   bool on_button_press_event(GdkEventButton *event);
   bool on_button_release_event(GdkEventButton *event);
