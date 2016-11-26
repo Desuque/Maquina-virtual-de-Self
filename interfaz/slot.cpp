@@ -7,7 +7,4 @@ void Slot::actualizarSlot(InterfaceSlot* interface_slot){
 	this->value = interface_slot->get_value();
 	this->id = interface_slot->get_id();
 	this->id_base = interface_slot->get_id();
-	if(estaDibujadoComoMorph()){
-		this->referencia->actualizarMorphApuntado(this);
-	}
 }
