@@ -19,6 +19,7 @@ public:
 	virtual Slot* create_unary_message(Slot* receiver, std::string name);
 	virtual Slot* create_binary_message(Slot* receiver, std::string op, Slot* expCP);
 	virtual Slot* create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP);
+	virtual Slot* create_keyword_message(std::string lower_or_cap, Slot* expCP);
 	virtual Slot* create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag);
 	virtual Slot* create_slot(Slot* object, std::string slot_name_extended);
 	virtual Slot* create_nil();

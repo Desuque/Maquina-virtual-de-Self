@@ -57,6 +57,10 @@ Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, S
 	return vm->keyword_message(receiver, lower_or_cap, expCP);
 }
 
+Slot* Linker::create_keyword_message(std::string lower_or_cap, Slot* expCP) {
+	//return vm->keyword_message(receiver, lower_or_cap, expCP);
+}
+
 Slot* Linker::create_object() {
 	return vm->create_object();
 }
@@ -108,36 +112,8 @@ Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 Slot* Linker::set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended) {
 	std::cout<<"Este es el nombre del script: "<<msg_slot_name_extended<<std::endl;
 	std::cout<<"ESte es el scrit: "<<script<<std::endl;
-
-	//Slot* cont4 = vm.create_object();
-    
-	//Slot* X33 = vm->create_object();
-	Slot* X34 = vm->create_string(script);
-	//vm->add_code(slot, msg_slot_name_extended, X34);
-    //vm->add_slot(slot,"",X34);
-    return X34;
-/**
-    Slot* X0 = vm->create_object();
-	Slot* X1 = vm->create_string(script);
-	vm->add_code(X0, msg_slot_name_extended, X1);
-	vm->add_slot(slot,"",X1);
-	return slot;
-	**/
-/**
-
-	el flujo deberia ser
-Slot* X31 = vm.search_obj("lobby");
-	Slot* cont4 = vm.create_object();
-        Slot* X32 = vm.create_object();
-	Slot* X33 = vm.create_object();
-	Slot* X34 = vm.create_string("(( y * y ) + ( x * x )).");
-        Slot* X35 = vm.create_string("print x");
-	vm.add_code(X33, "print", X35);
-	vm.add_code(X33, "square_norm", X34);
-	vm.add_slot(X32, "punto", X33);
-        vm.add_slot(cont4,"",X32);
-	vm.keyword_message(X31, "_AddSlots", cont4);
-**/
+	//refactorear esta firma que trae banda de cosas que no sirven
+	return vm->create_string(script);
 }
 
 Slot* Linker::clone_obj_by_name(std::string receiver) {

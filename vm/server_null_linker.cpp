@@ -32,6 +32,10 @@ Slot* nLinker::create_keyword_message(Slot* receiver, std::string lower_or_cap, 
 	return NULL;
 }
 
+Slot* nLinker::create_keyword_message(std::string lower_or_cap, Slot* expCP) {
+	return NULL;
+}
+
 Slot* nLinker::create_object() {
 	return NULL;
 }
