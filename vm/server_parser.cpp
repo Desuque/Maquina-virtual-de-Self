@@ -278,8 +278,8 @@ Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended, st
 	return linker->create_slot(object, slot_name_extended, op, exp, code_flag);
 }
 
-Slot* Parser::process_parent_slot(Slot* object, std::string son, std::string parent) {
-	return linker->create_parent_slot(object, son, parent);
+Slot* Parser::process_parent_slot(Slot* object, std::string parent, std::string son) {
+	return linker->create_parent_slot(object, parent, son);
 }
 
 Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended) {

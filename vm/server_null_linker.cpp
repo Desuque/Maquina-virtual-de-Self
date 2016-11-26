@@ -48,7 +48,7 @@ Slot* nLinker::create_slot(Slot* object, std::string slot_name_extended) {
 	return NULL;
 }
 
-Slot* nLinker::create_parent_slot(Slot* object, std::string slot_name_extended, std::string son) {
+Slot* nLinker::create_parent_slot(Slot* object, std::string parent, std::string son) {
 	return NULL;
 }
 
