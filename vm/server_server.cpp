@@ -197,7 +197,6 @@ int Server::execute_file(App* app, string file_name){
     std::string file_contents;
     while (std::getline(file, str)){
         file_contents += str;
-        file_contents.push_back('\n');
     }
     
     app->execute_file(file_contents);
