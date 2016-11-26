@@ -7,12 +7,6 @@
 
 class Slot : public Morph{
 private:
-	//std::string name;
-	//Morph* morph;
-	/*int posX;
-	int posY;
-	int width;
-	int height;*/
 	bool dibujadoComoMorph;
 	/* interface Slot */
 	bool type;
@@ -45,6 +39,14 @@ public:
 
 	std::string get_name(){
 		return this->name;
+	}
+
+	int getWidth(){
+		return this->width;
+	}
+
+	int getHeight(){
+		return this->height;
 	}
 
 	bool tieneEsteId(int id){

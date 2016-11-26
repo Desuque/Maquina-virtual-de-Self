@@ -17,8 +17,10 @@ class Morph : public Gtk::DrawingArea{
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
 		std::vector<Referencia*> referencias;
 		std::vector<Slot*> slots;
-		int posX;
-		int posY;
+	
+	protected:
+		double posX;
+		double posY;
 		int width;
 		int height;
 		int id;
@@ -33,6 +35,10 @@ class Morph : public Gtk::DrawingArea{
 		int get_id(){
     		return this->id;
   		}
+  		double getPosX();
+  		double getPosY();
+  		int getWidth();
+		int getHeight();
 		void resaltarMorph(const Cairo::RefPtr<Cairo::Context>& cr);
   		std::string get_it();
   		std::string do_it();

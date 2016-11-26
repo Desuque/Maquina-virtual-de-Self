@@ -33,7 +33,8 @@ void VentanaPrincipal::iniciarDialogos(){
   }
 }
 
-VentanaPrincipal::VentanaPrincipal(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+VentanaPrincipal::VentanaPrincipal(BaseObjectType* cobject, 
+                        const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::Window(cobject),
   m_builder(builder),
   proxy(nullptr) /*,
@@ -44,18 +45,4 @@ VentanaPrincipal::VentanaPrincipal(BaseObjectType* cobject, const Glib::RefPtr<G
   this->signal_delete_event().connect(sigc::mem_fun(this,&VentanaPrincipal::onWindowDelete));
 }
 
-// The first two parameters are mandatory in a constructor that will be called
-// from Gtk::Builder::get_widget_derived().
-// Additional parameters, if any, correspond to additional arguments in the call
-// to Gtk::Builder::get_widget_derived().
-VentanaPrincipal::VentanaPrincipal(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder,
-  bool is_glad)
-: VentanaPrincipal(cobject, builder) // Delegate to the other constructor
-{
-	// Show an icon.
-	/*auto pImage = Gtk::manage(new Gtk::Image());
-	pImage->set_from_icon_name(is_glad ? "face-smile" : "face-sad", Gtk::ICON_SIZE_DIALOG);
-	pImage->show_all();
-	get_content_area()->pack_start(*pImage);*/
-}
 

@@ -400,8 +400,7 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
   }
   Morph* aux = nullptr;
   for (int i =0; i < morphs.size() ; ++i){
-    //if((morphs[i]->tieneElMismoIdQueEsteSlot(i_slots[0]))){
-    if((morphs[i]->id == i_slots[0]->get_id_base())){
+    if((morphs[i]->get_id() == i_slots[0]->get_id_base())){
       aux = morphs[i];
     }
   }
@@ -437,7 +436,7 @@ void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
   Morph* aux = nullptr;
   for (int i =0; i < morphs.size() ; ++i){
     //if((morphs[i]->tieneElMismoIdQueEsteSlot(i_slots[0]))){
-    if((morphs[i]->id == i_slots[0]->get_id_base())){
+    if((morphs[i]->get_id() == i_slots[0]->get_id_base())){
       aux = morphs[i];
     }
   }
@@ -504,8 +503,8 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
         if (slot && !(slot->estaDibujadoComoMorph())){
           proxyServer->pedirMorphDeEsteSlot(actual->get_id(), slot->get_id());
         }
-        offXMouse = actual->posX - event->x;
-        offYMouse = actual->posY - event->y;
+        offXMouse = actual->getPosX() - event->x;
+        offYMouse = actual->getPosY() - event->y;
         // Start moving the view
         moveFlag=true;
         // va en el morph
@@ -519,8 +518,8 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
       if(*(referencias[i]) == Referencia(event->x,event->y)){
           refenciaActual = referencias[i];
           actual = nullptr;
-          offXMouse = refenciaActual->posX - event->x;
-          offYMouse = refenciaActual->posY - event->y;
+          offXMouse = refenciaActual->getPosX() - event->x;
+          offYMouse = refenciaActual->getPosY() - event->y;
           // Start moving the view
           moveFlag=true;
           return true;
@@ -562,10 +561,19 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
   if (moveFlag){
     // Get mouse coordinates
     if(actual != nullptr){
+      double posXFinal = event->x + offXMouse;
+      double posYFinal = event->y + offYMouse;
+      if (event->y < 0){
+        posYFinal=0;
+      }
+      if (event->x < 0){
+        posXFinal=0;
+      }
       proxyServer->enviarCodigoMensaje(ACTUALIZAR_VISTA);
       JsonWriter jsonwriter;
-      std::string json = jsonwriter.write_position(actual->get_id(), (event->x+offXMouse), (event->y+offYMouse));
+      std::string json = jsonwriter.write_position(actual->get_id(), posXFinal, posYFinal);
       proxyServer->enviarJson(json);
+
     }
     if(refenciaActual != nullptr){
       refenciaActual->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));

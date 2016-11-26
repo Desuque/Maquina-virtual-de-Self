@@ -102,6 +102,22 @@ std::string Morph::get_id_to_string(){
 	return std::to_string(this->id);
 }
 
+double Morph::getPosX(){
+	return this->posX;
+}
+
+double Morph::getPosY(){
+	return this->posY;
+}
+
+int Morph::getWidth(){
+	return this->width;
+}
+
+int Morph::getHeight(){
+	return this->height;
+}
+
 std::string Morph::get_it(){
 	if (!m_TextView) std::cout << "error" << std::endl;
 	std::string textoAEnviar = m_TextView->get_buffer()->get_text();

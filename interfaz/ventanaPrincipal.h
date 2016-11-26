@@ -11,9 +11,6 @@ class VentanaPrincipal : public Gtk::Window {
 	public:
 		VentanaPrincipal(BaseObjectType* cobject, 	
 						const Glib::RefPtr<Gtk::Builder>& refGlade);
-		VentanaPrincipal(BaseObjectType* cobject, 
-						const Glib::RefPtr<Gtk::Builder>& refGlade,
-						bool is_glad);
 		VentanaPrincipal();
 		void iniciarDialogos();
 		bool onWindowDelete(GdkEventAny*);

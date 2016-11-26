@@ -97,6 +97,7 @@ void DialogoInicial::botonOkLobby(){
 	std::cout << seleccion << std::endl;
 	proxy -> enviarCodigoMensaje(COD_LOAD_APP);
 	proxy->enviarJson(seleccion);
+	
 	if(COD_LOAD_APP != proxy->recibirCodigoMensaje()){
 		std::cout << "Error al cargar lobby" << std::endl;
 		throw new std::exception();
