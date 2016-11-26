@@ -988,17 +988,9 @@ bool Parser::unary_message(std::stringstream* codigo, int* posicion, Slot** slot
 			std::string msg_name = get_msg();
 			
 			if((msg_receiver == "lobby") && (msg_name == "collect")) {
-				int posAux = codigo->tellg();
-				//Elimino posibles espacios
-				erase_white_spaces(codigo, &posAux);
-				//Leo todo el valor desde la posicion indicada
-				codigo->seekg(posAux, std::ios::beg);
-				char c;
-				codigo->get(c);
-				if (c == '.') {
-					*slot = linker->collect();
-					setFlag(msg_name);
-				}
+				*slot = linker->collect();
+				setFlag(msg_name);
+				return true;
 			} 
 			if(msg_name == "clone") {
 				*slot = process_clone_object(msg_receiver);
