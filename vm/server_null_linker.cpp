@@ -36,7 +36,7 @@ Slot* nLinker::create_object() {
 	return NULL;
 }
 
-Slot* nLinker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
+Slot* nLinker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag) {
 	return NULL;
 }
 

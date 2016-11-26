@@ -115,6 +115,16 @@ bool Parser::text(std::stringstream* codigo, int* posicion, Slot** slot) {
 	return false;
 }
 
+bool Parser::get_code_flag() {
+	bool aux = this->code_flag;
+	this->code_flag = false;
+	return aux;
+}
+
+void Parser::set_code_flag(bool code_flag) {
+	this->code_flag = code_flag;
+}
+
 bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, std::string msg_slot_name_extended) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
@@ -154,6 +164,7 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 			std::cout<<"Este es el script ingresado: "<<msg_script<<std::endl;
 			*posicion = codigo->tellg();
 			*slot = linker->set_object_script(*slot, msg_script, msg_slot_name_extended);
+			set_code_flag(true);
 			return true;		
 		} else {
 			//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -254,7 +265,9 @@ bool Parser::object_intro(std::stringstream* codigo, int* posicion) {
 }
 
 Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
-	return linker->create_slot(object, slot_name_extended, op, exp);
+	//Si se proceso un script de usuario, el flag de codigo esta en true
+	bool code_flag = get_code_flag();
+	return linker->create_slot(object, slot_name_extended, op, exp, code_flag);
 }
 
 Slot* Parser::process_slot_list(Slot* object, std::string slot_name_extended) {

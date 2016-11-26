@@ -8,6 +8,8 @@
 #include "../interfaz/common_proxyClient.h"
 #include "server_parser.h"
 
+typedef std::vector<string> strings;
+
 class Server;
 class App : public Thread{
 	private:
@@ -23,7 +25,7 @@ class App : public Thread{
 		VM* get_vm();
 		string get_slots(string id);
 		string save_vm(string name);
-		string execute(string msg);
+		strings execute(string msg);
                 string get_name();
 		int execute_file(string file_name);
                 void update_app(string str_parser_code_share);

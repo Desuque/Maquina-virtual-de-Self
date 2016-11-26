@@ -14,6 +14,7 @@ private:
 	std::string msg;
 	std::string op;
 	std::string script_name;
+	bool code_flag;
 	int flag;
 	std::vector<Slot*> slots_to_process;
 
@@ -70,6 +71,8 @@ private:
 	std::string get_op();
 	void set_script_name(std::string slot_name_ext);
 	std::string get_script_name();
+	void set_code_flag(bool code_flag);
+	bool get_code_flag();
 
 	void erase_white_spaces(std::stringstream* codigo, int* posicion);
 	
