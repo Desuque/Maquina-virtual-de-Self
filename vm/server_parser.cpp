@@ -1125,8 +1125,9 @@ void Parser::parsear(std::string codigo, std::vector<int>& flags) {
 	bool valid_script = true;
 	while((scripts) && (valid_script)) {
 		if(!scripts.fail()) {
-			valid_script = null_parser.script(&scripts, &posAux, flags_aux);		
-			
+			valid_script = null_parser.script(&scripts, &posAux, flags_aux);
+			erase_white_spaces(&scripts, &posAux);
+			scripts.seekp(posAux, std::ios::beg);		
 		}
 		scripts.get();
 	}
@@ -1138,6 +1139,8 @@ void Parser::parsear(std::string codigo, std::vector<int>& flags) {
 		while((scripts) && (valid_script)) {
 			if(!scripts.fail()) {
 				valid_script = script(&scripts, &posicion, flags);
+				erase_white_spaces(&scripts, &posicion);
+				scripts.seekp(posicion, std::ios::beg);		
 			}
 			scripts.get();
 		}
