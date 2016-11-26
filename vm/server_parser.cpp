@@ -16,6 +16,7 @@
 Parser::Parser() : vm(NULL) {
 	msg = "";
 	flag = NOT_SET;
+	parent_flag = false;
 }
 
 void Parser::setVM(VM* vm) {
@@ -106,7 +107,6 @@ bool Parser::text(std::stringstream* codigo, int* posicion, Slot** slot) {
 
 	if(found_text) {
 		*slot = linker->create_string(auxiliar);
-		std::cout<<"El string de texto se crea y existe!"<<std::endl;
 		return true;
 	}
 
@@ -142,8 +142,6 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 	erase_white_spaces(codigo, posicion);
 	//Leo todo el valor desde la posicion indicada
 	codigo->seekg(*posicion, std::ios::beg);
-
-	std::cout<<"ESte name extended llega al pipe with script: "<<msg_slot_name_extended<<std::endl;
 
 	char c;
 	std::string msg_script;
@@ -336,7 +334,7 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 					return true;
 				}
 			}
-		} //TODO AGREGAR * Y :
+		}
 	}
 
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -350,10 +348,8 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 
 	Slot* object = linker->create_object();
 	Slot* script = NULL;
-
 	
 	std::string msg_aux = get_script_name();
-	std::cout<<"Vemos que trae el flag de msg: "<<msg_aux<<std::endl;
 
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
@@ -374,7 +370,6 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 				return true;
 			}
 			if (pipe_with_script(codigo, posicion, &object, msg_aux)) {
-				std::cout<<"Entro al pipe with script"<<std::endl;
 				//Elimino posibles espacios
 				erase_white_spaces(codigo, posicion);
 				//Leo todo el valor desde la posicion indicada
@@ -483,7 +478,6 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 	if(c == ':') {
 		*posicion = codigo->tellg();
 		if(name(codigo, posicion)) {
-			std::cout<<"Cumple con el argumento!"<<std::endl;
 			return true;
 		}
 	}
@@ -502,7 +496,6 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 		codigo->get(c);
 		if(c == '*') {
 			set_parent_flag(true);
-			std::cout<<"Cumplo con el parent"<<std::endl;
 			*posicion = codigo->tellg();
 			return true;
 		}
@@ -513,7 +506,6 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 
 	//Compruebo si se trata de un name normal
 	if(name(codigo, posicion)) {
-		std::cout<<"Era un name normal"<<std::endl;
 		return true;
 	}
 
@@ -836,7 +828,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 				*codigo>>valor;
 
 				if(lower_key == "_RemoveSlots") {
-					std::cout<<"Entro aca!"<<std::endl;
 					if(remove_slots(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
@@ -921,7 +912,6 @@ bool Parser::keyword_message_without_receiver(std::stringstream* codigo, int* po
 			*posicion = codigo->tellg();
 			codigo->seekg(*posicion, std::ios::beg);
 			if(expressionCP(codigo, posicion, &slot_expCP)) {
-				std::cout<<"Proceso un keyword sin receiver!"<<std::endl;
 				*slot = process_keyword_message(lower_key, slot_expCP);
 				setFlag("_AddSlots");
 				return true;
@@ -935,10 +925,7 @@ bool Parser::keyword_message_without_receiver(std::stringstream* codigo, int* po
 }
 
 Slot* Parser::process_binary_message(Slot* receiver, std::string op, Slot* expCP) {
-	//if((receiver != NULL) && (expCP != NULL)) {
-		return linker->create_binary_message(receiver, op, expCP);
-	//}
-	//return NULL;
+	return linker->create_binary_message(receiver, op, expCP);
 }
 
 bool Parser::binary_message(std::stringstream* codigo, int* posicion, Slot** slot) {
@@ -1163,7 +1150,7 @@ void Parser::parsear(std::string codigo, std::vector<int>& flags) {
 			scripts.get();
 		}
 	} else {
-		std::cout<<"No es un script dog, lo siento"<<std::endl;
+		std::cout<<"Error al procesar el script."<<std::endl;
 		Slot* error = process_error("Sintax error.");
 		setFlag("Error");
 		flags.push_back(getFlag());
