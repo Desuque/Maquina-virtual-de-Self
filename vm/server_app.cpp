@@ -47,17 +47,21 @@ string App::save_vm(string name){
 	return data;
 }
 
-string App::execute(string msg){
+strings App::execute(string msg){
 	JsonReader read;
 	string id, code;
 	read.read_code(msg, id, code);
 	string json = "";
 
-	Slot* res = NULL;
-	res = parser.parsear(code, id);
-	json = vm.get_slots(std::stoi(id), res);
+	std::vector<Slot*> res = parser.parsear(code, id);
+        strings jsons;
+        
+        int size = res.size();
+        for (int i = 0; i < size; i++){
+                jsons.push_back(vm.get_slots(std::stoi(id), res[i]));
+        }
 	
-	return json;
+	return jsons;
 }
 
 VM* App::get_vm(){
@@ -148,9 +152,12 @@ void App::rcv_msg_generic(){
 		//std::string codigoAEjecutar = proxy->recibir(tamMensaje);
 		std::string codigoAEjecutar = proxy->recibirJson();
 
-		string result = execute(codigoAEjecutar);
-		int flag = parser.getFlag();
-		server -> update_lobby_data(this, cod_generic, result, flag,  accion);
+		strings results = execute(codigoAEjecutar);
+                int flag = parser.getFlag();
+                
+                int size = results.size();
+                for (int c = 0; c < size; c++)
+                        server -> update_lobby_data(this, cod_generic, results[c], flag,  accion);
 }
 
 void App::rcv_share_obj(){
