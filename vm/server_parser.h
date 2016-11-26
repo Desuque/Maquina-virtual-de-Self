@@ -41,6 +41,7 @@ private:
 	bool unary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool binary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool keyword_message(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool keyword_message_without_receiver(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool expressionCP(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool receiver(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool constant(std::stringstream* codigo, int* posicion, Slot** slot);

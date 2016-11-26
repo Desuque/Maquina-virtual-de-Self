@@ -776,10 +776,7 @@ bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot)
 }
 
 Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
-	//if((receiver != NULL) && (expCP != NULL)) {
-		return linker->create_keyword_message(receiver, lower_or_cap, expCP);
-	//}
-	//return NULL;
+	return linker->create_keyword_message(receiver, lower_or_cap, expCP);
 }
 
 bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** slot) {
@@ -835,7 +832,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
-						std::cout<<"IMPRIMIME EL FLAG: "<<lower_key<<std::endl;
 						/**
 						 * Puede haber o no cap_keyword
 												 
@@ -868,6 +864,39 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						
 					}
 				}
+			}
+		}
+	}
+
+	//Si no hay coincidencia, vuelvo el puntero a su posicion original
+	*posicion = posicionOriginal;
+	return false;
+}
+
+bool Parser::keyword_message_without_receiver(std::stringstream* codigo, int* posicion, Slot** slot) {
+	codigo->clear();
+	int posicionOriginal = *posicion;
+
+	Slot* slot_expCP = NULL;
+
+	//Leo todo el valor desde la posicion indicada
+	codigo->seekg(*posicion, std::ios::beg);
+	
+	if(lower_keyword(codigo, posicion)) {
+		std::string lower_key = get_msg();
+			
+		//Elimino posibles espacios
+		erase_white_spaces(codigo, posicion);
+		//Leo todo el valor desde la posicion indicada
+		codigo->seekg(*posicion, std::ios::beg);
+		char c;
+		codigo->get(c);
+
+		if(c == ':') {
+			*posicion = codigo->tellg();
+			codigo->seekg(*posicion, std::ios::beg);
+			if(expressionCP(codigo, posicion, &slot_expCP)) {
+				//TODO PROCESAR ESTE KEYWORD
 			}
 		}
 	}
@@ -1004,6 +1033,9 @@ bool Parser::expression(std::stringstream* codigo, int* posicion, Slot** slot) {
 	int posicionOriginal = *posicion;
 	
 	if(keyword_message(codigo, posicion, slot)) {
+		return true;
+	}
+	if(keyword_message_without_receiver(codigo, posicion, slot)) {
 		return true;
 	}
 	if(binary_message(codigo, posicion, slot)) {
@@ -1174,7 +1206,9 @@ void Parser::clean_flag() {
 }
 
 int Parser::getFlag() {
-	return flag;
+	int flag_aux = flag;
+	flag = NOT_SET;
+	return flag_aux;
 }
 
 Parser::~Parser() {
