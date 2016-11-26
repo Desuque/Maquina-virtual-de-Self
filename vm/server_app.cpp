@@ -47,13 +47,13 @@ string App::save_vm(string name){
 	return data;
 }
 
-strings App::execute(string msg){
+strings App::execute(string msg, ints& flags){
 	JsonReader read;
 	string id, code;
 	read.read_code(msg, id, code);
 	string json = "";
-
-	std::vector<Slot*> res = parser.parsear(code, id);
+        
+	std::vector<Slot*> res = parser.parsear(code, id, flags);
         strings jsons;
         
         int size = res.size();
@@ -151,13 +151,13 @@ void App::rcv_msg_generic(){
 		//tamMensaje = proxy->recibirTamMensaje(4);
 		//std::string codigoAEjecutar = proxy->recibir(tamMensaje);
 		std::string codigoAEjecutar = proxy->recibirJson();
-
-		strings results = execute(codigoAEjecutar);
+                ints flags;
+		strings results = execute(codigoAEjecutar, flags);
                 int flag = parser.getFlag();
                 
                 int size = results.size();
                 for (int c = 0; c < size; c++)
-                        server -> update_lobby_data(this, cod_generic, results[c], flag,  accion);
+                        server -> update_lobby_data(this, cod_generic, results[c], flags[c],  accion);
 }
 
 void App::rcv_share_obj(){
@@ -174,7 +174,8 @@ void App::rcv_share_obj(){
 }
 
 void App::update_app(string str_parser_code_share){
-        parser.parsear(str_parser_code_share, "0");
+        ints flags;
+        parser.parsear(str_parser_code_share, "0", flags);
 }
 
 ProxyClient* App::get_proxy(){
@@ -182,7 +183,8 @@ ProxyClient* App::get_proxy(){
 }
 
 int App::execute_file(string code){
-        parser.parsear(code, "0");	
+        ints flags;
+        parser.parsear(code, "0", flags);	
         return 0;
 }
 

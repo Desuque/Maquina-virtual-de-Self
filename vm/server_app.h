@@ -9,6 +9,7 @@
 #include "server_parser.h"
 
 typedef std::vector<string> strings;
+typedef std::vector<int> ints;
 
 class Server;
 class App : public Thread{
@@ -25,7 +26,7 @@ class App : public Thread{
 		VM* get_vm();
 		string get_slots(string id);
 		string save_vm(string name);
-		strings execute(string msg);
+		strings execute(string msg, ints& flags);
                 string get_name();
 		int execute_file(string file_name);
                 void update_app(string str_parser_code_share);
