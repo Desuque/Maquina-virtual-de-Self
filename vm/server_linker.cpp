@@ -61,13 +61,17 @@ Slot* Linker::create_object() {
 	return vm->create_object();
 }
 
-Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp) {
+Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag) {
 	Slot* X1 = vm->create_object();
 	Slot* X2 = exp;
 	if(op == "<-") {
 		vm->immutable_object(X2);
 	}
-	vm->add_slot(X1, slot_name_extended, X2);
+	if(code_flag == true) {
+		vm->add_code(X1, slot_name_extended, X2);
+	} else {
+		vm->add_slot(X1, slot_name_extended, X2);
+	}
 	vm->add_slot(object, "", X1);
 
 	return object;
@@ -107,11 +111,11 @@ Slot* Linker::set_object_script(Slot* slot, std::string script, std::string msg_
 
 	//Slot* cont4 = vm.create_object();
     
-	Slot* X33 = vm->create_object();
+	//Slot* X33 = vm->create_object();
 	Slot* X34 = vm->create_string(script);
-	vm->add_code(X33, msg_slot_name_extended, X34);
-    vm->add_slot(slot,"",X33);
-    return slot;
+	//vm->add_code(slot, msg_slot_name_extended, X34);
+    //vm->add_slot(slot,"",X34);
+    return X34;
 /**
     Slot* X0 = vm->create_object();
 	Slot* X1 = vm->create_string(script);
