@@ -54,6 +54,9 @@ class Object{
 		virtual void get_self_slots(string& slots_self);
                 virtual string get_full_self_slots(string slot_name);
 		virtual ~Object();
+	
+	private:
+		void update_parent_slots(Slot* sl);
 };
 
 #endif

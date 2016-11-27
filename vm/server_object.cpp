@@ -37,12 +37,20 @@ void Object::add_slot(Slot* sl){
             }else{
                 if (!sl_rep -> is_immutable()){
                         rm_slot(sl -> get_name());
+                        update_parent_slots(sl);
                         slots.insert({sl -> get_name(), sl});
                 }else{
                         //throw ErrorType(sl -> get_name());
                         throw "Objeto NO MUTABLE";
                 }
             }
+        }
+}
+
+void Object::update_parent_slots(Slot* sl){
+        for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
+                if ( (it->second-> is_parent()) && (it->second -> parent_name() == sl->get_name()))
+                        (it->second) -> set_value(sl -> get_value());
         }
 }
 
