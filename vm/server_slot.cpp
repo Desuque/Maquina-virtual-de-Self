@@ -156,6 +156,14 @@ int Slot::get_parent_id(){
 	return std::get<2>(this -> parent);
 }
 
+void Slot::add_argument(string arg){
+        args.push_back(arg);
+}
+
+void Slot::get_arguments(std::vector<string>& arguments){
+        arguments = this -> args;
+}
+
 string Slot::json(int id_base){
 	JsonWriter json_writer;
 	string json = json_writer.write_slot(id_base, this);
@@ -163,6 +171,6 @@ string Slot::json(int id_base){
 }
 
 Slot::~Slot(){
-	if ( (std::get<0>(this -> parent) == false) || (this -> name == "_Self") )
+	if ( (std::get<0>(this -> parent) == false) || is_code() || (this -> name == "_Self") )
 		delete this -> value;
 }

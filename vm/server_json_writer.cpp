@@ -46,7 +46,7 @@ void JsonWriter::get_slot_attr(Slot* sl, string& name, string& value, bool& type
 	type = sl -> is_immutable();
 	code = sl -> is_code();
 	id = sl -> get_id();
-	if (sl -> is_parent()){
+	if ((sl -> is_parent()) && (! sl -> is_code())){
 		id = sl -> get_parent_id();
 		name = name + "*";
 	}

@@ -154,12 +154,24 @@ Slot* VM::add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	return sl_recv;
 }
 
+Slot* VM::add_argument(Slot* sl_recv, string sl_recv_id, Slot* sl){
+	Slot* sl_p = new Slot(get_id_slots(), sl_recv_id);
+	sl_p -> set_value(sl->get_value());
+	add_basic_slots(sl_p, sl_recv_id);
+	sl_p -> set_parent(true, sl -> get_name(), sl -> get_id());
+        sl_recv -> add_argument(sl_recv_id);
+	sl_recv -> add_slot(sl_p);
+	this -> slots.insert(std::pair<int,Slot*>(sl_p -> get_id(),sl_p));
+	return sl_recv;
+}
+
 Slot* VM::rm_slot(Slot* sl_recv, string slot){
 	return sl_recv -> get_value() -> rm_slot(slot);
 }
 
 Slot* VM::add_code(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	sl -> set_code(true);
+        sl -> set_parent(true, sl -> get_name(), sl -> get_id());
 	return add_slot(sl_recv, sl_recv_id, sl);
 }
 
@@ -288,6 +300,48 @@ Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 	return msg -> get_value() -> execute(*this, args);
 }
 
+Slot* VM::search_and_execute_key_msg(Slot* sl_recv, string msg, p_slots& args){
+	Slot* sl_msg = search_msg(sl_recv, msg);
+	if (sl_msg){
+
+		if (sl_msg -> is_code()){
+                        Parser parser;
+                        parser.setVM(this);
+                        int id_context = sl_recv -> get_id();
+                        string code = sl_msg -> get_value() -> as_string();
+                        
+                        std::vector<string> msg_args;
+                        sl_msg->get_arguments(msg_args);
+                        Object* obj = args[1] -> get_value();
+                        strings msg_args_names = obj -> get_slots_name();   
+                        
+                        int size = msg_args.size();
+                        for (int i = 0; i < size; i++){
+                                string name = msg_args_names.at(i);
+                                Slot* val = obj ->  get_slot(name);
+                                val -> set_name(msg_args.at(i));
+                                sl_msg  -> get_value() -> add_slot(val);
+                        }
+                        
+                        /*Object* obj = args[1] -> get_value();
+                        string name = obj -> as_slot() -> get_name();
+                        Slot* val = obj ->  get_slot(name);
+                        val -> set_name("arg");
+                        sl_msg  -> get_value() -> add_slot(val);*/
+                        
+                        std::vector<int> flags;
+                        p_slots res = parser.parsear(code, std::to_string(id_context), flags);
+                        return res[0];
+                }
+		
+		p_objects args2;
+                args2.push_back(args[0]->get_value());
+                args2.push_back(args[1]->get_value());
+		return execute_msg(sl_msg, sl_recv, args2);
+	}
+	return NULL;
+}
+
 Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
 	Slot* ret = sl_recv;
         if (msg == add_slots_msg){
@@ -312,10 +366,10 @@ Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
                 }
                 ret = rm_slots;
         }else{
-            p_objects args;
-            args.push_back(sl_recv -> get_value());
-            args.push_back(sl -> get_value());
-            Slot* sl_ret = search_and_execute_msg(sl_recv, msg, args);
+            p_slots args;
+            args.push_back(sl_recv);
+            args.push_back(sl);
+            Slot* sl_ret = search_and_execute_key_msg(sl_recv, msg, args);
             if (!sl_ret)
 		throw NotFound(msg);
             ret = sl_ret;

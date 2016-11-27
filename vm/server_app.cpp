@@ -69,7 +69,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        //test_example();
+        test_example();
 	while (true){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje();
@@ -350,6 +350,66 @@ void App::test_example(){
         vm.add_slot(X97, "", X98);
 	vm.add_slot(X97, "", X100);
         vm.keyword_message(X96, "_RemoveSlots", X97);
+        
+        //lobby _AddSlots: (| funciones = (| multa:b: = (| :arg. :arg1. | arg * arg1.). |). |).
+        Slot* XA1 = vm.search_obj("lobby");
+	Slot* XAc = vm.create_object();
+        Slot* XA2 = vm.create_object();
+	Slot* XA3 = vm.create_object();
+	Slot* XA4 = vm.create_string("( arg * arg1 ).");
+	Slot* XA5 = vm.create_object();
+        Slot* XA6 = vm.create_object();//
+        vm.add_argument(XA4, "arg1", XA6);//
+        vm.add_argument(XA4, "arg", XA5);
+        vm.add_code(XA3, "multa:b:", XA4);
+        vm.add_slot(XA2, "funciones", XA3);
+        vm.add_slot(XAc,"",XA2);
+	vm.keyword_message(XA1, "_AddSlots", XAc);
+        
+        /*std::cout << "XA2 " << vm.get_slots(0, XA2) << std::endl;
+        std::cout << "XA3 " << vm.get_slots(0, XA3) << std::endl;
+        std::cout << "XA4 " << vm.get_slots(0, XA4) << std::endl;*/
+       
+        //funciones multa:9 b:2.
+        Slot* XE1 = vm.search_obj("funciones");
+        Slot* XE2 = vm.create_object();
+        Slot* XE3 = vm.create_int(9);
+        Slot* XE4 = vm.create_int(2);//
+        vm.add_parent(XE2, "2", XE4);//
+        vm.add_parent(XE2, "9", XE3);
+        Slot* B = vm.keyword_message(XE1, "multa:b:", XE2);
+        std::cout << "KEY " << vm.get_slots(0, B) << std::endl;
+
+        //funciones multa:8 b:3.
+        Slot* XE11 = vm.search_obj("funciones");
+        Slot* XE12 = vm.create_object();
+        Slot* XE13 = vm.create_int(8);
+        Slot* XE14 = vm.create_int(3);//
+        vm.add_parent(XE12, "3", XE14);//
+        vm.add_parent(XE12, "8", XE13);
+        Slot* C = vm.keyword_message(XE11, "multa:b:", XE12);
+        std::cout << "KEY " << vm.get_slots(0, C) << std::endl;
+        
+        //lobby _AddSlots: (| funciones_str = (| printa: = (| :arg. | arg print.). |). |).
+        Slot* XA21 = vm.search_obj("lobby");
+	Slot* XA2c = vm.create_object();
+        Slot* XA22 = vm.create_object();
+	Slot* XA23 = vm.create_object();
+	Slot* XA24 = vm.create_string("arg print.");
+	Slot* XA25 = vm.create_object();
+        vm.add_argument(XA24, "arg", XA25);
+        vm.add_code(XA23, "printa:", XA24);
+        vm.add_slot(XA22, "funciones_str", XA23);
+        vm.add_slot(XA2c,"",XA22);
+	vm.keyword_message(XA21, "_AddSlots", XA2c);
+        
+        //funciones_str printa: 'prueba'.
+        Slot* XE21 = vm.search_obj("funciones_str");
+        Slot* XE22 = vm.create_object();
+        Slot* XE23 = vm.create_string("prueba");
+        vm.add_parent(XE22, "prueba", XE23);
+        Slot* D = vm.keyword_message(XE21, "printa:", XE22);
+        std::cout << "KEY " << vm.get_slots(0, D) << std::endl;
         
         //Slot* l = vm.search_obj_by_name("lobby",0);
         //std::cout << "LOBBY " << vm.get_slots(0,l) << std::endl;

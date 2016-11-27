@@ -13,6 +13,7 @@ typedef std::string string;
 typedef std::vector<Slot*> p_slots;
 typedef std::multimap<std::string,Slot*> m_slots;
 typedef std::vector<Object*> p_objects;
+typedef std::vector<string> strings;
 
 class Object{
 	protected:
@@ -37,6 +38,7 @@ class Object{
 		bool is_container();
 		bool empty();
 		Slot* as_slot();
+		strings get_slots_name();
 		virtual int as_int();
                 virtual float as_float();
 		virtual string as_string();

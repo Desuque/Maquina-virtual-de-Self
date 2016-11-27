@@ -184,6 +184,16 @@ p_slots Object::get_slots(){
 	return std::move(v_slots);
 }
 
+strings Object::get_slots_name(){
+        strings v_slots;
+        for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
+		if (!is_base_slot(it->second)){
+			v_slots.push_back(it->first);
+                }
+	}
+	return std::move(v_slots);
+}
+
 Slot* Object::as_slot(){
 	for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
 		if (!is_base_slot(it->second))

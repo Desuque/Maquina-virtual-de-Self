@@ -13,6 +13,7 @@ typedef std::vector<Object*> p_objects;
 typedef std::string string;
 typedef std::stack<Slot*> stack_slots;
 typedef std::vector<int> v_ids;
+typedef std::vector<string> strings;
 
 class VM{
 	private:
@@ -43,6 +44,7 @@ class VM{
 		Slot* create_boolean(bool value);
 		Slot* add_slot(Slot* sl_recv, string sl_recv_id, Slot* sl);
 		Slot* add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl);
+		Slot* add_argument(Slot* sl_recv, string sl_recv_id, Slot* sl);
 		Slot* add_code(Slot* sl_recv, string sl_recv_id, Slot* sl);
 		Slot* rm_slot(Slot* sl_recv, string slot);
 		Slot* unary_message(Slot* sl_recv, string msg);
@@ -55,6 +57,7 @@ class VM{
 		~VM();
 		
 	private:
+		Slot* search_and_execute_key_msg(Slot* sl_recv, string msg, p_slots& args);
 		Slot* search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args);
 		Slot* execute_msg(Slot* msg, Slot* sl_invoker, p_objects& args);
 		Slot* search_msg(Slot* sl_recv, string msg);

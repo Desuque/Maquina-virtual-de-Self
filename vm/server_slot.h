@@ -14,7 +14,7 @@ class Slot: public Object{
   
 	private:
 		bool type;
-		//bool parent;
+		std::vector<string> args;
 		std::tuple <bool,string,int> parent;
 		bool code;
 		string name;
@@ -40,10 +40,12 @@ class Slot: public Object{
 		void set_int_method_value(int id, string name);
 		void add_slot(Slot* slot);
 		bool name_is(string name);
+                void get_arguments(std::vector<string>& args);
 		bool is_parent();
 		bool is_code();
 		bool is_immutable();
 		int get_parent_id();
+                void add_argument(string arg);
 		virtual string json(int id_base);
 		Slot* execute(VM& vm, p_objects& args);
 		virtual bool is_check();
