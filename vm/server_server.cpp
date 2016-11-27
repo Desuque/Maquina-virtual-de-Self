@@ -101,7 +101,8 @@ void Server::recv_app_load(ProxyClient* proxy){
                 App* new_app = new App(app_name, this, proxy);
                 apps.insert (std::pair<string,App*>(app_name, new_app));
                 proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
-                execute_file(new_app, app_name);
+                string file_name = folder+app_name+file_ext;
+                execute_file(new_app, file_name);
                 new_app -> start();
                 proxy->enviarCodigoMensaje(cod_load_app);
         }        
@@ -189,7 +190,7 @@ int Server::execute(string file_name){
 
 int Server::execute_file(App* app, string file_name){
     std::ifstream file;
-    file.open(folder+file_name+file_ext, std::ifstream::in);
+    file.open(file_name, std::ifstream::in);
     if (!file.is_open())
         return 1;
     
