@@ -55,6 +55,14 @@ Slot* Linker::create_binary_message(Slot* receiver, std::string op, Slot* expCP)
 }
 
 Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
+	std::cout<<"Aca llega"<<std::endl;
+	std::cout<<"El name: "<<receiver->get_name()<<std::endl;
+	if(receiver->get_name() == "lobby") {
+		Slot* cont = vm->create_object();
+		vm->add_slot(cont, "", expCP);
+		return vm->keyword_message(receiver, lower_or_cap, cont);
+	}
+
 	return vm->keyword_message(receiver, lower_or_cap, expCP);
 }
 
@@ -73,10 +81,11 @@ Slot* Linker::create_object() {
 
 Slot* Linker::create_parent_slot(Slot* object, std::string parent, std::string son) {
 	Slot* X1 = vm->search_obj(son);
-	Slot* X2 = vm->create_object();
-	vm->add_parent(X2, parent, X1);
-	vm->add_slot(object, "", X2);
+	//Slot* X2 = vm->create_object();
+	//vm->add_parent(X2, parent, X1);
+	//vm->add_slot(object, "", X2);
 
+	vm->add_parent(object, parent, X1);
 	return object;
 
 	//ES ASI
@@ -85,26 +94,29 @@ Slot* Linker::create_parent_slot(Slot* object, std::string parent, std::string s
 }
 
 Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag) {
-	Slot* X1 = vm->create_object();
+	//Slot* X1 = vm->create_object();
 	Slot* X2 = exp;
 	if(op == "<-") {
 		vm->immutable_object(X2);
 	}
 	if(code_flag == true) {
-		vm->add_code(X1, slot_name_extended, X2);
+		vm->add_code(object, slot_name_extended, X2);
+		//vm->add_code(X1, slot_name_extended, X2);
 	} else {
-		vm->add_slot(X1, slot_name_extended, X2);
+		vm->add_slot(object, slot_name_extended, X2);
+		//vm->add_slot(X1, slot_name_extended, X2);
 	}
-	vm->add_slot(object, "", X1);
-
+	//vm->add_slot(object, "", X1);
+	
 	return object;
 }
 
 Slot* Linker::create_slot(Slot* object, std::string slot_name_extended) {
-	Slot* X1 = vm->create_object();
+	//Slot* X1 = vm->create_object();
 	Slot* X2 = vm->create_nil();
-	vm->add_slot(X1, slot_name_extended, X2);
-	vm->add_slot(object, "", X1);
+	//vm->add_slot(X1, slot_name_extended, X2);
+	vm->add_slot(object, slot_name_extended, X2);
+	//vm->add_slot(object, "", X1);
 
 	return object;
 }

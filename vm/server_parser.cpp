@@ -868,13 +868,15 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						*posicion = posicionOriginal;
 						return false;
 					}
-				}
-
-				if(lower_key == "_AddSlots") {
+				} else if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
 						return true;
+					} else {
+						//Si no hay coincidencia, vuelvo el puntero a su posicion original
+						*posicion = posicionOriginal;
+						return false;
 					}
 				} else {
 					//Metodos de usuario
