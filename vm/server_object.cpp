@@ -51,6 +51,7 @@ void Object::update_parent_slots(Slot* sl, p_slots& v_sl){
         for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
                 if ( (it->second-> is_parent()) && (it->second -> parent_name() == sl->get_name())){
                         (it->second) -> set_value(sl -> get_value());
+                        (it->second) -> set_parent(true, sl->get_name(), sl -> get_id());
                         v_sl.push_back(it->second);
                 }
         }
