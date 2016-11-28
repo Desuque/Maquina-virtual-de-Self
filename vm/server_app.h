@@ -35,6 +35,10 @@ class App : public Thread{
 		~App();
 
 	private:
+                void rcv_borrar_morph();
+                void rcv_pedir_morph();
+                void rcv_pedir_lista();
+                void rcv_upd_pos();
                 void rcv_msg_get_slots();
                 void rcv_msg_generic();
 		void rcv_share_obj();
