@@ -16,12 +16,6 @@ DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject,
 
 }
 
-DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject, 
-			const Glib::RefPtr<Gtk::Builder>& refGlade,
-			bool is_glad) : DialogoNombreLobby(cobject, refGlade) {
-
-}
-
 void DialogoNombreLobby::botonOkNombre(){
 	if(!proxy){
 		std::cout << "Error no hay proxy en DialogoNombreLobby" << std::endl;
@@ -29,12 +23,15 @@ void DialogoNombreLobby::botonOkNombre(){
 	}	
 	Gtk::Entry* entryNombreLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget("entry1", entryNombreLobby);
-	if(!entryNombreLobby) std::cout << "Error m_builder DialogoNombreLobby::botonOkNombre" << std::endl;
+	if(!entryNombreLobby){
+		std::cout << "Error m_builder DialogoNombreLobby::botonOkNombre" << std::endl;
+		throw new std::exception();
+	}
 	std::string nombreLobby = std::string(entryNombreLobby->get_text());
 	std::cout << nombreLobby << std::endl;
 	
 	proxy->enviarJson(nombreLobby);
-	uint32_t respuesta =proxy->recibirCodigoMensaje();
+	uint32_t respuesta = proxy->recibirCodigoMensaje();
 
 	if (respuesta == 0){
 		// el lobby ya existe lanzar un error y volver a pedir 

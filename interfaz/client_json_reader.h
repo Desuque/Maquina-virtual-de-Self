@@ -17,6 +17,7 @@ class JsonReader{
         void read_id_morph_id_slot(string json, int& id_morph, int& id_slot);
         void read_id_morph(string json, int& id_morph);
 		void read_share_data(string data, int& id, string& lobby_des);
+		void read_id_morph_nombre_slot(string json, int& id_morph, string& nombre_slot);
 };
 
 #endif

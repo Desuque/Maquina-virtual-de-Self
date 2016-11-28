@@ -147,6 +147,10 @@ std::string Morph::get_id_to_string(){
 	return std::to_string(this->id);
 }
 
+int Morph::get_id(){
+	return this->id;
+}
+
 double Morph::getPosX(){
 	return this->posX;
 }
@@ -205,11 +209,13 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	//cr ->fill();
 	cr-> stroke();
 	
+	// solo para dibujar los errores.
 	if(this->nombreObjeto=="Sintax error." ){	
 		cr->set_source_rgba(0.5, 0, 0,0.5);
 		cr -> rectangle(this->posX, this -> posY,this->width, this->height);
 		cr-> fill();
 	}
+
 	for (int i=0; i < slots.size(); ++i){
 		slots[i] -> draw(cr);
 	}
@@ -246,6 +252,17 @@ Slot* Morph::obtenerSlotConId(int id_slot){
 		}      
 	}     
 	return nullptr; 
+}
+
+std::vector<Slot*> Morph::obtenerSlotsConId(int id_slot){     
+	std::vector<Slot*> listaSlots;
+	for (int i=0; i < slots.size(); ++i){         
+		// guardar cuando agregue poli         
+		if (slots[i]->tieneEsteId(id_slot)){   
+			listaSlots.push_back(slots[i]);    
+		}      
+	}     
+	return listaSlots; 
 }
 
 Slot* Morph::obtenerSlotConEsteNombre(std::string nombre){     

@@ -10,10 +10,6 @@ public:
   ListaDeLobbys();
   ListaDeLobbys(BaseObjectType* cobject,   
             const Glib::RefPtr<Gtk::Builder>& refGlade); 
-  ListaDeLobbys(BaseObjectType* cobject,   
-            const Glib::RefPtr<Gtk::Builder>& refGlade,
-             bool is_glad); 
-  
   virtual ~ListaDeLobbys();
   void reestablecer();
   void on_button_ok();

@@ -27,7 +27,7 @@ void Cliente::run() {
 		try {
 			codigo = proxy.recibirCodigoMensaje();
 		} catch (const std::exception &e){
-			// error de conexion.
+			// se cerro la conexion.
 			return;
 		}
 		//std::cout << "codigo recibido: " << codigo << std::endl;
@@ -105,25 +105,16 @@ void Cliente::run() {
 			}
 			case PEDIR_MORPH: {
 				std::string json = proxy.recibirJson();
-				std::cout << json << std::endl;
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader ids_reader;
-				int id_morph = -1, id_slot = -1;
-				ids_reader.read_id_morph_id_slot(json, id_morph, id_slot);
-				myArea->mostrarEsteSlotComoMorph(id_morph, id_slot);
-				break;
-			}
-			case GET_IT : {
-				//....
-				break;
-			}					
-			case DO_IT : {
-				//....
+				int id_morph = -1;
+				std::string nombre_slot;
+				ids_reader.read_id_morph_nombre_slot(json, id_morph, nombre_slot);
+				myArea->mostrarEsteSlotComoMorph(id_morph, nombre_slot);
 				break;
 			}
 			case BORRAR_MORPH : {	
 				std::string json = proxy.recibirJson();	
-				std::cout << json << std::endl;	
 				JsonReader jsonReader;
 				int id = -1;
 				jsonReader.read_id_morph(json, id);

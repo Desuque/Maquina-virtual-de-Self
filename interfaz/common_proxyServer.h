@@ -18,7 +18,7 @@ class ProxyServer {
 		uint32_t recibirTamanioDeMensaje();
 		void enviarCodigoAEjecutar(std::string idObjeto, std::string textoAEnviar, int accion);
 		std::string recibirSlotsDe(std::string lobbyId);
-		void pedirMorphDeEsteSlot(int id_morph, int id_slot);
+		void pedirMorphDeEsteSlot(int id_morph, std::string nombre_slot);
 		void pedirSlotsDe(std::string idObjeto);
 		
 		ProxyServer(Socket& socket);

@@ -10,27 +10,28 @@ class MyArea : public Gtk::DrawingArea
 {
 protected:
 	Glib::RefPtr<Gtk::Builder> m_builder;
-  Gtk::Menu m_Menu_Popup;
+  Gtk::Menu menuEmergente;
   Gtk::MenuItem itemAgregarSlot;
   Gtk::MenuItem itemEnviarMorphA;
+  Gtk::MenuItem itemCloseMorph;
 
   Gtk::Label* lNombreObjeto;
-	Gtk::Button* m_pButton;
-  Gtk::Button* m_pButton2;
-  Gtk::Button* m_pButton3;
+	Gtk::Button* botonGetIt;
+  Gtk::Button* botonDoIt;
+  Gtk::Button* botonClose;
 
-  Gtk::TextView* m_TextView;
-  Gtk::TextView* textViewCodAsociado;
+  Gtk::TextView* textoShell;
+  Gtk::TextView* textoCodigoAsociado;
 
   bool resetFlag;
   bool moveFlag;
-  Morph* actual;
+  int offXMouse, offYMouse;
+  
+  Morph* morphSeleccionado;
   std::vector<Morph*> morphs;
 
-  Referencia* refenciaActual = nullptr;
+  Referencia* referenciaSeleccionada;
   std::vector<Referencia*> referencias;
-
-  int offXMouse, offYMouse;
 
   ProxyServer* proxyServer;
 
@@ -38,7 +39,7 @@ public:
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   MyArea();
   void iniciar();
-  void enviarMorphAlobby();
+  //void enviarMorphAlobby();
   // Override mouse events
   bool on_button_press_event(GdkEventButton *event);
   bool on_button_release_event(GdkEventButton *event);
@@ -54,14 +55,13 @@ public:
   void borrarSlots(std::vector<InterfaceSlot*> i_slots);
   void crearMorphs(std::vector<InterfaceSlot*> i_slots);
   void crearMorphsError(std::vector<InterfaceSlot*> i_slots);
-  void mostrarEsteSlotComoMorph(int id_morph, int id_slot);
+  void mostrarEsteSlotComoMorph(int id_morph, std::string nombre_slot);
   void setProxy(ProxyServer* proxy){
-    this->proxyServer = proxy;
+    this->proxyServer=proxy;
   }
   void actualizarPosicionAMoprh(int id, int posX, int posY);
   void closeMorph(int id_morph);
   void recolectarMorphs(std::vector<int> vectorIds);
-
   void liberarMemoria();
   virtual ~MyArea();
 
@@ -70,11 +70,14 @@ protected:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
 
 private:
+  void borrarSlot(int idSlot);
   Morph* obtenerMorphPorId(int id_morph);
   void borrarReferenciasDeMorph(Morph* morph);
   void borrarReferenciasDeLosSlotsDeMorph(Morph* morph);
   void borrarMorph(Morph* morph);
   void botonOkSeleccionLobby();
+  void actualizarVisualizacionDeSlot(Morph* morph, Slot* slot);
+  std::vector<Slot*> obtenerSlotsConEsteId(int id_slot);
 
 };
 

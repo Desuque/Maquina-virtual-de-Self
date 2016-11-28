@@ -16,9 +16,9 @@ class Morph : public Gtk::DrawingArea{
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
 		std::vector<Referencia*> referencias;
-		std::vector<Slot*> slots;
 	
 	protected:
+		std::vector<Slot*> slots;
 		double posX;
 		double posY;
 		int width;
@@ -33,9 +33,7 @@ class Morph : public Gtk::DrawingArea{
 		Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado);
 		void borrarReferencia(Referencia* referencia);
 		std::string get_id_to_string();
-		int get_id(){
-    		return this->id;
-  		}
+		int get_id();
   		double getPosX();
   		double getPosY();
   		int getWidth();
@@ -44,11 +42,11 @@ class Morph : public Gtk::DrawingArea{
   		std::string get_it();
   		std::string do_it();
   		void actualizarAlturaMorph(size_t alturaDeSlot);
-  		// decidir como hacer esto.
   		void agregarSlot(InterfaceSlot* nombreSlot);
 
   		Slot* obtenerSlot(int posX,int posY);
   		Slot* obtenerSlotConId(int id_slot);    
+  		std::vector<Slot*> obtenerSlotsConId(int id_slot);    
 		Slot* obtenerSlotConEsteNombre(std::string nombre);
 
 		Morph(double posX, double posY);
@@ -70,7 +68,6 @@ class Morph : public Gtk::DrawingArea{
 	    	return !(*this==rhs);
 	    }
 		void actualizarValores(Slot* unSlot);
-
 	    bool tieneElMismoIdQueEsteSlot(Slot* unSlot);
 	    bool tieneElMismoIdQueEsteSlot(InterfaceSlot* unSlot);
 	    void agregarReferencia(Referencia* unaReferencia);

@@ -25,24 +25,23 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
 
 	Gtk::Button* botonCargarLobby = nullptr;
 	m_builder-> Gtk::Builder::get_widget("button9", botonCargarLobby);
-  	if (botonCargarLobby == nullptr) std::cout << "error" << std::endl;
+  	if (botonCargarLobby == nullptr){
+  		std::cout << "error glade" << std::endl;
+    	throw new std::exception();
+    }
     botonCargarLobby->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::cargarLobbyClick));
     //this->signal_delete_event().connect(sigc::mem_fun(*this,&DialogoInicial::cerrarDialogoClick));
  
     Gtk::Button* botonSalir = nullptr;
 	m_builder-> Gtk::Builder::get_widget("button13", botonSalir);
-  	if (botonSalir == nullptr) std::cout << "error glade" << std::endl;
+  	if (botonSalir == nullptr){
+  		std::cout << "error glade" << std::endl;
+    	throw new std::exception();
+    }
     botonSalir->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::salirClick));
 }
 
-DialogoInicial::DialogoInicial(BaseObjectType* cobject, 
-			const Glib::RefPtr<Gtk::Builder>& refGlade, bool is_glad):
-			DialogoInicial(cobject, refGlade) {
-
-}
-
 void DialogoInicial::salirClick(){
-    std::cout << "Click en salir dialogo" << std::endl;
 	if(proxy){
 		proxy->cerrarConexion();
 	}
@@ -62,19 +61,13 @@ void DialogoInicial::nuevoLobbyClick(){
 }
 
 void DialogoInicial::cargarLobbyClick(){
-    std::cout << "Click en cargar lobby" << std::endl;
     proxy->enviarCodigoMensaje(CARGAR_MAQUINA_VIRTUAL);
     std::string json = proxy->recibirJson();
     std::cout << json << std::endl;
 	std::vector<string> names;
 	JsonReader reader;
 	reader.read_names(json, names);
-	// ejemplo de json
-	//"{"lobbies":[{"name":"lobby1"},{"name":"lobby2"}]}"
-    //std::vector<string> names = {"lobby1","lobby2"};
-	for(int i=0; i<names.size(); ++i){
-		std::cout << names[i] << std::endl;
-	}
+
 	hide();
 
 	Gtk::Button* buttonOk = nullptr; 
@@ -89,12 +82,11 @@ void DialogoInicial::cargarLobbyClick(){
 }
 
 void DialogoInicial::botonOkLobby(){
-	std::cout << "Ok" << std::endl;
 	sigcBotonOk.disconnect();
 	ListaDeLobbys* listaDeLobbys = nullptr; 
 	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
 	std::string seleccion = listaDeLobbys->obtenerLobbySeleccionado();
-	std::cout << seleccion << std::endl;
+
 	proxy -> enviarCodigoMensaje(COD_LOAD_APP);
 	proxy->enviarJson(seleccion);
 	
@@ -109,7 +101,6 @@ void DialogoInicial::botonOkLobby(){
 }
 
 bool DialogoInicial::cerrarDialogoClick(GdkEventAny*){
-    std::cout << "Click en cerrar dialogo" << std::endl;
 	hide();
 	return false;
 }

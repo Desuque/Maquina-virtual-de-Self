@@ -82,10 +82,10 @@ std::string ProxyServer::recibirSlotsDe(std::string objeto){
 	return infoSlots;
 }
 
-void ProxyServer::pedirMorphDeEsteSlot(int id_morph, int id_slot){
+void ProxyServer::pedirMorphDeEsteSlot(int id_morph, std::string nombre_slot){
 	
 	JsonWriter writer;
-	std::string json = writer.write_id_morph_id_slot(id_morph, id_slot);	
+	std::string json = writer.write_id_morph_nombre_slot(id_morph, nombre_slot);	
 
     this->enviarCodigoMensaje(PEDIR_MORPH);
     this->enviarJson(json);

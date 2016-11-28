@@ -12,9 +12,6 @@ class DialogoNombreLobby : public Gtk::Dialog {
 		DialogoNombreLobby();
 		DialogoNombreLobby(BaseObjectType* cobject, 	
 					const Glib::RefPtr<Gtk::Builder>& refGlade);
-		DialogoNombreLobby(BaseObjectType* cobject, 
-					const Glib::RefPtr<Gtk::Builder>& refGlade,
-					bool is_glad);
 		void setProxy(ProxyServer* proxy){
 			this->proxy = proxy;
 		}

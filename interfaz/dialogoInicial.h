@@ -11,11 +11,9 @@ class DialogoInicial : public Gtk::Dialog {
 		sigc::connection sigcBotonOk;
 	public:	
 		DialogoInicial();
+		// Este Constructor me obliga Glade a definirlo asi.
 		DialogoInicial(BaseObjectType* cobject, 	
 					const Glib::RefPtr<Gtk::Builder>& refGlade);
-		DialogoInicial(BaseObjectType* cobject, 
-					const Glib::RefPtr<Gtk::Builder>& refGlade,
-					bool is_glad);
 		void setProxy(ProxyServer* proxy);
 		void nuevoLobbyClick();
 		void cargarLobbyClick();
