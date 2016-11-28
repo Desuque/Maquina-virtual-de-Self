@@ -1,6 +1,7 @@
 
 #include "server_linker.h"
 #include "server_virtual_machine.h"
+#include "server_slot.h"
 #include <iostream>
 #include <sstream>
 
@@ -127,11 +128,38 @@ Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	return slot;
 }
 
-Slot* Linker::set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended) {
+Slot* Linker::set_object_script(Slot* slot, std::string script, 
+		std::string msg_slot_name_extended, std::vector<std::string> args) {
+
 	std::cout<<"Este es el nombre del script: "<<msg_slot_name_extended<<std::endl;
 	std::cout<<"ESte es el scrit: "<<script<<std::endl;
 	//refactorear esta firma que trae banda de cosas que no sirven
-	return vm->create_string(script);
+	
+	Slot* XA4 = vm->create_string(script);	
+	for(unsigned int i = 0; i<args.size(); i++) {
+		Slot* XA5 = vm->create_object();
+		std::cout<<"ESte argumento guardo: "<<args.at(i)<<std::endl;
+    	vm->add_argument(XA4, args.at(i), XA5);	
+	}
+
+	return XA4;
+}
+
+Slot* Linker::create_user_method(Slot *method, Slot* expCP) {
+	        //funciones multa:8 b:3.
+        //Slot* XE11 = vm.search_obj("funciones");
+        if (method == NULL) {
+        	method = vm->create_object();
+        }
+        //Slot* XE13 = vm.create_int(8);
+        //Slot* XE14 = vm.create_int(3);//
+
+        //XE13-> get_name(), iba un 3;
+        std::string name = expCP->get_name();
+        std::cout<<"Nombre del metodo de usuario: "<<name<<std::endl;
+        vm->add_parent(method, name, expCP);//
+        //vm.add_parent(XE12, "8", XE13);
+        return method;
 }
 
 Slot* Linker::clone_obj_by_name(std::string receiver) {

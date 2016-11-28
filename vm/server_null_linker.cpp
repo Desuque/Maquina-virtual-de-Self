@@ -64,7 +64,11 @@ Slot* nLinker::remove_slots(Slot* slot, std::string slot_to_erase) {
 	return NULL;
 }
 
-Slot* nLinker::set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended) {
+Slot* nLinker::set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended, std::vector<std::string> args) {
+	return NULL;
+}
+
+Slot* nLinker::create_user_method(Slot *method, Slot* expCP) {
 	return NULL;
 }
 

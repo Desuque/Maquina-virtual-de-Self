@@ -16,6 +16,7 @@ private:
 	std::string script_name;
 	bool code_flag;
 	bool parent_flag;
+	bool arg_flag;
 	int flag;
 	std::vector<Slot*> slots_to_process;
 
@@ -40,7 +41,8 @@ private:
 	Slot* process_error(std::string msg_error);
 	Slot* process_clone_object(std::string receiver);
 	Slot* process_parent_slot(Slot* object, std::string son, std::string parent);
-
+	Slot* process_user_method(Slot* method, Slot* expCP);
+	
 	bool unary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool binary_message(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool keyword_message(std::stringstream* codigo, int* posicion, Slot** slot);
@@ -56,7 +58,7 @@ private:
 	bool object_end(std::stringstream* codigo, int* posicion);
 	bool object(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool slot_operator(std::stringstream* codigo, int* posicion);
-	bool slot_list(std::stringstream* codigo, int* posicion, Slot** slot);
+	bool slot_list(std::stringstream* codigo, int* posicion, Slot** slot, std::vector<std::string>* args);
 	bool slot_name_extended(std::stringstream* codigo, int* posicion);
 	bool nil(std::stringstream* codigo, int* posicion, Slot** slot);
 	bool name(std::stringstream* codigo, int* posicion);
@@ -66,7 +68,8 @@ private:
 	bool final(std::stringstream *codigo, int* posicion);
 	bool empty(std::stringstream* codigo, int* posicion);
 	bool pipe_without_script(std::stringstream* codigo, int* posicion);
-	bool pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, std::string msg_slot_name_extended);
+	bool pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, 
+			std::string msg_slot_name_extended, std::vector<std::string> args);
 	bool remove_slots(std::stringstream* codigo, int* posicion, Slot** slot);
 	void setFlag(std::string valor);
 	void set_msg(std::string msg);
@@ -79,7 +82,8 @@ private:
 	bool get_code_flag();
 	void set_parent_flag(bool parent_flag);
 	bool get_parent_flag();
-
+	void set_arg_flag(bool value);
+	bool get_arg_flag();
 	void erase_white_spaces(std::stringstream* codigo, int* posicion);
 	
 	void clean_flag();

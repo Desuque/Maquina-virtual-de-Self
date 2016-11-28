@@ -17,6 +17,7 @@ Parser::Parser() : vm(NULL) {
 	msg = "";
 	flag = NOT_SET;
 	parent_flag = false;
+	arg_flag = false;
 }
 
 void Parser::setVM(VM* vm) {
@@ -135,7 +136,8 @@ void Parser::set_parent_flag(bool parent_flag) {
 	this->parent_flag = parent_flag;
 }
 
-bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, std::string msg_slot_name_extended) {
+bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** slot, 
+		std::string msg_slot_name_extended, std::vector<std::string> args) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
 	//Elimino posibles espacios
@@ -169,7 +171,7 @@ bool Parser::pipe_with_script(std::stringstream* codigo, int* posicion, Slot** s
 				msg_script += c;
 			}
 			*posicion = codigo->tellg();
-			*slot = linker->set_object_script(*slot, msg_script, msg_slot_name_extended);
+			*slot = linker->set_object_script(*slot, msg_script, msg_slot_name_extended, args);
 			set_code_flag(true);
 			return true;		
 		} else {
@@ -292,7 +294,7 @@ std::string Parser::get_script_name() {
 	return this->script_name;
 }
 
-bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
+bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot, std::vector<std::string>* args) {
 	int posicionOriginal = *posicion;
 
 	Slot* exp = NULL;
@@ -315,9 +317,17 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot) {
 		//Si un slot no se lo inicializa por default Self crea 
 		//un slot mutable inicializado con el objeto ​nil
 		if(c == '.') {
-			*slot = process_slot_list(*slot, slot_name_extended);
-			*posicion = codigo->tellg();
-			return true;
+			if(get_arg_flag()) {
+				std::cout<<"Este es el argumento!"<<slot_name_extended<<std::endl;
+				args->push_back(slot_name_extended);
+				*posicion = codigo->tellg();
+				return true;
+			} else {
+				*slot = process_slot_list(*slot, slot_name_extended);
+				*posicion = codigo->tellg();
+				std::cout<<"Estoy saliendo por aca, y no proceso el resto"<<std::endl;
+				return true;
+			}
 		}
 		if(slot_operator(codigo, posicion)) {
 			std::string op = get_op();
@@ -350,26 +360,25 @@ bool Parser::object(std::stringstream* codigo, int* posicion, Slot** slot) {
 	Slot* script = NULL;
 	
 	std::string msg_aux = get_script_name();
-
+	std::vector<std::string> args;
+	
 	//Compruebo que efectivamente comienza con "(|"
 	if(object_intro(codigo, posicion)) {
 		
-		if(slot_list(codigo, posicion, &object) || empty(codigo, posicion)) {
+		if(slot_list(codigo, posicion, &object, &args) || empty(codigo, posicion)) {
 			//Si ya se cargo al menos un slot_list, busco otros posibles slots_lists
 			//En caso de no haber, se sigue parseando el objeto
 			bool nextSlot = true;
 			
-			//ESTE WHILE NO ME DEJA SALIR SI NO HAY SLOTS!!!!!!! REVISAR!!!
-
 			while(nextSlot) {
-				nextSlot = slot_list(codigo, posicion, &object);
+				nextSlot = slot_list(codigo, posicion, &object, &args);
 			}
 			if (pipe_without_script(codigo, posicion)) {
 				//Quiere decir que se encontro una barra y un parentesis
 				*slot = object;
 				return true;
 			}
-			if (pipe_with_script(codigo, posicion, &object, msg_aux)) {
+			if (pipe_with_script(codigo, posicion, &object, msg_aux, args)) {
 				//Elimino posibles espacios
 				erase_white_spaces(codigo, posicion);
 				//Leo todo el valor desde la posicion indicada
@@ -433,6 +442,10 @@ void Parser::erase_white_spaces(std::stringstream* codigo, int* posicion) {
 	}
 }
 
+/**
+* El name puede tener un ":" en el medio ya que esta sintaxis es utilizada para los
+* metodos de usuario con argumentos.
+**/
 bool Parser::name(std::stringstream* codigo, int* posicion) {
 	int posicionOriginal = *posicion;
 	//Elimino posibles espacios
@@ -444,7 +457,7 @@ bool Parser::name(std::stringstream* codigo, int* posicion) {
 	std::string auxiliar;
 	while(codigo->get(c)) {
 		if (((c >= 'a') && (c <= 'z')) || ((c >= 'A') && (c <= 'Z')) ||
-				((c >= '0') && (c <= '9'))) {
+				((c >= '0') && (c <= '9')) || (c == ':')) {
 			auxiliar += c;
 			*posicion = codigo->tellg();
 		} else {
@@ -452,8 +465,10 @@ bool Parser::name(std::stringstream* codigo, int* posicion) {
 		}
 	}
 
+	std::cout<<"Este name sale!: "<<auxiliar<<std::endl;
+
 	//Cualquier palabra alfanumerica que empiece con una letra en minusculas
-	std::regex rr(R"([a-z][A-Z-a-z-0-9]*)");
+	std::regex rr(R"([a-z][A-Z-a-z-0-9-:]*)");
 	if(regex_match(auxiliar,rr)) {
 		set_msg(auxiliar);
 		return true;
@@ -462,6 +477,16 @@ bool Parser::name(std::stringstream* codigo, int* posicion) {
 	//Si no hay coincidencia, vuelvo el puntero a su posicion original
 	*posicion = posicionOriginal;
 	return false;
+}
+
+void Parser::set_arg_flag(bool value) {
+	this->arg_flag = true;
+}
+
+bool Parser::get_arg_flag() {
+	bool aux = arg_flag;
+	this->arg_flag = false;
+	return aux;
 }
 
 bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
@@ -478,6 +503,8 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 	if(c == ':') {
 		*posicion = codigo->tellg();
 		if(name(codigo, posicion)) {
+			set_arg_flag(true);
+			std::cout<<"Entre a un argumento: "<<std::endl;
 			return true;
 		}
 	}
@@ -792,6 +819,10 @@ Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, 
 	return linker->create_keyword_message(receiver, lower_or_cap, expCP);
 }
 
+Slot* Parser::process_user_method(Slot* method, Slot* expCP) {
+	return linker->create_user_method(method, expCP);
+}
+
 bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** slot) {
 	codigo->clear();
 	int posicionOriginal = *posicion;
@@ -837,30 +868,40 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						*posicion = posicionOriginal;
 						return false;
 					}
+				}
 
-				//Tiene en cuenta _AddSlots: como cualquier metodo de usuario
-				} else {
-				//if(lower_key == "_AddSlots") {
+				if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
-						/**
-						 * Puede haber o no cap_keyword
-												 
+						return true;
+					}
+				} else {
+					//Metodos de usuario
+					std::cout<<"Entre al metodo de usuario"<<std::endl;
+					std::string args = lower_key + ":";
+					Slot* method = NULL;
+					if(expressionCP(codigo, posicion, &slot_expCP)) {
+						method = process_user_method(method, slot_expCP);
+						std::cout<<"Ya cree el int"<<std::endl;
+											 
 						bool isCap_keyword = true;
 						while(isCap_keyword) {
 							if(cap_keyword(codigo, posicion)) {
+								std::cout<<"Entra al cap?"<<std::endl;
 								std::string cap_key = get_msg();
 								//Elimino posibles espacios en blanco
 								erase_white_spaces(codigo, posicion);
-
 								char c;
 								codigo->seekg(*posicion, std::ios::beg);
 								codigo->get(c);
 								if(c == ':') {
 									*posicion = codigo->tellg();
-									if(expressionCP(codigo, posicion, &slot_expCP)) {
-										*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
+									Slot* slot_exp = NULL;
+									if(expressionCP(codigo, posicion, &slot_exp)) {
+										method = process_user_method(method, slot_exp);
+										
+										args += cap_key + ":";
 										isCap_keyword = true;
 									}
 								}
@@ -868,14 +909,15 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 								isCap_keyword = false;
 							}
 						}
+					
+						std::cout<<"Este es el arg al final: "<<args<<std::endl;
 
-						
-						 * Fin carga de cap_keyword
-						 */
+
+						*slot = process_keyword_message(slot_receiver, args, method);
+						std::cout<<"Pasa por aca!"<<std::endl;
 						return true;
-						
 					}
-				}
+				}		
 			}
 		}
 	}

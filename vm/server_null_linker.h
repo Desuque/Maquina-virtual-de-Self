@@ -25,7 +25,8 @@ public:
 	Slot* remove_slots(Slot* slot, std::string slot_to_erase);
 	Slot* only_name(std::string name, Slot* slot);
 	Slot* create_error(std::string msg_error);
-	Slot* set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended);
+	Slot* set_object_script(Slot* slot, std::string script, std::string msg_slot_name_extended, std::vector<std::string> args);
+	Slot* create_user_method(Slot *method, Slot* expCP);
 	Slot* clone_obj_by_name(std::string receiver);
 	virtual ~nLinker();
 private:
