@@ -11,27 +11,21 @@ typedef std::map<int, Slot*> map_slots;
 typedef std::vector<Slot*> p_slots;
 typedef std::vector<Object*> p_objects;
 typedef std::string string;
-typedef std::stack<Slot*> stack_slots;
 typedef std::vector<int> v_ids;
 typedef std::vector<string> strings;
 
 class VM{
 	private:
 		map_slots slots;
-		stack_slots tmp_slots;
 		int id_slots;
 
 	public:
 		VM();
-		void push_slot(Slot* sl);
-		void revert();
-		void checkpoint();
 		int get_id_slots();
 		Slot* immutable_object(Slot* sl);
 		string save();
 		string get_slots(int id, Slot* sl);
 		string get_slot(int id_base, Slot* sl);
-		Slot* pop_slot();
                 Slot* collect();
 		Slot* search_obj(string name);
 		Slot* search_obj_id(int id);

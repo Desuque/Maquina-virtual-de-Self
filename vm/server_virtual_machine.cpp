@@ -1,7 +1,6 @@
 #include "server_virtual_machine.h"
 #include "server_slot.h"
 #include "server_not_found.h"
-#include "server_check_point.h"
 #include "server_json_writer.h"
 #include "server_garbage_slot.h"
 #include "server_parser.h"
@@ -81,8 +80,6 @@ string VM::get_slots(int id_base, Slot* sl){
         }
         
         string json = sl -> get_value() -> get_json_slots(id_base);
-        /*if (json == empty_slot && sl -> get_value() -> empty())
-                return json;*/
         
         if ( json != empty_slot &&  (sl -> get_name() != garbage_name))
                 return json;
@@ -97,33 +94,6 @@ string VM::get_slots(int id_base, Slot* sl){
 
 string VM::get_slot(int id_base, Slot* sl){
 	return sl -> json(id_base);
-}
-
-void VM::push_slot(Slot* sl){
-	tmp_slots.push(sl);
-}
-
-Slot* VM::pop_slot(){
-	Slot* top = tmp_slots.top();
-	tmp_slots.pop();
-	return top;
-}
-
-void VM::checkpoint(){
-	Slot* check = new CheckPoint(get_id_slots(), "check");
-	tmp_slots.push(check);
-}
-
-void VM::revert(){
-	bool get_it = false;
-	while (!get_it){
-		Slot* sl = tmp_slots.top();
-		tmp_slots.pop();
-		if (sl -> is_check()){
-			get_it = true;
-			delete sl;
-		}
-	}
 }
 
 Slot* VM::search_obj(string name){
@@ -262,7 +232,7 @@ Slot* VM::search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args){
                         parser.setVM(this);
                         int id_context = sl_recv -> get_id();
                         string code = sl_msg -> get_value() -> as_string();
-                        std::cout << "Ejecutar " << id_context << " " << code << std::endl;
+                        
                         std::vector<int> flags;
                         p_slots res = parser.parsear(code, std::to_string(id_context), flags);
                         return res[0];
@@ -328,12 +298,6 @@ Slot* VM::search_and_execute_key_msg(Slot* sl_recv, string msg, p_slots& args){
                                 p_slots v_slots;
                                 sl_msg  -> get_value() -> add_slot(val, v_slots);
                         }
-                        
-                        /*Object* obj = args[1] -> get_value();
-                        string name = obj -> as_slot() -> get_name();
-                        Slot* val = obj ->  get_slot(name);
-                        val -> set_name("arg");
-                        sl_msg  -> get_value() -> add_slot(val);*/
                         
                         std::vector<int> flags;
                         p_slots res = parser.parsear(code, std::to_string(id_context), flags);
