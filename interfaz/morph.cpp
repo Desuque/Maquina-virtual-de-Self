@@ -151,8 +151,26 @@ int Morph::get_id(){
 	return this->id;
 }
 
+// devuelve una referencia a la lista de slots.
+// si o si la necesito modificar desde el area de dibujo.
+std::vector<Slot*>& Morph::getSlots(){
+	return this->slots;
+}
+
+std::vector<Referencia*> Morph::getReferencias(){
+	return this->referencias;
+}
+
 double Morph::getPosX(){
 	return this->posX;
+}
+
+std::string Morph::getNombreParaMostrar(){
+	return this->nombreParaMostrar;
+}
+
+std::string Morph::getNombre(){
+	return this->nombreObjeto;
 }
 
 double Morph::getPosY(){
@@ -326,14 +344,17 @@ void Morph::agregarReferencia(Referencia* unaReferencia){
 	this->referencias.push_back(unaReferencia);
 }
 
-void Morph::borrarReferencia(Referencia* referencia){
+// borro la referencia de la lista.
+void Morph::borrarEstaReferencia(Referencia* referencia){
 	std::cout << referencias.size() << std::endl;
-	for (int i=0; i < referencias.size(); ++i){
-		if (referencias[i] == referencia){
-			referencias.erase(referencias.begin()+i);
-			--i;
+	for (std::vector<Referencia*>::iterator it = referencias.begin(); it != referencias.end();){  
+		if(*it == referencia){	
+			//delete* it;  
+			it = referencias.erase(it);
+		} else {
+			++it;
 		}
-	}
+	}	
 	std::cout << referencias.size() << std::endl;
 
 }

@@ -8,6 +8,7 @@
 class Slot : public Morph{
 private:
 	bool dibujadoComoMorph;
+	Referencia* referencia;
 	/* interface Slot */
 	bool type;
 	bool code;
@@ -15,9 +16,6 @@ private:
 	std::string value;
 	int id;
 	int id_base;
-
-public:	
-	Referencia* referencia;
 
 public:	
 	//Slot(){}
@@ -30,6 +28,7 @@ public:
 	bool tieneEsteNombre(std::string nombre);
 	int get_id();
 	bool has_code();
+	bool tieneEstaReferencia(Referencia* unaReferencia);
 	std::string get_value();
 	bool estaDibujadoComoMorph();
 	void setEstaDibujadoComoMorph(bool estaDibujado);
@@ -37,6 +36,7 @@ public:
 	bool elValorEsPrimitivo();
 	void draw(const Cairo::RefPtr<Cairo::Context>& cr);
 	void setReferencia(Referencia* unaReferencia);
+	void borrarReferenciaAlMorphApuntado();
 	bool clikEnObtenerSlot(int posX,int posY);
 	size_t get_height();
 

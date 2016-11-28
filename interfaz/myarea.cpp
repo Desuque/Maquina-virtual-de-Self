@@ -119,7 +119,7 @@ void MyArea::iniciar(){
 
   Morph* lobby = new Morph("lobby", 0, 10., 10., textoShell, textoCodigoAsociado);
   morphSeleccionado = lobby;
-  lNombreObjeto->set_text(morphSeleccionado->nombreParaMostrar);
+  lNombreObjeto->set_text(morphSeleccionado->getNombreParaMostrar());
   morphSeleccionado->mostrarDescripcionMorph();
   morphs.push_back(lobby);
 
@@ -174,7 +174,7 @@ void MyArea::botonGuardarNuevoSlotEvent(){
   m_builder->Gtk::Builder::get_widget("dialog4", dialogoAddSlot);
   dialogoAddSlot->hide();
 
-  std::string textoAEnviar = morphSeleccionado->nombreObjeto;
+  std::string textoAEnviar = morphSeleccionado->getNombre();
   textoAEnviar +=  " _AddSlots: (| ";
   textoAEnviar += textoDeSlot;
   textoAEnviar += " |) .";
@@ -267,9 +267,10 @@ Morph* MyArea::obtenerMorphPorId(int id_morph){
 }
 
 void MyArea::borrarReferenciasDeMorph(Morph* morph){
+  std::vector<Referencia*> referecniasDeMorph = morph->getReferencias();
   for (int v=0; v < referencias.size(); ++v){
-    for (int j=0; j < morph->referencias.size(); ++j){
-      if ((morph->referencias)[j] == referencias[v]){
+    for (int j=0; j < referecniasDeMorph.size(); ++j){
+      if ((referecniasDeMorph)[j] == referencias[v]){
         referencias[v]->setSlotEstaDibujadoComoMorph(false);
         referencias.erase(referencias.begin()+v);
         --v;
@@ -280,15 +281,15 @@ void MyArea::borrarReferenciasDeMorph(Morph* morph){
 
 
 void MyArea::borrarReferenciasDeLosSlotsDeMorph(Morph* morph){
-  for (int j=0; j < morph->slots.size(); ++j){
+  std::vector<Slot*> slotsDeMorph = morph->getSlots();
+  for (int j=0; j < slotsDeMorph.size(); ++j){
+    // pido la lista de slots de cada morph.
     for (int v=0; v < referencias.size(); ++v){
-      if ((morph->slots)[j]->referencia != nullptr){    
-        if ((morph->slots)[j]->referencia == referencias[v]){
-          (morph->slots)[j]->setEstaDibujadoComoMorph(false);
+        if ((slotsDeMorph)[j]->tieneEstaReferencia(referencias[v])){
+          (slotsDeMorph)[j]->setEstaDibujadoComoMorph(false);
           referencias.erase(referencias.begin()+v);
           --v;
         }
-      }  
     }
   }
 }
@@ -352,9 +353,9 @@ bool MyArea::on_button_release_event(GdkEventButton *event)
     if (referenciaSeleccionada){
       for (int i =0; i < morphs.size() ; ++i){
         if(*(morphs[i]) == Morph(event->x,event->y)){
-          referenciaSeleccionada->borrarReferenciaAnterior();
+          referenciaSeleccionada->borrarReferenciaAlMorphApuntado();
           referenciaSeleccionada->apuntaAEsteMorph(morphs[i]);
-          morphs[i]->referencias.push_back(referenciaSeleccionada);
+          morphs[i]->agregarReferencia(referenciaSeleccionada);
         }
       }
     } 
@@ -381,11 +382,11 @@ std::vector<Slot*> MyArea::obtenerSlotsConEsteId(int id_slot){
 
 void MyArea::actualizarVisualizacionDeSlot(Morph* morph, Slot* slot){    
   if(slot->estaDibujadoComoMorph()){
-      slot->referencia->borrarReferenciaAnterior();
+      slot->borrarReferenciaAlMorphApuntado();
       // borro la referencia de la lista de dibujadas
       // para que no se dibuje.
       for (int j=0; j < referencias.size(); ++j){
-        if ((referencias)[j] == slot->referencia){
+        if (slot->tieneEstaReferencia(referencias[j])){
           slot->setEstaDibujadoComoMorph(false);
           referencias.erase(referencias.begin()+j);
           --j;
@@ -409,26 +410,14 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
     int size = i_slots.size();
     for (int i = 0; i < size ; i++){
       i_slots[i] -> print_attr();
-      //Slot* slot = aux->obtenerSlotConEsteNombre(i_slots[i]->get_name());
       // me fijo si hay un slot con ese nombre, lo debo modificar.
       Slot* slot = aux->obtenerSlotConEsteNombre(i_slots[i]->get_name());
-      /*if(slot){
-        // tengo que actualizar el slot, y ademas los parents slots en caso
-        // que existan.
-        std::vector<Slot*> lSlots = obtenerSlotsConEsteId(slot->get_id());
-        for (int j = 0; j < lSlots.size() ; j++){    
-          // actualizacion de slots
-          lSlots[j]->actualizarSlot(i_slots[i]);
-          actualizarVisualizacionDeSlot(aux, lSlots[j]);
-        }
-        continue;
-      }*/
       if(slot){
         slot->actualizarSlot(i_slots[i]);
         if(slot->estaDibujadoComoMorph()){
-          slot->referencia->borrarReferenciaAnterior();
+          slot->borrarReferenciaAlMorphApuntado();
           for (int j=0; j < referencias.size(); ++j){
-            if ((referencias)[j] == slot->referencia){
+            if (slot->tieneEstaReferencia(referencias[j])){
               slot->setEstaDibujadoComoMorph(false);
               referencias.erase(referencias.begin()+j);
               --j;
@@ -446,20 +435,23 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
 
 void MyArea::borrarSlot(int idSlot){
   if (morphSeleccionado!= nullptr){
-    for (int i = 0; i < (morphSeleccionado->slots).size(); ++i){
-      if ((morphSeleccionado->slots)[i]->get_id() == idSlot){         
-        if ((morphSeleccionado->slots)[i]->estaDibujadoComoMorph()){
+    // pido una referencia a lista de slots por que necesito
+    // eliminarlas las coincidencias.
+    std::vector<Slot*> slotsDeMorph = morphSeleccionado->getSlots();
+    for (int i = 0; i < (slotsDeMorph).size(); ++i){
+      if ((slotsDeMorph)[i]->get_id() == idSlot){         
+        if ((slotsDeMorph)[i]->estaDibujadoComoMorph()){
           // si esta dibujado borro la referencia al morph que apunta
           for (int j = 0; j < referencias.size(); ++j){
-              if ((morphSeleccionado->slots)[i]->referencia == referencias[j]){
+              if ((slotsDeMorph)[i]->tieneEstaReferencia(referencias[j])){
                 referencias.erase(referencias.begin()+j);
                 --j;
               }
           }
-          (morphSeleccionado->slots)[i]->referencia->borrarReferenciaAnterior();
+          (slotsDeMorph)[i]->borrarReferenciaAlMorphApuntado();
         }
-        delete (morphSeleccionado->slots)[i];
-        (morphSeleccionado->slots).erase((morphSeleccionado->slots).begin()+i);
+        delete (slotsDeMorph)[i];
+        (slotsDeMorph).erase((slotsDeMorph).begin()+i);
         --i;
       }
     }
@@ -504,7 +496,7 @@ void MyArea::mostrarEsteSlotComoMorph(int id_morph, std::string nombreSlot){
   for (int j = 0; j < morphs.size() ; ++j){
     if (morphs[j]->tieneElMismoIdQueEsteSlot(slot)){
       Referencia* referenciaNueva = new Referencia(morphs[j],slot);
-      morphs[j]->referencias.push_back(referenciaNueva);
+      morphs[j]->agregarReferencia(referenciaNueva);
       referencias.push_back(referenciaNueva);
       slot->setReferencia(referenciaNueva);
       queue_draw();
@@ -514,7 +506,7 @@ void MyArea::mostrarEsteSlotComoMorph(int id_morph, std::string nombreSlot){
   Morph* nuevoMorph = new Morph(slot, textoShell, textoCodigoAsociado);
   morphs.push_back(nuevoMorph); 
   Referencia* referenciaNueva = new Referencia(nuevoMorph,slot);
-  nuevoMorph->referencias.push_back(referenciaNueva);
+  nuevoMorph->agregarReferencia(referenciaNueva);
   referencias.push_back(referenciaNueva);
   slot->setReferencia(referenciaNueva);
   queue_draw();
@@ -543,7 +535,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
         // Start moving the view
         moveFlag=true;
         // va en el morph
-        lNombreObjeto->set_text(morphSeleccionado->nombreParaMostrar);
+        lNombreObjeto->set_text(morphSeleccionado->getNombreParaMostrar());
         morphSeleccionado -> mostrarDescripcionMorph();
         // Event has been handled
         return true;    
@@ -568,7 +560,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
     for (int i =0; i < morphs.size() ; ++i){      
       if(*(morphs[i]) == Morph(event->x,event->y)){
         morphSeleccionado = morphs[i];
-        lNombreObjeto->set_text(morphSeleccionado->nombreParaMostrar);
+        lNombreObjeto->set_text(morphSeleccionado->getNombreParaMostrar());
         morphSeleccionado -> mostrarDescripcionMorph();
         menuEmergente.popup(event->button, event->time);
         // Event has been handled

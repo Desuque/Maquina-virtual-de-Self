@@ -7,8 +7,8 @@ class Referencia;
 #include "client_interface_slot.h"
 #include "common_proxyServer.h"
 
-class Morph : public Gtk::DrawingArea{
-	public:
+class Morph : public Gtk::DrawingArea{	
+	private:
 		std::string nombreObjeto;
 		std::string nombreParaMostrar;
 		Gtk::TextView* m_TextView;
@@ -16,9 +16,9 @@ class Morph : public Gtk::DrawingArea{
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewConsola;
 		Glib::RefPtr<Gtk::TextBuffer> refTextViewCodigoAsociado;
 		std::vector<Referencia*> referencias;
+		std::vector<Slot*> slots;
 	
 	protected:
-		std::vector<Slot*> slots;
 		double posX;
 		double posY;
 		int width;
@@ -31,7 +31,7 @@ class Morph : public Gtk::DrawingArea{
 		Morph(std::string nombreObjeto, int id, double posX, double posY, 
 			Gtk::TextView* m_TextView, Gtk::TextView* codAsociado);
 		Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_TextView, Gtk::TextView* codigoAsociado);
-		void borrarReferencia(Referencia* referencia);
+		void borrarEstaReferencia(Referencia* referencia);
 		std::string get_id_to_string();
 		int get_id();
   		double getPosX();
@@ -43,11 +43,15 @@ class Morph : public Gtk::DrawingArea{
   		std::string do_it();
   		void actualizarAlturaMorph(size_t alturaDeSlot);
   		void agregarSlot(InterfaceSlot* nombreSlot);
-
+		std::vector<Slot*>& getSlots();
+		std::vector<Referencia*> getReferencias();
   		Slot* obtenerSlot(int posX,int posY);
   		Slot* obtenerSlotConId(int id_slot);    
   		std::vector<Slot*> obtenerSlotsConId(int id_slot);    
 		Slot* obtenerSlotConEsteNombre(std::string nombre);
+ 		
+ 		std::string getNombreParaMostrar();
+ 		std::string getNombre();
 
 		Morph(double posX, double posY);
 		Morph();

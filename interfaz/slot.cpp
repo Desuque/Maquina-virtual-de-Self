@@ -36,8 +36,20 @@ int Slot::getHeight(){
 	return this->height;
 }
 
+void Slot::borrarReferenciaAlMorphApuntado(){
+	// al morph le saco esta referencia.
+	this->referencia->borrarReferenciaAlMorphApuntado();
+}
+
 bool Slot::tieneEsteId(int id){
 	return (this->id == id);
+}
+
+bool Slot::tieneEstaReferencia(Referencia* unaReferencia){
+	if(this->referencia){
+		return (this->referencia == unaReferencia);
+	}
+	return false;
 }
 
 bool Slot::tieneEsteNombre(std::string nombre){

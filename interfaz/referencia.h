@@ -43,8 +43,9 @@ public:
 		this->apuntoAMorph = apuntar;
 	}
 
-	void borrarReferenciaAnterior(){
-		this->apuntoAMorph->borrarReferencia(this);
+	// borro esta referencia del morph que apunta.
+	void borrarReferenciaAlMorphApuntado(){
+		this->apuntoAMorph->borrarEstaReferencia(this);
 	}
 	
 	void actualizar_posicion(double x, double y){
