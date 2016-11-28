@@ -20,6 +20,7 @@ static const char* subs = "-";
 static const char* dv = "/";
 static const char* eq = "==";
 static const char* neq = "!=";
+static const string self_name = "_Self";
 
 Slot::Slot(int id, string slot_name):Object(id){
 	this -> name = slot_name;
@@ -31,53 +32,47 @@ Slot::Slot(int id, string slot_name):Object(id){
 	this -> value = NULL;
 }
 
-bool Slot::is_check(){
-	return false;
-}
-
 Object* Slot::get_value(){
 	return this -> value;
 }
 
-void Slot::set_obj_value(int id){
-	if (this -> type)
+void Slot::valid_mutable(){
+        if (this -> type)
 		throw ErrorType(this -> name);
+}
+
+void Slot::set_obj_value(int id){
+	valid_mutable();
  	this -> value = new Object(id);
 }
 
 void Slot::set_nil_value(int id){
-        if (this -> type)
-		throw ErrorType(this -> name);
+        valid_mutable();
  	this -> value = new Nil(id);
 }
 
 void Slot::set_int_value(int id, int value){
-	if (this -> type)
-		throw ErrorType(this -> name);
+	valid_mutable();
  	this -> value = new Int(id, value);
 }
 
 void Slot::set_float_value(int id, float value){
-	if (this -> type)
-		throw ErrorType(this -> name);
+	valid_mutable();
  	this -> value = new Float(id, value);
 }
  
 void Slot::set_string_value(int id, string value){
-	if (this -> type)
-		throw ErrorType(this -> name);
+	valid_mutable();
  	this -> value = new String(id, value);
 }
 
 void Slot::set_error_value(int id, string value){
-	if (this -> type)
-		throw ErrorType(this -> name);
+	valid_mutable();
  	this -> value = new Error(id, value);
 }
 
 void Slot::set_boolean_value(int id, bool value){
-	if (this -> type)
-		throw ErrorType(this -> name);
+	valid_mutable();
 	this -> value = new Boolean(id, value);
 }
  
@@ -101,8 +96,7 @@ void Slot::set_name(string name){
 }
 
 void Slot::add_slot(Slot* slot, p_slots& v_sl){
-	if (this -> type)
-		throw ErrorType(this -> name);
+	valid_mutable();
  	this -> value -> add_slot(slot, v_sl);
 }
 
@@ -170,7 +164,11 @@ string Slot::json(int id_base){
 	return json;
 }
 
+bool Slot::has_no_ref(){
+        return (std::get<0>(this -> parent) == false) || is_code() || (this -> name == self_name);
+}
+
 Slot::~Slot(){
-	if ( (std::get<0>(this -> parent) == false) || is_code() || (this -> name == "_Self") )
+	if (has_no_ref())
 		delete this -> value;
 }

@@ -48,8 +48,11 @@ class Slot: public Object{
                 void add_argument(string arg);
 		virtual string json(int id_base);
 		Slot* execute(VM& vm, p_objects& args);
-		virtual bool is_check();
 		~Slot();
+        
+        private:
+                bool has_no_ref();
+                void valid_mutable();
 };
 
 #endif
