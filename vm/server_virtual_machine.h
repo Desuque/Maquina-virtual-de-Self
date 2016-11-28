@@ -51,10 +51,17 @@ class VM{
 		~VM();
 		
 	private:
-		Slot* search_and_execute_key_msg(Slot* sl_recv, string msg, p_slots& args);
-		Slot* search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args);
+                Slot* key_add_slots(Slot* sl_recv, Slot* sl);
+                Slot* key_rm_slots(Slot* sl_recv, Slot* sl);
+                Slot* key_other_msg(Slot* sl_recv, Slot* sl, string msg);
+                void keyword_args(Slot* sl_msg, Object* obj);
+                Slot* add_parent_argument(Slot* sl_recv, string sl_recv_id, Slot* sl);
+		Slot* search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args, bool keyword);
 		Slot* execute_msg(Slot* msg, Slot* sl_invoker, p_objects& args);
+                Slot* execute_user_msg(Slot* sl_recv, Slot* sl_msg, Object* obj, bool keyword);
 		Slot* search_msg(Slot* sl_recv, string msg);
+                string get_json_container(Slot* sl, int id_base);
+                string get_json_obj(Slot* sl, int id_base);
 		void unmark_slots();
 		void garbage_collector(v_ids& ids);
 		void add_basic_slots(Slot* sl, string name);
