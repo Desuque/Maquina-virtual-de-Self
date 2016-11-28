@@ -18,12 +18,12 @@ public:
 		this->apuntoAMorph = apuntoAMorph;
 		this->perteneceASlot = perteneceASlot;
 	}
-	//solo para saber si clickearon una referencia
+	//solo para saber si clickearon una referencia, con esto las comparo.
 	Referencia(int posX, int posY) : Morph(posX,posY) {}
 
 	void draw(const Cairo::RefPtr<Cairo::Context>& cr){
 		cr->set_line_width(0.5);
-		cr->set_source_rgb(1.0, 0.0, 0.0);
+		cr->set_source_rgb(0.0, 0.0, 0.0);
 
 		cr->move_to(perteneceASlot->getPosX() + perteneceASlot->getWidth() - 6, 
 						perteneceASlot->getPosY() + (perteneceASlot->getHeight()/2));

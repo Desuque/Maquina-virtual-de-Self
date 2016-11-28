@@ -8,6 +8,7 @@ class VentanaPrincipal : public Gtk::Window {
 
 	protected:
 		Glib::RefPtr<Gtk::Builder> m_builder;
+		Gtk::Label* labelNombreLobby;
 		ProxyServer* proxy;
 	public:
 		// este constructor me obliga Glade a definirlo asi, si es que quiero tener mi clase.
@@ -19,6 +20,7 @@ class VentanaPrincipal : public Gtk::Window {
 		bool onWindowDelete(GdkEventAny*);
 		void on_button_close();
 		void setProxy(ProxyServer* proxy);
+		void setLabel(std::string nombreLobby);
 		virtual ~VentanaPrincipal();
 };
 

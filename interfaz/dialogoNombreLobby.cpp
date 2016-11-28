@@ -1,4 +1,5 @@
 #include "dialogoNombreLobby.h"
+#include "ventanaPrincipal.h"
 #include <gtkmm/entry.h>
 #include <sstream>
 
@@ -56,6 +57,15 @@ void DialogoNombreLobby::botonOkNombre(){
   		dialog.run();
 		return;
 	}
+
+	VentanaPrincipal* ventanaPrincipal = nullptr;
+	m_builder->Gtk::Builder::get_widget_derived("window1", ventanaPrincipal);
+	if(ventanaPrincipal==nullptr){
+		std::cout << "Error Glade" << std::endl;
+		throw new std::exception();
+	}
+	ventanaPrincipal->setLabel(nombreSinEspacios);
+
 	hide();
 }
 

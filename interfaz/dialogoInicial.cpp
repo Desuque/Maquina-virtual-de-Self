@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "listaDeLobbys.h"
+#include "ventanaPrincipal.h"
 #define CREAR_MAQUINA_VIRTUAL 0x01
 #define CARGAR_MAQUINA_VIRTUAL 0x06
 #define COD_LOAD_APP 0x07
@@ -90,7 +91,15 @@ void DialogoInicial::botonOkLobby(){
 		std::cout << "Error del Server al cargar lobby" << std::endl;
 		throw new std::exception();
 	}
-	
+
+	VentanaPrincipal* ventanaPrincipal = nullptr;
+	m_builder->Gtk::Builder::get_widget_derived("window1", ventanaPrincipal);
+	if(ventanaPrincipal==nullptr){
+		std::cout << "Error Glade" << std::endl;
+		throw new std::exception();
+	}
+	ventanaPrincipal->setLabel(seleccion);
+
 	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
 	dSeleccionarLobby->hide();

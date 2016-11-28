@@ -114,7 +114,7 @@ void MyArea::iniciar(){
     std::cout << "Error: el proxy no fue seteado" << std::endl;
     throw new std::exception();
   }  
-  
+
   std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
   Morph* lobby = new Morph("lobby", 0, 10., 10., textoShell, textoCodigoAsociado);
@@ -397,10 +397,37 @@ void MyArea::actualizarVisualizacionDeSlot(Morph* morph, Slot* slot){
 }
 
 void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
-  if(i_slots.size() == 0){
+  /*if(i_slots.size() == 0){
     return;
+  }*/
+  for (int i = 0; i < i_slots.size() ; i++){
+    Morph* morphAux = obtenerMorphPorId(i_slots[i]->get_id_base());
+    if(morphAux){
+      int size = i_slots.size();
+      for (int i = 0; i < size ; i++){
+        i_slots[i] -> print_attr();
+        // me fijo si hay un slot con ese nombre, lo debo modificar.
+        Slot* slot = morphAux->obtenerSlotConEsteNombre(i_slots[i]->get_name());
+        if(slot){
+          slot->actualizarSlot(i_slots[i]);
+          if(slot->estaDibujadoComoMorph()){
+            slot->borrarReferenciaAlMorphApuntado();
+            for (int j=0; j < referencias.size(); ++j){
+              if (slot->tieneEstaReferencia(referencias[j])){
+                slot->setEstaDibujadoComoMorph(false);
+                referencias.erase(referencias.begin()+j);
+                --j;
+              }
+            }
+            mostrarEsteSlotComoMorph(morphAux->get_id(), slot->get_name());
+          }
+          continue;
+        }
+        morphAux->agregarSlot(i_slots[i]);
+      }
+    }  
   }
-  Morph* aux = nullptr;
+  /*Morph* aux = nullptr;
   for (int i =0; i < morphs.size() ; ++i){
     if((morphs[i]->get_id() == i_slots[0]->get_id_base())){
       aux = morphs[i];
@@ -429,7 +456,7 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
       }
       aux->agregarSlot(i_slots[i]);
     }
-  }
+  }*/
   queue_draw();
 }
 
