@@ -38,7 +38,7 @@ class Slot: public Object{
 		void set_string_value(int id, string value);
                 void set_error_value(int id, string value);
 		void set_int_method_value(int id, string name);
-		void add_slot(Slot* slot);
+		void add_slot(Slot* slot, p_slots& v_sl);
 		bool name_is(string name);
                 void get_arguments(std::vector<string>& args);
 		bool is_parent();

@@ -23,7 +23,7 @@ class Object{
 		
 	public:
 		Object(int id);
-		void add_slot(Slot* sl);
+		void add_slot(Slot* sl, p_slots& v_sl);
 		Slot* rm_slot(string slot);
 		Slot* get_slot(string name);
 		p_slots get_slots();
@@ -56,7 +56,7 @@ class Object{
 		virtual ~Object();
 	
 	private:
-		void update_parent_slots(Slot* sl);
+		void update_parent_slots(Slot* sl, p_slots& v_sl);
 };
 
 #endif

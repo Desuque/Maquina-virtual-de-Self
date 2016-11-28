@@ -29,7 +29,7 @@ bool Object::is_mark(){
 	return this -> mark;
 }
 
-void Object::add_slot(Slot* sl){
+void Object::add_slot(Slot* sl, p_slots& v_sl){
         if ( sl ){
             Slot* sl_rep = get_slot(sl -> get_name());
             if (!sl_rep || (sl_rep -> get_name() == "")){
@@ -37,7 +37,7 @@ void Object::add_slot(Slot* sl){
             }else{
                 if (!sl_rep -> is_immutable()){
                         rm_slot(sl -> get_name());
-                        update_parent_slots(sl);
+                        update_parent_slots(sl, v_sl);
                         slots.insert({sl -> get_name(), sl});
                 }else{
                         //throw ErrorType(sl -> get_name());
@@ -47,10 +47,12 @@ void Object::add_slot(Slot* sl){
         }
 }
 
-void Object::update_parent_slots(Slot* sl){
+void Object::update_parent_slots(Slot* sl, p_slots& v_sl){
         for (m_slots::iterator it=slots.begin(); it!=slots.end(); ++it){
-                if ( (it->second-> is_parent()) && (it->second -> parent_name() == sl->get_name()))
+                if ( (it->second-> is_parent()) && (it->second -> parent_name() == sl->get_name())){
                         (it->second) -> set_value(sl -> get_value());
+                        v_sl.push_back(it->second);
+                }
         }
 }
 

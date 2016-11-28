@@ -140,7 +140,8 @@ Slot* VM::search_obj(string name){
 
 Slot* VM::add_slot(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	sl -> set_name(sl_recv_id);
-	sl_recv -> add_slot(sl);
+        p_slots v_slots;
+	sl_recv -> add_slot(sl, v_slots);
 	return sl_recv;
 }
 
@@ -149,7 +150,8 @@ Slot* VM::add_parent(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	sl_p -> set_value(sl->get_value());
 	add_basic_slots(sl_p, sl_recv_id);
 	sl_p -> set_parent(true, sl -> get_name(), sl -> get_id());
-	sl_recv -> add_slot(sl_p);
+        p_slots v_slots;
+	sl_recv -> add_slot(sl_p, v_slots);
 	this -> slots.insert(std::pair<int,Slot*>(sl_p -> get_id(),sl_p));
 	return sl_recv;
 }
@@ -160,7 +162,8 @@ Slot* VM::add_argument(Slot* sl_recv, string sl_recv_id, Slot* sl){
 	add_basic_slots(sl_p, sl_recv_id);
 	sl_p -> set_parent(true, sl -> get_name(), sl -> get_id());
         sl_recv -> add_argument(sl_recv_id);
-	sl_recv -> add_slot(sl_p);
+        p_slots v_slots;
+	sl_recv -> add_slot(sl_p, v_slots);
 	this -> slots.insert(std::pair<int,Slot*>(sl_p -> get_id(),sl_p));
 	return sl_recv;
 }
@@ -178,7 +181,8 @@ Slot* VM::add_code(Slot* sl_recv, string sl_recv_id, Slot* sl){
 void VM::add_default_name_slot(Slot* sl_recv, string name = obj_name){
 	Slot* sl = new Slot(get_id_slots(), name_slot);
 	sl -> set_string_value(get_id_slots(), name);
-	sl_recv -> add_slot(sl);
+        p_slots v_slots;
+	sl_recv -> add_slot(sl, v_slots);
 	this -> slots.insert(std::pair<int,Slot*>(sl -> get_id(),sl));
 }
 
@@ -296,7 +300,8 @@ Slot* VM::binary_message(Slot* sl_recv, string msg, Slot* sl){
 Slot* VM::execute_msg(Slot* msg, Slot* sl_invoker,p_objects& args){
 	msg -> get_value() -> rm_slot(self_slot);
 	Slot* recv = sl_invoker -> clone(*this);
-	msg -> get_value() -> add_slot(recv);
+        p_slots v_slots;
+	msg -> get_value() -> add_slot(recv, v_slots);
 	return msg -> get_value() -> execute(*this, args);
 }
 
@@ -320,7 +325,8 @@ Slot* VM::search_and_execute_key_msg(Slot* sl_recv, string msg, p_slots& args){
                                 string name = msg_args_names.at(i);
                                 Slot* val = obj ->  get_slot(name);
                                 val -> set_name(msg_args.at(i));
-                                sl_msg  -> get_value() -> add_slot(val);
+                                p_slots v_slots;
+                                sl_msg  -> get_value() -> add_slot(val, v_slots);
                         }
                         
                         /*Object* obj = args[1] -> get_value();
@@ -346,13 +352,19 @@ Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
 	Slot* ret = sl_recv;
         if (msg == add_slots_msg){
                 Slot* add_slots = create_object();
+                p_slots v_sl;
                 p_slots v_slots = sl -> get_value() -> get_slots();
                 int size = v_slots.size();
                 for (int i = 0; i < size; i++){
-                        sl_recv -> add_slot(v_slots[i]);
-                        add_slots -> add_slot(v_slots[i]);
+                        sl_recv -> add_slot(v_slots[i], v_sl);
+                        add_slots -> add_slot(v_slots[i], v_sl);
                 }
-                ret = sl;
+                p_slots v_sl2;
+                size = v_sl.size();
+                for (int i = 0; i < size; i++){
+                        add_slots -> add_slot(v_sl[i], v_sl2);
+                }
+                ret = add_slots;
         } else if (msg == rm_slots_msg){
                 Slot* rm_slots = create_object();
                 p_slots v_slots = sl -> get_value() -> get_slots();
@@ -361,8 +373,8 @@ Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
                         Slot* rm_sl =  rm_slot(sl_recv, v_slots[i]->get_name());
                         if (!rm_sl)
                             return NULL;
-                        
-                        rm_slots -> add_slot(rm_sl);
+                        p_slots v_slots;
+                        rm_slots -> add_slot(rm_sl, v_slots);
                 }
                 ret = rm_slots;
         }else{
@@ -382,7 +394,8 @@ void VM::add_default_numeric_slots(Slot* sl_recv){
 		Slot* sl = new Slot(get_id_slots(), name);
 		sl -> set_int_method_value(get_id_slots(), name);
 		add_basic_slots(sl, name);
-		sl_recv -> add_slot(sl);
+                p_slots v_slots;
+		sl_recv -> add_slot(sl, v_slots);
 	}
 }
 
@@ -390,7 +403,8 @@ void VM::add_default_self_slot(Slot* sl_recv){
 	Slot* sl = new Slot(get_id_slots(), self_slot);
 	sl -> set_obj_value(get_id_slots());
 	sl -> set_parent(true, self_slot, sl -> get_id());
-	sl_recv -> add_slot(sl);
+        p_slots v_slots;
+	sl_recv -> add_slot(sl, v_slots);
 	this -> slots.insert(std::pair<int,Slot*>(sl -> get_id(),sl));
 }
 

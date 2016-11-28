@@ -100,10 +100,10 @@ void Slot::set_name(string name){
 	this -> name = name;
 }
 
-void Slot::add_slot(Slot* slot){
+void Slot::add_slot(Slot* slot, p_slots& v_sl){
 	if (this -> type)
 		throw ErrorType(this -> name);
- 	this -> value -> add_slot(slot);
+ 	this -> value -> add_slot(slot, v_sl);
 }
 
 bool Slot::name_is(string name){

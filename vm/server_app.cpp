@@ -69,7 +69,7 @@ VM* App::get_vm(){
 }
 
 void App::run(int* fin){
-        test_example();
+        //test_example();
 	while (true){
                 try {    
 			uint32_t codigoMensaje = proxy->recibirCodigoMensaje();
