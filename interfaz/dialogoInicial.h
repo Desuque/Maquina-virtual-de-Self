@@ -11,7 +11,8 @@ class DialogoInicial : public Gtk::Dialog {
 		sigc::connection sigcBotonOk;
 	public:	
 		DialogoInicial();
-		// Este Constructor me obliga Glade a definirlo asi.
+		// este constructor me obliga Glade a definirlo asi, si es que quiero tener mi clase.
+		// https://developer.gnome.org/gtkmm-tutorial/stable/sec-builder-using-derived-widgets.html.en
 		DialogoInicial(BaseObjectType* cobject, 	
 					const Glib::RefPtr<Gtk::Builder>& refGlade);
 		void setProxy(ProxyServer* proxy);

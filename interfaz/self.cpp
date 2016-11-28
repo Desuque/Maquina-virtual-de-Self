@@ -31,8 +31,16 @@ int main(int argc, char *argv[])
 
   	auto refBuilder = Gtk::Builder::create();
 
-  	refBuilder->add_from_file("pGlade.glade");
-
+  	try{
+  		refBuilder->add_from_file("dGlade.glade");
+  	} catch (const Glib::FileError &e){ 
+  		try {
+  			refBuilder->add_from_file("/usr/local/bin/dGlade.glade");
+  		} catch (const Glib::FileError &e) {
+  			std::cout << "Error:  Archivo faltante, intente reinstalar la aplicacion." << std::endl;
+  			return 0;
+  		}
+  	}
 	VentanaPrincipal* window = nullptr;
 	refBuilder->get_widget_derived("window1", window);
 	window->setProxy(&proxy);

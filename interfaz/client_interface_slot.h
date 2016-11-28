@@ -21,9 +21,7 @@ class InterfaceSlot{
 		void print_attr();
 		string get_name();
 		string get_value();
-		bool elValorEsPrimitivo(){
-			return (this->value != "object");
-		}
+		bool elValorEsPrimitivo();
 		int get_id();
 		int get_id_base();
 		bool has_code();

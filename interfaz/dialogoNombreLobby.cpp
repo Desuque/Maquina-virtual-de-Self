@@ -1,5 +1,7 @@
 #include "dialogoNombreLobby.h"
 #include <gtkmm/entry.h>
+#include <sstream>
+
 DialogoNombreLobby::DialogoNombreLobby(){}
 
 DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject, 	
@@ -18,7 +20,8 @@ DialogoNombreLobby::DialogoNombreLobby(BaseObjectType* cobject,
 
 void DialogoNombreLobby::botonOkNombre(){
 	if(!proxy){
-		std::cout << "Error no hay proxy en DialogoNombreLobby" << std::endl;
+		std::cout << "Error no hay proxy" << std::endl;
+		throw new std::exception();
 		return;
 	}	
 	Gtk::Entry* entryNombreLobby = nullptr;
@@ -28,21 +31,29 @@ void DialogoNombreLobby::botonOkNombre(){
 		throw new std::exception();
 	}
 	std::string nombreLobby = std::string(entryNombreLobby->get_text());
-	std::cout << nombreLobby << std::endl;
 	
-	proxy->enviarJson(nombreLobby);
+	std::cout << nombreLobby << std::endl;
+	std::string nombreSinEspacios;
+	std::istringstream iss(nombreLobby);
+	iss >> std::skipws;
+	iss >> std::ws >> nombreSinEspacios;
+	std::cout << nombreSinEspacios << std::endl;
+
+	if (nombreSinEspacios==""){
+		Gtk::MessageDialog dialog(*this, "ERROR: Ingrese algun nombre");
+  		dialog.run();
+  		return;
+	}
+
+	proxy->enviarJson(nombreSinEspacios);
 	uint32_t respuesta = proxy->recibirCodigoMensaje();
 
 	if (respuesta == 0){
 		// el lobby ya existe lanzar un error y volver a pedir 
 		// el nombre.
-		//consultar
-		//entryNombreLobby->override_background_color(Gdk::RGBA(0.0, 1.0, 0.0, 1.0), Gtk::STATE_FLAG_NORMAL);
 		entryNombreLobby->set_text("");
-		//std::cout << "ERROR: Nombre de lobby existente, por favor ingrese otro\n";
 		Gtk::MessageDialog dialog(*this, "ERROR: Nombre de lobby existente, por favor ingrese otro");
   		dialog.run();
-		//proxy->cerrarConexion();
 		return;
 	}
 	hide();
@@ -55,6 +66,4 @@ void DialogoNombreLobby::botonSalir(){
 	hide();
 }
 
-DialogoNombreLobby::~DialogoNombreLobby(){
-
-}
+DialogoNombreLobby::~DialogoNombreLobby(){}

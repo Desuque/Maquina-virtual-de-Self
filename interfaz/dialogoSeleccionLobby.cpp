@@ -11,8 +11,6 @@ DialogoSeleccionLobby::DialogoSeleccionLobby(BaseObjectType* cobject,
 void DialogoSeleccionLobby::setListaLobbys(std::vector<std::string> listaLobbys){
 	ListaDeLobbys* listaDeLobbys = nullptr; 
 	m_builder->Gtk::Builder::get_widget_derived("treeview2", listaDeLobbys);
-	//listaDeLobbys->reestablecer();
-	//listaDeLobbys->show();
 	listaDeLobbys->setLista(listaLobbys);
 }
 

@@ -4,7 +4,6 @@
 #include <gtkmm.h>
 #include <pangomm/layout.h>
 
-
 Morph::Morph(){}
 
 // se usa para comparar morph por posiciones.
@@ -36,29 +35,6 @@ Morph::Morph(std::string nombreObjeto, int id, double posX, double posY,
 }
 
 Morph::Morph(Slot* unSlot){
-	this->id = unSlot->get_id();
-	this->nombreObjeto = unSlot->get_name();
-	if(unSlot->has_code()){
-		this->nombreParaMostrar = unSlot->get_name();
-		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
-		refTextViewCodigoAsociado->set_text(unSlot->get_value());
-	}else{
-		this->nombreParaMostrar = unSlot->get_value();
-	}
-	Pango::FontDescription font;
-	font.set_family("Monospace");
-	font.set_weight(Pango::WEIGHT_BOLD);
-	auto layout = create_pango_layout(this->nombreParaMostrar);
-	layout->set_font_description(font);
-	int text_width;
-	int text_height;
-	layout->get_pixel_size(text_width, text_height);
-	this->width = 2*text_width;
-	this->height = 2*text_height;
-}
-
-void Morph::actualizarValores(Slot* unSlot){
-	//Morph(unSlot);
 	this->id = unSlot->get_id();
 	this->nombreObjeto = unSlot->get_name();
 	if(unSlot->has_code()){
@@ -114,8 +90,6 @@ Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_Te
 	m_TextView(m_TextView), textViewCodigoAsociado(codigoAsociado) {
 	this->posX = posX;
 	this->posY = posY;
-	// hacer esto cuando haya solo una clase slots, para aprovechar el constructor.
-	// Morph(unSlot, m_textView, codigoAsociado);
 	this->id = unSlot->get_id();
 	refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 	refTextViewCodigoAsociado->set_text("");
@@ -142,6 +116,28 @@ Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_Te
 	refTextViewConsola = Gtk::TextBuffer::create();
 	refTextViewConsola->set_text("");
 } 
+
+void Morph::actualizarValores(Slot* unSlot){
+	this->id = unSlot->get_id();
+	this->nombreObjeto = unSlot->get_name();
+	if(unSlot->has_code()){
+		this->nombreParaMostrar = unSlot->get_name();
+		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
+		refTextViewCodigoAsociado->set_text(unSlot->get_value());
+	}else{
+		this->nombreParaMostrar = unSlot->get_value();
+	}
+	Pango::FontDescription font;
+	font.set_family("Monospace");
+	font.set_weight(Pango::WEIGHT_BOLD);
+	auto layout = create_pango_layout(this->nombreParaMostrar);
+	layout->set_font_description(font);
+	int text_width;
+	int text_height;
+	layout->get_pixel_size(text_width, text_height);
+	this->width = 2*text_width;
+	this->height = 2*text_height;
+}
 
 std::string Morph::get_id_to_string(){
 	return std::to_string(this->id);
@@ -208,7 +204,7 @@ void Morph::agregarSlot(InterfaceSlot* interface_slot){
 		}
 	}
 	Slot* slot = new Slot(interface_slot,this->posX, (this->posY)+(this->height), this->width, this->height);
-	this->actualizarAlturaMorph(slot->get_height());
+	this->actualizarAlturaMorph(slot->getHeight());
 	slots.push_back(slot);
 }
 

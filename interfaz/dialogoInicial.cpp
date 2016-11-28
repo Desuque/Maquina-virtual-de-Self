@@ -49,8 +49,6 @@ void DialogoInicial::salirClick(){
 }
 
 void DialogoInicial::nuevoLobbyClick(){
-    //Gtk::Dialog dialogoNombreLobby = nullptr;
-	//m_builder->get_widget("dialog2", dialogoNombreLobby);
     proxy->enviarCodigoMensaje(CREAR_MAQUINA_VIRTUAL);
 	hide();
 
@@ -63,7 +61,6 @@ void DialogoInicial::nuevoLobbyClick(){
 void DialogoInicial::cargarLobbyClick(){
     proxy->enviarCodigoMensaje(CARGAR_MAQUINA_VIRTUAL);
     std::string json = proxy->recibirJson();
-    std::cout << json << std::endl;
 	std::vector<string> names;
 	JsonReader reader;
 	reader.read_names(json, names);
@@ -77,7 +74,6 @@ void DialogoInicial::cargarLobbyClick(){
 	DialogoSeleccionLobby* dSeleccionarLobby = nullptr;
 	m_builder->Gtk::Builder::get_widget_derived("dialog3", dSeleccionarLobby);
 	dSeleccionarLobby->setListaLobbys(names);
-	//dSeleccionarLobby->setProxy(proxy);
 	dSeleccionarLobby->run();
 }
 
@@ -91,7 +87,7 @@ void DialogoInicial::botonOkLobby(){
 	proxy->enviarJson(seleccion);
 	
 	if(COD_LOAD_APP != proxy->recibirCodigoMensaje()){
-		std::cout << "Error al cargar lobby" << std::endl;
+		std::cout << "Error del Server al cargar lobby" << std::endl;
 		throw new std::exception();
 	}
 	

@@ -1,5 +1,6 @@
 #include "slot.h"
 #include "referencia.h"
+
 void Slot::actualizarSlot(InterfaceSlot* interface_slot){
 	this->type = interface_slot->get_type();
 	this->code = interface_slot->has_code();
@@ -119,8 +120,4 @@ bool Slot::clikEnObtenerSlot(int posX,int posY){
 			&& (posY >= (this->posY) + 2)
 			&& (posX <= (((this->posX) + (this->width)) - 2)) 
 			&& (posY <= ((this->posY) + this->height - 2));
-}
-
-size_t Slot::get_height(){
-	return this->height;
 }

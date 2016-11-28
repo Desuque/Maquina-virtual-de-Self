@@ -8,6 +8,8 @@ class ListaDeLobbys : public Gtk::TreeView {
 
 public:
   ListaDeLobbys();
+  // este constructor me obliga Glade a definirlo asi, si es que quiero tener mi clase.
+  // https://developer.gnome.org/gtkmm-tutorial/stable/sec-builder-using-derived-widgets.html.en
   ListaDeLobbys(BaseObjectType* cobject,   
             const Glib::RefPtr<Gtk::Builder>& refGlade); 
   virtual ~ListaDeLobbys();

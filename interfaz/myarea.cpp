@@ -103,7 +103,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     std::cout << "Error Glade" << std::endl;
     throw new std::exception();
   } 
-	
+  
   resetFlag=true;
   queue_draw();
   moveFlag=false;

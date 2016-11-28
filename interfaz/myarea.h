@@ -36,6 +36,8 @@ protected:
   ProxyServer* proxyServer;
 
 public:
+  // este constructor me obliga Glade a definirlo asi, si es que quiero tener mi clase.
+  // https://developer.gnome.org/gtkmm-tutorial/stable/sec-builder-using-derived-widgets.html.en
   MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
   MyArea();
   void iniciar();

@@ -49,3 +49,7 @@ int InterfaceSlot::get_id(){
 int InterfaceSlot::get_id_base(){
 	return this->id_base;
 }
+
+bool InterfaceSlot::elValorEsPrimitivo(){
+	return (this->value != "object");
+}

@@ -18,7 +18,6 @@ private:
 	int id_base;
 
 public:	
-	//Slot(){}
 	Slot(InterfaceSlot* interfaceSlot, double posX, double posY, int width, int height);
 	void actualizarSlot(InterfaceSlot* interface_slot);
 	std::string get_name();
@@ -38,7 +37,6 @@ public:
 	void setReferencia(Referencia* unaReferencia);
 	void borrarReferenciaAlMorphApuntado();
 	bool clikEnObtenerSlot(int posX,int posY);
-	size_t get_height();
 
 	virtual ~Slot(){}
 };
