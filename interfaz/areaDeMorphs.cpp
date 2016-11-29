@@ -133,7 +133,6 @@ void AreaDeMorphs::iniciar(){
 
   int size = i_slots.size();
   for (int i = 0; i < size ; i++){
-    i_slots[i] -> print_attr();
     morphSeleccionado->agregarSlot(i_slots[i]);
   }
   
@@ -191,7 +190,6 @@ void AreaDeMorphs::botonGuardarNuevoSlotEvent(){
 }
 
 void AreaDeMorphs::agregarSlot_event(){
-  std::cout << "agregar slot" << std::endl;
   Gtk::Dialog* dialogoAddSlot = nullptr;
   m_builder->Gtk::Builder::get_widget("dialog4", dialogoAddSlot);
   if (dialogoAddSlot == nullptr) {
@@ -229,7 +227,7 @@ void AreaDeMorphs::get_it_event(){
   std::string textoAEnviar = morphSeleccionado->get_it();
   
   if (textoAEnviar == ""){
-    std::cout << "Error ingresar Codigo" << std::endl;
+    std::cout << "Error: Por favor, ingresar Codigo" << std::endl;
     return;
   }
   JsonWriter writer;
@@ -243,7 +241,7 @@ void AreaDeMorphs::do_it_event(){
   std::string textoAEnviar = morphSeleccionado -> do_it();
 
   if (textoAEnviar == ""){
-    std::cout << "Error ingresar Codigo" << std::endl;
+    std::cout << "Error: Por favor, ingresar Codigo" << std::endl;
     return;
   }
 
@@ -301,13 +299,13 @@ void AreaDeMorphs::closeMorph(int id_morph){
   if(!morph) return;
 
 
-  /*if(morphSeleccionado){
+  if(morphSeleccionado){
     if(morphSeleccionado->get_id() == morph->get_id()){
       // si el que se borra es el que tengo seleccionado
       // queda como seleccionado el lobby(su id por defecto siempre es 0).
       morphSeleccionado = obtenerMorphPorId(ID_DE_LOBBY);
     }
-  }*/
+  }
 
   borrarReferenciasDeMorph(morph);
   borrarReferenciasDeLosSlotsDeMorph(morph);
@@ -403,7 +401,6 @@ void AreaDeMorphs::agregarSlots(std::vector<InterfaceSlot*> i_slots){
     if(morphAux){
       int size = i_slots.size();
       for (int i = 0; i < size ; i++){
-        i_slots[i] -> print_attr();
         // me fijo si hay un slot con ese nombre, lo debo modificar.
         Slot* slot = morphAux->obtenerSlotConEsteNombre(i_slots[i]->get_name());
         if(slot){
@@ -470,7 +467,6 @@ void AreaDeMorphs::borrarSlots(std::vector<InterfaceSlot*> i_slots){
   if(aux){
     int size = i_slots.size();
     for (int i = 0; i < size ; i++){
-      i_slots[i] -> print_attr();
       borrarSlotDeEsteMorph(aux, i_slots[i]->get_id());
     }
   }

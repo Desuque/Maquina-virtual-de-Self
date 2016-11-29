@@ -21,7 +21,10 @@ DialogoInicial::DialogoInicial(BaseObjectType* cobject,
 	proxy(nullptr) {
 	Gtk::Button* botonNuevoLobby = nullptr;
 	m_builder-> Gtk::Builder::get_widget("button8", botonNuevoLobby);
-  	if (botonNuevoLobby == nullptr) std::cout << "error" << std::endl;
+  	if (botonNuevoLobby == nullptr){
+  		std::cout << "error glade" << std::endl;
+    	throw new std::exception();
+    }
     botonNuevoLobby->signal_clicked().connect(sigc::mem_fun(*this,&DialogoInicial::nuevoLobbyClick));
 
 	Gtk::Button* botonCargarLobby = nullptr;

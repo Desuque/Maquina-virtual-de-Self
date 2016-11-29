@@ -30,11 +30,9 @@ void Cliente::run() {
 			// se cerro la conexion.
 			return;
 		}
-		//std::cout << "codigo recibido: " << codigo << std::endl;
 		switch (codigo){	
 			case PEDIR_SLOT: {
 				std::string json = proxy.recibirJson();
-				std::cout << json << std::endl;
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
 				slots_reader.read(i_slots, json);
@@ -48,7 +46,6 @@ void Cliente::run() {
 			}
 			case AGREGAR_SLOT : {
 				std::string json = proxy.recibirJson();
-				std::cout << json << std::endl;
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
 				slots_reader.read(i_slots, json);
@@ -61,7 +58,6 @@ void Cliente::run() {
 		    }
 		    case BORRAR_SLOT : {
 				std::string json = proxy.recibirJson();
-				std::cout << json << std::endl;
 
 				JsonReader slots_reader;
 				std::vector<InterfaceSlot*> i_slots;
@@ -79,7 +75,6 @@ void Cliente::run() {
 				std::string json = proxy.recibirJson();
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
-				std::cout << i_slots.size() << std::endl;
 				slots_reader.read(i_slots, json);
 				if(accion == GET_IT){
 					areaDeMorphs->crearMorphs(i_slots);
@@ -118,7 +113,6 @@ void Cliente::run() {
 				JsonReader jsonReader;
 				int id = -1;
 				jsonReader.read_id_morph(json, id);
-				std::cout << id << std::endl;
 				areaDeMorphs->closeMorph(id);
 				break;
 			}					
@@ -135,7 +129,6 @@ void Cliente::run() {
 				std::string json = proxy.recibirJson();
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;
-				std::cout << i_slots.size() << std::endl;
 				slots_reader.read(i_slots, json);
 				areaDeMorphs->crearMorphsError(i_slots);
 				for (std::vector<InterfaceSlot*>::iterator it = i_slots.begin(); it != i_slots.end();){  
@@ -144,8 +137,8 @@ void Cliente::run() {
 			  	}				break;
 			}
 			default: {
-				std::cout << "recibi comando desconocido\n";
-				std::cout << "recibi comando desconocido: " << codigo << std::endl;
+				/*std::cout << "recibi comando desconocido\n";
+				std::cout << "recibi comando desconocido: " << codigo << std::endl;*/
 				break;
 			}
 		}

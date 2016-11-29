@@ -5,7 +5,6 @@
 
 // detecta que me cerraron la ventana y libera los recursos
 bool VentanaPrincipal::onWindowDelete(GdkEventAny*){
-  std::cout << "cerre desde ventanaPrincipal" << std::endl;
   AreaDeMorphs* myArea = nullptr;
   m_builder-> Gtk::Builder::get_widget_derived("drawingarea1", myArea);
   myArea->liberarMemoria();

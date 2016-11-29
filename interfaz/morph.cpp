@@ -96,7 +96,6 @@ Morph::Morph(InterfaceSlot* unSlot,double posX, double posY, Gtk::TextView* m_Te
 	this->nombreObjeto = unSlot->get_name();
 	if(unSlot->has_code()){
 		this->nombreParaMostrar = unSlot->get_name();
-		std::cout << unSlot->get_name() << std::endl;
 		refTextViewCodigoAsociado = Gtk::TextBuffer::create();
 		refTextViewCodigoAsociado->set_text(unSlot->get_value());
 	}else{

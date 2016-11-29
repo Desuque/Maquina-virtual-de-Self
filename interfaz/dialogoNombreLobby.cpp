@@ -33,12 +33,10 @@ void DialogoNombreLobby::botonOkNombre(){
 	}
 	std::string nombreLobby = std::string(entryNombreLobby->get_text());
 	
-	std::cout << nombreLobby << std::endl;
 	std::string nombreSinEspacios;
 	std::istringstream iss(nombreLobby);
 	iss >> std::skipws;
 	iss >> std::ws >> nombreSinEspacios;
-	std::cout << nombreSinEspacios << std::endl;
 
 	if (nombreSinEspacios==""){
 		Gtk::MessageDialog dialog(*this, "ERROR: Ingrese algun nombre");
