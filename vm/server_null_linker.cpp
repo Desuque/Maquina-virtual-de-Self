@@ -28,7 +28,7 @@ Slot* nLinker::create_binary_message(Slot* receiver, std::string op, Slot* expCP
 	return NULL;
 }
 
-Slot* nLinker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
+Slot* nLinker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP, bool addSlots) {
 	return NULL;
 }
 

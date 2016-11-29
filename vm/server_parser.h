@@ -33,7 +33,7 @@ private:
 	bool expression(std::stringstream* codigo, int* posicion, Slot** slot);
 	Slot* process_unary_message(Slot* receiver, std::string name);
 	Slot* process_binary_message(Slot* receiver, std::string op, Slot* expCP);
-	Slot* process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP);
+	Slot* process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP, bool addSlots);
 	Slot* process_keyword_message(std::string lower_or_cap, Slot* expCP);
 	Slot* process_slot_list(Slot* object, std::string slot_name_extended, std::string op, Slot* exp);
 	Slot* process_slot_list(Slot* object, std::string slot_name_extended);

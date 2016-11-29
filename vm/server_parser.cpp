@@ -816,8 +816,8 @@ bool Parser::remove_slots(std::stringstream* codigo, int* posicion, Slot** slot)
 	return false;
 }
 
-Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
-	return linker->create_keyword_message(receiver, lower_or_cap, expCP);
+Slot* Parser::process_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP, bool addSlots) {
+	return linker->create_keyword_message(receiver, lower_or_cap, expCP, addSlots);
 }
 
 Slot* Parser::process_user_method(Slot* method, Slot* expCP) {
@@ -861,7 +861,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 
 				if(lower_key == "_RemoveSlots") {
 					if(remove_slots(codigo, posicion, &slot_expCP)) {
-						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
+						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP, false);
 						setFlag(lower_key);
 						return true;
 					} else {
@@ -871,7 +871,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					}
 				} else if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
-						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
+						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP, true);
 						setFlag(lower_key);
 						return true;
 					} else {
@@ -916,7 +916,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 						std::cout<<"Este es el arg al final: "<<args<<std::endl;
 
 
-						*slot = process_keyword_message(slot_receiver, args, method);
+						*slot = process_keyword_message(slot_receiver, args, method, true);
 						std::cout<<"Pasa por aca!"<<std::endl;
 						return true;
 					}

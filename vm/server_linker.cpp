@@ -54,10 +54,11 @@ Slot* Linker::create_binary_message(Slot* receiver, std::string op, Slot* expCP)
 	return vm->binary_message(receiver, op, expCP);
 }
 
-Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP) {
+Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP, bool addSlots) {
 	std::cout<<"Aca llega"<<std::endl;
 	std::cout<<"El name: "<<receiver->get_name()<<std::endl;
-	if(receiver->get_name() == "lobby") {
+	if((receiver->get_name() == "lobby") && (addSlots == true)) {
+		std::cout<<"No entro aca"<<std::endl;
 		Slot* cont = vm->create_object();
 		vm->add_slot(cont, "", expCP);
 		return vm->keyword_message(receiver, lower_or_cap, cont);
