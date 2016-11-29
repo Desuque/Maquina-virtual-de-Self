@@ -11,8 +11,9 @@ static const int cod_create_app = 1;
 static const int cod_get_apps_name = 6;
 static const int cod_load_app = 7;
 static const int msg_size = 1;
+static string user = getenv("USER"); 
+static string dir_file = "/home/"+user+"/Documents/data/";
 static const char* file_ext = ".dat";
-static const char* folder = "data/";
 
 Server::Server(){
         load_file_names();
@@ -21,7 +22,7 @@ Server::Server(){
 void Server::load_file_names(){
         DIR *dir;
         struct dirent *ent;
-        if ((dir = opendir (folder)) != NULL) {
+        if ((dir = opendir (dir_file.c_str())) != NULL) {
             while ((ent = readdir (dir)) != NULL) {
                 string file_name = ent->d_name;
                 string name = file_name.substr(0, file_name.find(file_ext));
@@ -37,20 +38,16 @@ void Server::bind(int port){
 }
 
 void Server::run(int* fin){
-    ProxyClient* proxy;
+        ProxyClient* proxy;
         while (true){
                 proxy = new ProxyClient();
                 try{ proxyClient.aceptarCliente(proxy);}
                 catch (const std::exception e){break;}
-        /* ver como hacer para que quede un solo try
-        // Esto pasa solo cuando un usuario desea salir antes
-        // en el ingreso del nombre o en la seleccion de lobby
-        // o en caso de error tambien. si no la atrapo el server 
-           recibe una exception y se cierra de golpe. */
-        uint32_t codigoMensaje = 0;        
-        try {
-            codigoMensaje = proxy->recibirCodigoMensaje();
-        } catch (const std::exception e){continue;}
+        
+                uint32_t codigoMensaje = 0;        
+                try {
+                    codigoMensaje = proxy->recibirCodigoMensaje();
+                } catch (const std::exception e){continue;}
 
                 if (codigoMensaje == cod_create_app){
                         recv_app_create(proxy);
@@ -63,31 +60,28 @@ void Server::run(int* fin){
 }
 
 void Server::recv_app_create(ProxyClient* proxy){
-    try {
+        try {
         // le doy tres intentos al usuario para que 
         // ingrese el nombre de un lobby distinto.
-        for(int i=0; i < 3 ; ++i){
-            string app_name = proxy->recibirJson();
+            for(int i=0; i < 3 ; ++i){
+                string app_name = proxy->recibirJson();
                             
-            if ( apps.find(app_name) == apps.end()){
-                    proxy->enviarCodigoMensaje(cod_create_app);
-                    App* new_app = new App(app_name, this, proxy);
-                    apps.insert (std::pair<string,App*>(app_name, new_app));
-                    proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
-                    new_app -> start();
-                    break;
-            } else {
-                    //Enviar Error, ese nombre ya existe
+                if ( apps.find(app_name) == apps.end()){
+                        proxy->enviarCodigoMensaje(cod_create_app);
+                        App* new_app = new App(app_name, this, proxy);
+                        apps.insert (std::pair<string,App*>(app_name, new_app));
+                        proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
+                        new_app -> start();
+                        break;
+                } else {
                     proxy->enviarCodigoMensaje(cod_error);
-                    // ahora se queda esperando que le envien un nombre
-                    // valido.
+                }
             }
+        } catch (const std::exception e){
+            // El cliente se desconecto sin 
+            // ingresar el noombre del lobby.
+            return;
         }
-    } catch (const std::exception e){
-        // El cliente se desconecto sin 
-        // ingresar el noombre del lobby.
-        return;
-    }
 }
 
 void Server::recv_app_load(ProxyClient* proxy){
@@ -95,13 +89,11 @@ void Server::recv_app_load(ProxyClient* proxy){
         proxy->enviarJson(json);
         uint32_t codigoMensaje = proxy->recibirCodigoMensaje();
         if (codigoMensaje == cod_load_app){
-                //uint32_t tamMensaje = proxy->recibirTamMensaje();
-                //string app_name = proxy->recibir(tamMensaje);
                 string app_name = proxy->recibirJson();
                 App* new_app = new App(app_name, this, proxy);
                 apps.insert (std::pair<string,App*>(app_name, new_app));
                 proxys.insert(std::pair<string,ProxyClient*>(app_name, proxy));
-                string file_name = folder+app_name+file_ext;
+                string file_name = dir_file+app_name+file_ext;
                 execute_file(new_app, file_name);
                 new_app -> start();
                 proxy->enviarCodigoMensaje(cod_load_app);
@@ -128,7 +120,7 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag, int 
                         if (cod == 2 || cod == 8 || cod == 11 || cod == 12){
                                 (it->second)->enviarCodigoMensaje(cod);
                                 (it->second) -> enviarJson(json);
-                        }else if (cod == 5){// podria ser cualquier cosa, ejemplo : agregarSlot remove
+                        }else if (cod == 5){
                                 if (flag == 0) {
                                     (it->second)->enviarCodigoMensaje(flag);
                                 } else if (flag == 3) {
@@ -138,15 +130,13 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag, int 
                                 } else if (flag == 14) {
                                     (it->second)->enviarCodigoMensaje(flag);
                                 } else {
-                                //hardcodeo el 5 porque devuelve -1 por defecto 
-                                //    para tener un caso no seteado
+                                
                                     (it->second)->enviarCodigoMensaje(5);
                                     (it->second)->enviarCodigoMensaje(action);
                                 }
                                 std::cout << "devolucion: " << json << std::endl;
                     
-                                //if(flag != 0)
-                                    (it->second)->enviarJson(json);
+                                (it->second)->enviarJson(json);
                         }                        
                 }
         }
@@ -171,7 +161,6 @@ void Server::update_app(string str_parser_code_share, string lobby_des){
 void Server::update_clients(string json_share, string lobby_des){
          for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
                 if (lobby_des == it->first){                   
-                            //Enviar codigo a la interfaz para que lo ejecute
                             (it->second) -> enviarCodigoMensaje(cod_get_slots);
                             (it->second) -> enviarJson(json_share);
                 }
@@ -189,18 +178,18 @@ int Server::execute(string file_name){
 }
 
 int Server::execute_file(App* app, string file_name){
-    std::ifstream file;
-    file.open(file_name, std::ifstream::in);
-    if (!file.is_open())
-        return 1;
+        std::ifstream file;
+        file.open(file_name, std::ifstream::in);
+        if (!file.is_open())
+            return 1;
     
-        std::string str;
-    std::string file_contents;
-    while (std::getline(file, str)){
-        file_contents += str;
-    }
+        string str;
+        string file_contents;
+        while (std::getline(file, str)){
+            file_contents += str;
+        }
     
-    app->execute_file(file_contents);
+        app->execute_file(file_contents);
         return 0;
 }
 

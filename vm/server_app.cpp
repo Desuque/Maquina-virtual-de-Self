@@ -16,6 +16,9 @@ static const int cod_garbage = 14;
 static const int cod_pedir_lista_lobbys = 15;
 static const int cod_get_it = 16;
 static const int cod_do_it = 17;
+static string user = getenv("USER"); 
+static string dir = "/home/"+user+"/Documents/data/";
+static string ext = ".dat";
 
 App::App(){
 	parser.setVM(&vm);
@@ -35,11 +38,13 @@ string App::get_slots(string id){
 }
 
 string App::save_vm(string name){
-        string file_name = "data/"+name+".dat";
+        string user = getenv("USER"); 
+        string file_name = dir+name+ext;
         std::ofstream file;
         string rm_msg = "rm -f " + file_name; 
         system(rm_msg.c_str());
-        system("mkdir -p data");
+        string cmd = "mkdir -p "+dir; 
+        system(cmd.c_str());
 	file.open (file_name, std::ios::app);
 	string data = vm.save();
 	file << data << std::endl;
