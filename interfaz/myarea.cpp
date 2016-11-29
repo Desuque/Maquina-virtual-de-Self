@@ -422,25 +422,30 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
 void MyArea::borrarSlotDeEsteMorph(Morph* morph, int idSlot){
   // pido una referencia a lista de slots por que necesito
   // eliminarlas las coincidencias.
-  std::vector<Slot*> slotsDeMorph = morphSeleccionado->getSlots();
-  for (int i = 0; i < (slotsDeMorph).size(); ++i){
-    if ((slotsDeMorph)[i]->get_id() == idSlot){         
-      if ((slotsDeMorph)[i]->estaDibujadoComoMorph()){
-        // si esta dibujado borro la referencia al morph que apunta
-        for (int j = 0; j < referencias.size(); ++j){
-            if ((slotsDeMorph)[i]->tieneEstaReferencia(referencias[j])){
-              referencias.erase(referencias.begin()+j);
-              --j;
-            }
+  if (morph!= nullptr){
+    // recibo una referencia a la lista por que la debo modificar.
+    std::vector<Slot*>& listaSlots = morph->getSlots();
+    for (int i = 0; i < (listaSlots).size(); ++i){
+      if ((listaSlots)[i]->get_id() == idSlot){         
+        if ((listaSlots)[i]->estaDibujadoComoMorph()){
+          // si esta dibujado borro la referencia al morph
+          // que apunta
+          for (int j = 0; j < referencias.size(); ++j){
+              if ((listaSlots)[i]->tieneEstaReferencia(referencias[j])){
+                referencias.erase(referencias.begin()+j);
+                // este delete se hace cuando le borro la referencia
+                // al morph, ya que comparten la referencia.
+                --j;
+              }
+          }
+          (listaSlots)[i]->borrarReferenciaAlMorphApuntado();
         }
-        (slotsDeMorph)[i]->borrarReferenciaAlMorphApuntado();
+        delete (listaSlots)[i];
+        (listaSlots).erase((listaSlots).begin()+i);
+        --i;
       }
-      delete (slotsDeMorph)[i];
-      (slotsDeMorph).erase((slotsDeMorph).begin()+i);
-      --i;
     }
   }
-
 }
 
 void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
@@ -462,6 +467,7 @@ void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
   }
   queue_draw();
 }
+
 
 void MyArea::mostrarEsteSlotComoMorph(int id_morph, std::string nombreSlot){
   Morph* morph = nullptr;

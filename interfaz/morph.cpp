@@ -149,7 +149,7 @@ int Morph::get_id(){
 
 // devuelve una referencia a la lista de slots.
 // si o si la necesito modificar desde el area de dibujo.
-std::vector<Slot*>& Morph::getSlots(){
+std::vector<Slot*>& Morph::getSlots() {
 	return this->slots;
 }
 

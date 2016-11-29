@@ -8,7 +8,6 @@
 class Slot : public Morph{
 private:
 	bool dibujadoComoMorph;
-	Referencia* referencia;
 	/* interface Slot */
 	bool type;
 	bool code;
@@ -16,6 +15,7 @@ private:
 	std::string value;
 	int id;
 	int id_base;
+	Referencia* referencia;
 
 public:	
 	Slot(InterfaceSlot* interfaceSlot, double posX, double posY, int width, int height);

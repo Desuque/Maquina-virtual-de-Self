@@ -35,6 +35,7 @@ VentanaPrincipal::VentanaPrincipal(BaseObjectType* cobject,
   m_builder(builder),
   proxy(nullptr), labelNombreLobby(nullptr) {
 
+  set_default_size(800,800);
   maximize();
   add_events( Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK );
   this->signal_delete_event().connect(sigc::mem_fun(this,&VentanaPrincipal::onWindowDelete));
