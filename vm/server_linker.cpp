@@ -65,11 +65,11 @@ Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, S
 
 Slot* Linker::create_keyword_message(std::string lower_or_cap, Slot* expCP) {
 	Slot* receiver = vm->search_obj_id(atoi(id.c_str()));
-
 	Slot* object = create_object();
 	Slot* slot = create_slot(object, lower_or_cap, "=", expCP, false);
-
-	return vm->keyword_message(receiver, "_AddSlots", slot);
+	Slot* cont = vm->create_object();
+	vm->add_slot(cont, "", slot);
+	return vm->keyword_message(receiver, "_AddSlots", cont);
 }
 
 Slot* Linker::create_object() {
