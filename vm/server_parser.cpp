@@ -319,14 +319,12 @@ bool Parser::slot_list(std::stringstream* codigo, int* posicion, Slot** slot, st
 		//un slot mutable inicializado con el objeto ​nil
 		if(c == '.') {
 			if(get_arg_flag()) {
-				std::cout<<"Este es el argumento!"<<slot_name_extended<<std::endl;
 				args->push_back(slot_name_extended);
 				*posicion = codigo->tellg();
 				return true;
 			} else {
 				*slot = process_slot_list(*slot, slot_name_extended);
 				*posicion = codigo->tellg();
-				std::cout<<"Estoy saliendo por aca, y no proceso el resto"<<std::endl;
 				return true;
 			}
 		}
@@ -466,8 +464,6 @@ bool Parser::name(std::stringstream* codigo, int* posicion) {
 		}
 	}
 
-	std::cout<<"Este name sale!: "<<auxiliar<<std::endl;
-
 	//Cualquier palabra alfanumerica que empiece con una letra en minusculas
 	std::regex rr(R"([a-z][A-Z-a-z-0-9-:]*)");
 	if(regex_match(auxiliar,rr)) {
@@ -505,7 +501,6 @@ bool Parser::slot_name_extended(std::stringstream* codigo, int* posicion) {
 		*posicion = codigo->tellg();
 		if(name(codigo, posicion)) {
 			set_arg_flag(true);
-			std::cout<<"Entre a un argumento: "<<std::endl;
 			return true;
 		}
 	}
@@ -871,7 +866,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					}
 				} else if(lower_key == "_AddSlots") {
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
-						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP, true);
+						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP, false);
 						setFlag(lower_key);
 						return true;
 					} else {
@@ -881,17 +876,14 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					}
 				} else {
 					//Metodos de usuario
-					std::cout<<"Entre al metodo de usuario"<<std::endl;
 					std::string args = lower_key + ":";
 					Slot* method = NULL;
 					if(expressionCP(codigo, posicion, &slot_expCP)) {
 						method = process_user_method(method, slot_expCP);
-						std::cout<<"Ya cree el int"<<std::endl;
 											 
 						bool isCap_keyword = true;
 						while(isCap_keyword) {
 							if(cap_keyword(codigo, posicion)) {
-								std::cout<<"Entra al cap?"<<std::endl;
 								std::string cap_key = get_msg();
 								//Elimino posibles espacios en blanco
 								erase_white_spaces(codigo, posicion);
@@ -913,11 +905,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 							}
 						}
 					
-						std::cout<<"Este es el arg al final: "<<args<<std::endl;
-
-
 						*slot = process_keyword_message(slot_receiver, args, method, true);
-						std::cout<<"Pasa por aca!"<<std::endl;
 						return true;
 					}
 				}		
@@ -1219,7 +1207,6 @@ std::vector<Slot*> Parser::parsear(std::string codigo, std::string id, std::vect
 		//Parseo como un script comun
 		parsear(codigo, flags);
 	} catch (const std::exception& e) {
-		std::cout<<"Entre aca o no?"<<std::endl;
 		set_error(flags);
 	}
 
