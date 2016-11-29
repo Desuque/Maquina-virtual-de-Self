@@ -863,7 +863,6 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					if(remove_slots(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
-						std::cout<<"Sale por aca"<<std::endl;
 						return true;
 					} else {
 						//Si no hay coincidencia, vuelvo el puntero a su posicion original
