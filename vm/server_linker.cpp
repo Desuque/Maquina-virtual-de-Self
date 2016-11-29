@@ -46,7 +46,6 @@ Slot* Linker::create_string(std::string string) {
 }
 
 Slot* Linker::create_unary_message(Slot* receiver, std::string name) {
-	std::cout<<"Entro al unary"<<std::endl;
 	return vm->unary_message(receiver, name);
 }
 
@@ -55,10 +54,7 @@ Slot* Linker::create_binary_message(Slot* receiver, std::string op, Slot* expCP)
 }
 
 Slot* Linker::create_keyword_message(Slot* receiver, std::string lower_or_cap, Slot* expCP, bool addSlots) {
-	std::cout<<"Aca llega"<<std::endl;
-	std::cout<<"El name: "<<receiver->get_name()<<std::endl;
 	if((receiver->get_name() == "lobby") && (addSlots == true)) {
-		std::cout<<"No entro aca"<<std::endl;
 		Slot* cont = vm->create_object();
 		vm->add_slot(cont, "", expCP);
 		return vm->keyword_message(receiver, lower_or_cap, cont);
@@ -82,42 +78,34 @@ Slot* Linker::create_object() {
 
 Slot* Linker::create_parent_slot(Slot* object, std::string parent, std::string son) {
 	Slot* X1 = vm->search_obj(son);
-	//Slot* X2 = vm->create_object();
-	//vm->add_parent(X2, parent, X1);
-	//vm->add_slot(object, "", X2);
+	Slot* X2 = vm->create_object();
+	vm->add_parent(X2, parent, X1);
+	vm->add_slot(object, "", X2);
 
-	vm->add_parent(object, parent, X1);
 	return object;
-
-	//ES ASI
-	//lobby _AddSlots: (| punto1 = (| y <- 4. |). |).
-    //lobby _AddSlots: (| punto11 = (| padre* = punto1 . |). |).
 }
 
 Slot* Linker::create_slot(Slot* object, std::string slot_name_extended, std::string op, Slot* exp, bool code_flag) {
-	//Slot* X1 = vm->create_object();
+	Slot* X1 = vm->create_object();
 	Slot* X2 = exp;
 	if(op == "<-") {
 		vm->immutable_object(X2);
 	}
 	if(code_flag == true) {
-		vm->add_code(object, slot_name_extended, X2);
-		//vm->add_code(X1, slot_name_extended, X2);
+		vm->add_code(X1, slot_name_extended, X2);
 	} else {
-		vm->add_slot(object, slot_name_extended, X2);
-		//vm->add_slot(X1, slot_name_extended, X2);
+		vm->add_slot(X1, slot_name_extended, X2);
 	}
-	//vm->add_slot(object, "", X1);
+	vm->add_slot(object, "", X1);
 	
 	return object;
 }
 
 Slot* Linker::create_slot(Slot* object, std::string slot_name_extended) {
-	//Slot* X1 = vm->create_object();
+	Slot* X1 = vm->create_object();
 	Slot* X2 = vm->create_nil();
-	//vm->add_slot(X1, slot_name_extended, X2);
-	vm->add_slot(object, slot_name_extended, X2);
-	//vm->add_slot(object, "", X1);
+	vm->add_slot(X1, slot_name_extended, X2);
+	vm->add_slot(object, "", X1);
 
 	return object;
 }
@@ -144,34 +132,21 @@ Slot* Linker::remove_slots(Slot* slot, std::string slot_to_erase) {
 Slot* Linker::set_object_script(Slot* slot, std::string script, 
 		std::string msg_slot_name_extended, std::vector<std::string> args) {
 
-	std::cout<<"Este es el nombre del script: "<<msg_slot_name_extended<<std::endl;
-	std::cout<<"ESte es el scrit: "<<script<<std::endl;
-	//refactorear esta firma que trae banda de cosas que no sirven
-	
 	Slot* XA4 = vm->create_string(script);	
 	for(unsigned int i = 0; i<args.size(); i++) {
 		Slot* XA5 = vm->create_object();
-		std::cout<<"ESte argumento guardo: "<<args.at(i)<<std::endl;
-    	vm->add_argument(XA4, args.at(i), XA5);	
+		vm->add_argument(XA4, args.at(i), XA5);	
 	}
 
 	return XA4;
 }
 
 Slot* Linker::create_user_method(Slot *method, Slot* expCP) {
-	        //funciones multa:8 b:3.
-        //Slot* XE11 = vm.search_obj("funciones");
-        if (method == NULL) {
+	    if (method == NULL) {
         	method = vm->create_object();
         }
-        //Slot* XE13 = vm.create_int(8);
-        //Slot* XE14 = vm.create_int(3);//
-
-        //XE13-> get_name(), iba un 3;
         std::string name = expCP->get_name();
-        std::cout<<"Nombre del metodo de usuario: "<<name<<std::endl;
         vm->add_parent(method, name, expCP);//
-        //vm.add_parent(XE12, "8", XE13);
         return method;
 }
 
