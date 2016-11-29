@@ -6,11 +6,20 @@
 #include <fstream>
 
 static const int cod_error = 0;
-static const int cod_get_slots = 2;
 static const int cod_create_app = 1;
+static const int cod_get_slots = 2;
+static const int cod_gen = 5;
 static const int cod_get_apps_name = 6;
 static const int cod_load_app = 7;
+static const int cod_pos = 8;
+static const int cod_morph = 11;
+static const int cod_del = 12;
 static const int msg_size = 1;
+static const int num_op = 3;
+static const int flag_error = 0;
+static const int flag_add = 3;
+static const int flag_rm = 4;
+static const int flag_gar = 14;
 static string user = getenv("USER"); 
 static string dir_file = "/home/"+user+"/Documents/data/";
 static const char* file_ext = ".dat";
@@ -63,7 +72,7 @@ void Server::recv_app_create(ProxyClient* proxy){
         try {
         // le doy tres intentos al usuario para que 
         // ingrese el nombre de un lobby distinto.
-            for(int i=0; i < 3 ; ++i){
+            for(int i = 0; i < num_op ; ++i){
                 string app_name = proxy->recibirJson();
                             
                 if ( apps.find(app_name) == apps.end()){
@@ -117,14 +126,14 @@ void Server::join_threads(){
 void Server::update_lobby_data(App* or_app, int cod, string json, int flag, int action){
         for (map_proxys::iterator it = proxys.begin(); it != proxys.end(); ++it){
                 if (or_app -> get_name() == it->first){                        
-                        if (cod == 2 || cod == 8 || cod == 11 || cod == 12){
+                        if (cod == cod_get_slots || cod == cod_pos || cod == cod_morph || cod == cod_del){
                                 (it->second)->enviarCodigoMensaje(cod);
                                 (it->second) -> enviarJson(json);
-                        }else if (cod == 5){
-                                if ((flag == 0) || (flag == 3) || (flag == 4) || (flag == 14)) {
+                        }else if (cod == cod_gen){
+                                if ((flag == flag_error) || (flag == flag_add) || (flag == flag_rm) || (flag == flag_gar)) {
                                     (it->second)->enviarCodigoMensaje(flag);
                                 } else {
-                                    (it->second)->enviarCodigoMensaje(5);
+                                    (it->second)->enviarCodigoMensaje(cod_gen);
                                     (it->second)->enviarCodigoMensaje(action);
                                 }
                     

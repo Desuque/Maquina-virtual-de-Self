@@ -42,7 +42,7 @@ class App : public Thread{
                 void rcv_msg_get_slots();
                 void rcv_msg_generic();
 		void rcv_share_obj();
-		void test_example();
+
 };
 
 #endif

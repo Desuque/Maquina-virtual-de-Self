@@ -16,20 +16,14 @@ void SelfWriter::write(m_slots& slots, string& slots_self){
                 }
                     
                 if (!sl->is_base_slot(sl) && !sl->is_num_slot(sl)){
-			if ( sl -> is_parent() && (!sl -> is_code())){
+			if ( sl -> is_parent()){
 				slots_self += " " + sl -> get_name() + "* =";
 			}else{
                                 if (sl -> get_name() != "" )
                                     slots_self += " " + sl -> get_name() + " =";
 			}
-			if ( sl -> is_code()){
-                                std::vector<string> args;
-                                sl -> get_arguments(args);
-                                string arg = "";
-                                int size = args.size();
-                                for (int i = 0; i < size; i++)
-                                        arg += " :"+args[i]+". ";
-				slots_self += " (| "+arg+" | ";
+			if ( sl -> is_code() && sl -> is_parent()){
+				slots_self += " (|| ";
 				slots_self += sl -> get_value() -> as_string();
 				slots_self += " ).";
 			}else if ( sl -> is_parent()){
@@ -73,14 +67,9 @@ void SelfWriter::get_full(m_slots& slots, string& slots_self){
                 if (!sl->is_base_slot(sl) && !sl->is_num_slot(sl)){
                         if (sl -> get_name() != "" )
                                 slots_self += " " + sl -> get_name() + " =";
-			if ( sl -> is_code()){
-                                std::vector<string> args;
-                                sl -> get_arguments(args);
-                                string arg = "";
-                                int size = args.size();
-                                for (int i = 0; i < size; i++)
-                                        arg += " :"+args[i]+". ";
-				slots_self += " (| "+arg+" | ";
+			if ( sl -> is_code() && sl -> is_parent()){
+                                
+                        	slots_self += " (|| ";
 				slots_self += sl -> get_value() -> as_string();
 				slots_self += " ).";
 			}else{
