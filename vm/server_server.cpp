@@ -121,20 +121,12 @@ void Server::update_lobby_data(App* or_app, int cod, string json, int flag, int 
                                 (it->second)->enviarCodigoMensaje(cod);
                                 (it->second) -> enviarJson(json);
                         }else if (cod == 5){
-                                if (flag == 0) {
-                                    (it->second)->enviarCodigoMensaje(flag);
-                                } else if (flag == 3) {
-                                    (it->second)->enviarCodigoMensaje(flag);
-                                } else if (flag == 4) {
-                                    (it->second)->enviarCodigoMensaje(flag);
-                                } else if (flag == 14) {
+                                if ((flag == 0) || (flag == 3) || (flag == 4) || (flag == 14)) {
                                     (it->second)->enviarCodigoMensaje(flag);
                                 } else {
-                                
                                     (it->second)->enviarCodigoMensaje(5);
                                     (it->second)->enviarCodigoMensaje(action);
                                 }
-                                std::cout << "devolucion: " << json << std::endl;
                     
                                 (it->second)->enviarJson(json);
                         }                        
