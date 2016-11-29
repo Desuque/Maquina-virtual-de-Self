@@ -269,6 +269,8 @@ Slot* VM::search_and_execute_msg(Slot* sl_recv, string msg, p_objects& args, boo
 }
 
 Slot* VM::unary_message(Slot* sl_recv, string msg){
+        if (!sl_recv)
+                throw NotFound("Error");
 	p_objects args;
 	args.push_back(sl_recv -> get_value());
 	Slot* sl_ret = search_and_execute_msg(sl_recv, msg, args, false);
@@ -283,6 +285,8 @@ Slot* VM::unary_message(Slot* sl_recv, string msg){
 }
 
 Slot* VM::binary_message(Slot* sl_recv, string msg, Slot* sl){
+        if (!sl_recv)
+                throw NotFound("Error");
 	p_objects args;
 	args.push_back(sl_recv -> get_value());
 	args.push_back(sl -> get_value());
@@ -344,6 +348,8 @@ Slot* VM::key_other_msg(Slot* sl_recv, Slot* sl, string msg){
 }
 
 Slot* VM::keyword_message(Slot* sl_recv, string msg, Slot* sl){
+        if (!sl_recv)
+                throw NotFound("Error");
 	Slot* ret = sl_recv;
         if (msg == add_slots_msg){
                 ret = key_add_slots(sl_recv, sl);
