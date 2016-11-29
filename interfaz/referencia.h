@@ -2,6 +2,7 @@
 #define Referencia_H
 #include "morph.h"
 #include "slot.h"
+
 class Referencia : public Morph {
 private:
 	Morph* apuntoAMorph;

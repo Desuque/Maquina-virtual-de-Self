@@ -3,7 +3,7 @@
 
 #include "proxyServer.h"
 #include "common_thread.h"
-#include "myarea.h"
+#include "areaDeMorphs.h"
 #include "client_json_reader.h"
 #include "client_interface_slot.h"
 
@@ -12,10 +12,10 @@
 class Cliente : public Thread {
 	private:
 		ProxyServer& proxy;
-		MyArea* myArea;
+		AreaDeMorphs* areaDeMorphs;
 
 	public:	
-		Cliente(ProxyServer& proxy, MyArea* myArea);
+		Cliente(ProxyServer& proxy, AreaDeMorphs* areaDeMorphs);
 
 		virtual void run();
 

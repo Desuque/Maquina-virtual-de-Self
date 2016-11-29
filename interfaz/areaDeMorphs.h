@@ -1,12 +1,12 @@
-#ifndef MYAREA_H
-#define MYAREA_H
+#ifndef AREADEMORPHS_H
+#define AREADEMORPHS_H
 #include <gtkmm.h>
 #include "morph.h"
 #include "proxyServer.h"
 #include "referencia.h"
 #include <gtkmm/drawingarea.h>
 
-class MyArea : public Gtk::DrawingArea
+class AreaDeMorphs : public Gtk::DrawingArea
 {
 protected:
 	Glib::RefPtr<Gtk::Builder> m_builder;
@@ -38,8 +38,8 @@ protected:
 public:
   // este constructor me obliga Glade a definirlo asi, si es que quiero tener mi clase.
   // https://developer.gnome.org/gtkmm-tutorial/stable/sec-builder-using-derived-widgets.html.en
-  MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
-  MyArea();
+  AreaDeMorphs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder);
+  AreaDeMorphs();
   void iniciar();
   /* metodos Overrive de eventos */
   bool on_button_press_event(GdkEventButton *event);
@@ -59,7 +59,7 @@ public:
   void recolectarMorphs(std::vector<int> vectorIds);
   /* cuando detecto que me cierran la ventana, antes de salir libero los recursos */
   void liberarMemoria();
-  virtual ~MyArea();
+  virtual ~AreaDeMorphs();
 
 protected:
   /* metodo de Gtk::DrawingArea Override 

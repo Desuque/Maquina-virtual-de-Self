@@ -52,8 +52,16 @@ void DialogoNombreLobby::botonOkNombre(){
 	if (respuesta == 0){
 		// el lobby ya existe lanzar un error y volver a pedir 
 		// el nombre.
-		entryNombreLobby->set_text("");
 		Gtk::MessageDialog dialog(*this, "ERROR: Nombre de lobby existente, por favor ingrese otro");
+		std::string nombreRepetido = entryNombreLobby->get_text();
+		// agregue un numero para que su nombre funcione
+		// Ejemplo: nombre de lobby: lobbyExample, 
+		// quieren crear un nuevo ERROR: Nombre de lobby existente, por favor ingrese otro, 
+		// Error pruebe con lobbyExample1.
+		nombreRepetido += "1";
+		entryNombreLobby->set_text(nombreRepetido);
+		dialog.set_secondary_text("	   Intente con este '" + nombreRepetido + "' .");
+
   		dialog.run();
 		return;
 	}
@@ -65,7 +73,6 @@ void DialogoNombreLobby::botonOkNombre(){
 		throw new std::exception();
 	}
 	ventanaPrincipal->setLabel(nombreSinEspacios);
-
 	hide();
 }
 

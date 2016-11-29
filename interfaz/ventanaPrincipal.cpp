@@ -1,12 +1,12 @@
 #include "ventanaPrincipal.h"
 #include <iostream>
-#include "myarea.h"
+#include "areaDeMorphs.h"
 #include "dialogoInicial.h"
 
 // detecta que me cerraron la ventana y libera los recursos
 bool VentanaPrincipal::onWindowDelete(GdkEventAny*){
   std::cout << "cerre desde ventanaPrincipal" << std::endl;
-  MyArea* myArea = nullptr;
+  AreaDeMorphs* myArea = nullptr;
   m_builder-> Gtk::Builder::get_widget_derived("drawingarea1", myArea);
   myArea->liberarMemoria();
   return false;

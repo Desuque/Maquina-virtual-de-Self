@@ -1,5 +1,5 @@
 #include "proxyServer.h"
-#include "common_socket.h"
+#include "socket.h"
 #include <arpa/inet.h>
 #include <strings.h>
 #include <string.h>

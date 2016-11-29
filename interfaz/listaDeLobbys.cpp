@@ -1,5 +1,6 @@
 #include "listaDeLobbys.h"
 #include <iostream>
+
 ListaDeLobbys::ListaDeLobbys(BaseObjectType* cobject,   
             const Glib::RefPtr<Gtk::Builder>& refGlade) : 
   Gtk::TreeView(cobject), m_builder(refGlade) { 

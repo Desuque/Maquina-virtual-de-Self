@@ -114,6 +114,4 @@ void DialogoInicial::setProxy(ProxyServer* proxy){
 	this->proxy = proxy;
 }
 
-DialogoInicial::~DialogoInicial(){
-
-}
+DialogoInicial::~DialogoInicial(){}

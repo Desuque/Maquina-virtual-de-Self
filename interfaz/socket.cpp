@@ -11,7 +11,7 @@
 #include <syslog.h>
 #include <errno.h>
 
-#include "common_socket.h"
+#include "socket.h"
 
 #define CANT_MAX_CLIENT 20
 #define PAQ_SOBRANTE_LEN 100

@@ -1,4 +1,4 @@
-#include "myarea.h"
+#include "areaDeMorphs.h"
 #include <iostream>
 #include <cairomm/context.h>
 #include <cairomm/enums.h>
@@ -14,10 +14,13 @@
 #define GET_IT 16
 #define DO_IT 17
 #define BORRAR_MORPH 12
+// el id de lobby por defecto es 0.
+#define ID_DE_LOBBY 0
 
-MyArea::MyArea(){}
 
-MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
+AreaDeMorphs::AreaDeMorphs(){}
+
+AreaDeMorphs::AreaDeMorphs(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builder)
 : Gtk::DrawingArea(cobject), m_builder(builder), botonGetIt(nullptr),
   botonDoIt(nullptr), botonClose(nullptr), textoShell(nullptr),
   textoCodigoAsociado(nullptr), morphSeleccionado(nullptr), 
@@ -32,15 +35,15 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
 
   // conecto agregarSlot
   itemAgregarSlot.set_label("Agregar Slot");
-  itemAgregarSlot.signal_activate().connect(sigc::mem_fun(*this,&MyArea::agregarSlot_event));
+  itemAgregarSlot.signal_activate().connect(sigc::mem_fun(*this,&AreaDeMorphs::agregarSlot_event));
   menuEmergente.append(itemAgregarSlot);
   
   /*itemEnviarMorphA.set_label("Enviar a...");
-  itemEnviarMorphA.signal_activate().connect(sigc::mem_fun(*this,&MyArea::enviarMorphAlobby));
+  itemEnviarMorphA.signal_activate().connect(sigc::mem_fun(*this,&AreaDeMorphs::enviarMorphAlobby));
   menuEmergente.append(itemEnviarMorphA);*/  
 
   itemCloseMorph.set_label("Close");
-  itemCloseMorph.signal_activate().connect(sigc::mem_fun(*this,&MyArea::close_event));
+  itemCloseMorph.signal_activate().connect(sigc::mem_fun(*this,&AreaDeMorphs::close_event));
   menuEmergente.append(itemCloseMorph);
 
   menuEmergente.show_all();
@@ -54,7 +57,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     std::cout << "Error Glade" << std::endl;
     throw new std::exception();
   } 
-  botonGuardar->signal_clicked().connect(sigc::mem_fun(*this,&MyArea::botonGuardarNuevoSlotEvent));  
+  botonGuardar->signal_clicked().connect(sigc::mem_fun(*this,&AreaDeMorphs::botonGuardarNuevoSlotEvent));  
 
   Gtk::Button* botonSalir = nullptr;
   m_builder-> Gtk::Builder::get_widget("button7", botonSalir);
@@ -63,7 +66,7 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     throw new std::exception();
   } 
   botonSalir->signal_clicked().connect
-            ( sigc::mem_fun(*this,&MyArea::botonSalirNuevoSlotEvent));
+            ( sigc::mem_fun(*this,&AreaDeMorphs::botonSalirNuevoSlotEvent));
   
   m_builder-> Gtk::Builder::get_widget("LabelnombreObjeto", lNombreObjeto);
   if (lNombreObjeto == nullptr){
@@ -76,21 +79,21 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
     std::cout << "Error Glade" << std::endl;
     throw new std::exception();
   } 
-  botonGetIt->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::get_it_event));
+  botonGetIt->signal_clicked().connect( sigc::mem_fun(*this,&AreaDeMorphs::get_it_event));
 
   m_builder-> Gtk::Builder::get_widget("button2", botonDoIt);
   if (botonDoIt == nullptr) {
     std::cout << "Error Glade" << std::endl;
     throw new std::exception();
   } 
-  botonDoIt->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::do_it_event));
+  botonDoIt->signal_clicked().connect( sigc::mem_fun(*this,&AreaDeMorphs::do_it_event));
 
   m_builder-> Gtk::Builder::get_widget("button3", botonClose);
   if (botonClose == nullptr) {
     std::cout << "Error Glade" << std::endl;
     throw new std::exception();
   } 
-  botonClose->signal_clicked().connect( sigc::mem_fun(*this,&MyArea::close_event));
+  botonClose->signal_clicked().connect( sigc::mem_fun(*this,&AreaDeMorphs::close_event));
 
   m_builder-> Gtk::Builder::get_widget("textview2", textoShell);
   if (textoShell == nullptr){
@@ -109,15 +112,16 @@ MyArea::MyArea(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& builde
   moveFlag=false;
 }
 
-void MyArea::iniciar(){
+void AreaDeMorphs::iniciar(){
   if(!proxyServer){
     std::cout << "Error: el proxy no fue seteado" << std::endl;
     throw new std::exception();
   }  
 
+  // pido los slots de lobby, por defecto es 0.
   std::string infoSlots = proxyServer->recibirSlotsDe("0");
 
-  Morph* lobby = new Morph("lobby", 0, 10., 10., textoShell, textoCodigoAsociado);
+  Morph* lobby = new Morph("lobby", ID_DE_LOBBY, 10., 10., textoShell, textoCodigoAsociado);
   morphSeleccionado = lobby;
   lNombreObjeto->set_text(morphSeleccionado->getNombreParaMostrar());
   morphSeleccionado->mostrarDescripcionMorph();
@@ -139,26 +143,26 @@ void MyArea::iniciar(){
   }
 }
 
-void MyArea::setProxy(ProxyServer* proxy){
+void AreaDeMorphs::setProxy(ProxyServer* proxy){
   this->proxyServer=proxy;
 }
 
 
-void MyArea::liberarMemoria(){
+void AreaDeMorphs::liberarMemoria(){
   for (int i=0; i < morphs.size(); ++i){  
     delete morphs[i];
   }
 }
 
-MyArea::~MyArea(){}
+AreaDeMorphs::~AreaDeMorphs(){}
 
-void MyArea::botonSalirNuevoSlotEvent(){
+void AreaDeMorphs::botonSalirNuevoSlotEvent(){
   Gtk::Dialog* dialogoAddSlot = nullptr;
   m_builder->Gtk::Builder::get_widget("dialog4", dialogoAddSlot);
   dialogoAddSlot->hide();
 }
 
-void MyArea::botonGuardarNuevoSlotEvent(){
+void AreaDeMorphs::botonGuardarNuevoSlotEvent(){
   Gtk::TextView* textSlot = nullptr;
   m_builder-> Gtk::Builder::get_widget("textview3", textSlot);
   if (textSlot == nullptr) {
@@ -186,7 +190,7 @@ void MyArea::botonGuardarNuevoSlotEvent(){
   queue_draw();
 }
 
-void MyArea::agregarSlot_event(){
+void AreaDeMorphs::agregarSlot_event(){
   std::cout << "agregar slot" << std::endl;
   Gtk::Dialog* dialogoAddSlot = nullptr;
   m_builder->Gtk::Builder::get_widget("dialog4", dialogoAddSlot);
@@ -200,7 +204,7 @@ void MyArea::agregarSlot_event(){
 
 
 
-void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
+void AreaDeMorphs::crearMorphs(std::vector<InterfaceSlot*> i_slots){
   if(i_slots.size()){
     Morph* morph = obtenerMorphPorId(i_slots[0]->get_id());
     if (!morph){
@@ -217,11 +221,11 @@ void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
   }
 }
 
-void MyArea::crearMorphsError(std::vector<InterfaceSlot*> i_slots){
+void AreaDeMorphs::crearMorphsError(std::vector<InterfaceSlot*> i_slots){
   crearMorphs(i_slots);
 }
 
-void MyArea::get_it_event(){
+void AreaDeMorphs::get_it_event(){
   std::string textoAEnviar = morphSeleccionado->get_it();
   
   if (textoAEnviar == ""){
@@ -234,7 +238,7 @@ void MyArea::get_it_event(){
   proxyServer->enviarCodigoAEjecutar(morphSeleccionado->get_id_to_string(), json, GET_IT);  
 }
 
-void MyArea::do_it_event(){
+void AreaDeMorphs::do_it_event(){
 
   std::string textoAEnviar = morphSeleccionado -> do_it();
 
@@ -249,7 +253,7 @@ void MyArea::do_it_event(){
   proxyServer->enviarCodigoAEjecutar(morphSeleccionado->get_id_to_string(), json, DO_IT);  
 }
 
-Morph* MyArea::obtenerMorphPorId(int id_morph){
+Morph* AreaDeMorphs::obtenerMorphPorId(int id_morph){
   for (int i=0; i < morphs.size() ; ++i){
     if(morphs[i]->get_id() == id_morph){
       return morphs[i];
@@ -258,7 +262,7 @@ Morph* MyArea::obtenerMorphPorId(int id_morph){
   return nullptr;
 }
 
-void MyArea::borrarReferenciasDeMorph(Morph* morph){
+void AreaDeMorphs::borrarReferenciasDeMorph(Morph* morph){
   std::vector<Referencia*> referecniasDeMorph = morph->getReferencias();
   for (int v=0; v < referencias.size(); ++v){
     for (int j=0; j < referecniasDeMorph.size(); ++j){
@@ -272,7 +276,7 @@ void MyArea::borrarReferenciasDeMorph(Morph* morph){
 }
 
 
-void MyArea::borrarReferenciasDeLosSlotsDeMorph(Morph* morph){
+void AreaDeMorphs::borrarReferenciasDeLosSlotsDeMorph(Morph* morph){
   std::vector<Slot*> slotsDeMorph = morph->getSlots();
   for (int j=0; j < slotsDeMorph.size(); ++j){
     // pido la lista de slots de cada morph.
@@ -286,24 +290,24 @@ void MyArea::borrarReferenciasDeLosSlotsDeMorph(Morph* morph){
   }
 }
 
-void MyArea::recolectarMorphs(std::vector<int> vectorIds){
+void AreaDeMorphs::recolectarMorphs(std::vector<int> vectorIds){
   for(int i = 0; i < vectorIds.size(); ++i){
     closeMorph(vectorIds[i]);
   }
 }
 
-void MyArea::closeMorph(int id_morph){
+void AreaDeMorphs::closeMorph(int id_morph){
   Morph* morph = obtenerMorphPorId(id_morph);
   if(!morph) return;
 
 
-  if(morphSeleccionado){
+  /*if(morphSeleccionado){
     if(morphSeleccionado->get_id() == morph->get_id()){
       // si el que se borra es el que tengo seleccionado
       // queda como seleccionado el lobby(su id por defecto siempre es 0).
-      morphSeleccionado = obtenerMorphPorId(0);
+      morphSeleccionado = obtenerMorphPorId(ID_DE_LOBBY);
     }
-  }
+  }*/
 
   borrarReferenciasDeMorph(morph);
   borrarReferenciasDeLosSlotsDeMorph(morph);
@@ -312,7 +316,7 @@ void MyArea::closeMorph(int id_morph){
   queue_draw();
 }
 
-void MyArea::borrarMorph(Morph* morph){
+void AreaDeMorphs::borrarMorph(Morph* morph){
   for (int i=0; i < morphs.size() ; ++i){
     if(*(morphs[i]) == *morph){
       delete morphs[i];
@@ -322,10 +326,15 @@ void MyArea::borrarMorph(Morph* morph){
   }
 }
 
-void MyArea::close_event(){
+void AreaDeMorphs::close_event(){
   if (morphSeleccionado == nullptr){
     std::cout << "Seleccione el Morph que desea borrar\n";
     return;
+  }
+  if(morphSeleccionado->get_id() == ID_DE_LOBBY){
+    // pregunto si quieren cerrar Lobby no se lo permito.
+    //std::cout << "Error: No se puede cerrar el objeto Lobby";
+    return; 
   }
   JsonWriter writer;
   std::string json = writer.write_id_morph(morphSeleccionado->get_id());
@@ -337,7 +346,7 @@ void MyArea::close_event(){
 
 
 // detecta que se solto el boton del mouse
-bool MyArea::on_button_release_event(GdkEventButton *event)
+bool AreaDeMorphs::on_button_release_event(GdkEventButton *event)
 {
   // chequeo si es el boton izquierdo del mouse
   if (event->button==1 && moveFlag)
@@ -360,7 +369,7 @@ bool MyArea::on_button_release_event(GdkEventButton *event)
   return false;
 }
 
-std::vector<Slot*> MyArea::obtenerSlotsConEsteId(int id_slot){
+std::vector<Slot*> AreaDeMorphs::obtenerSlotsConEsteId(int id_slot){
   std::vector<Slot*> listaSlots;
   for (int i =0; i < morphs.size() ; ++i){
     std::vector<Slot*> lista = morphs[i]->obtenerSlotsConId(id_slot);
@@ -372,7 +381,7 @@ std::vector<Slot*> MyArea::obtenerSlotsConEsteId(int id_slot){
   return listaSlots;
 }
 
-void MyArea::actualizarVisualizacionDeSlot(Morph* morph, Slot* slot){    
+void AreaDeMorphs::actualizarVisualizacionDeSlot(Morph* morph, Slot* slot){    
   if(slot->estaDibujadoComoMorph()){
       slot->borrarReferenciaAlMorphApuntado();
       // borro la referencia de la lista de dibujadas
@@ -388,7 +397,7 @@ void MyArea::actualizarVisualizacionDeSlot(Morph* morph, Slot* slot){
     }
 }
 
-void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
+void AreaDeMorphs::agregarSlots(std::vector<InterfaceSlot*> i_slots){
   for (int i = 0; i < i_slots.size() ; i++){
     Morph* morphAux = obtenerMorphPorId(i_slots[i]->get_id_base());
     if(morphAux){
@@ -419,7 +428,7 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
   queue_draw();
 }
 
-void MyArea::borrarSlotDeEsteMorph(Morph* morph, int idSlot){
+void AreaDeMorphs::borrarSlotDeEsteMorph(Morph* morph, int idSlot){
   // pido una referencia a lista de slots por que necesito
   // eliminarlas las coincidencias.
   if (morph!= nullptr){
@@ -448,7 +457,7 @@ void MyArea::borrarSlotDeEsteMorph(Morph* morph, int idSlot){
   }
 }
 
-void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
+void AreaDeMorphs::borrarSlots(std::vector<InterfaceSlot*> i_slots){
   if(i_slots.size() == 0){
     return;
   }
@@ -469,7 +478,7 @@ void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
 }
 
 
-void MyArea::mostrarEsteSlotComoMorph(int id_morph, std::string nombreSlot){
+void AreaDeMorphs::mostrarEsteSlotComoMorph(int id_morph, std::string nombreSlot){
   Morph* morph = nullptr;
   for (int i = 0; i < morphs.size() ; ++i){
     if(morphs[i]->get_id() == id_morph){
@@ -507,7 +516,7 @@ void MyArea::mostrarEsteSlotComoMorph(int id_morph, std::string nombreSlot){
 }
 
 // Mouse button pressed : process mouse button event
-bool MyArea::on_button_press_event(GdkEventButton *event)
+bool AreaDeMorphs::on_button_press_event(GdkEventButton *event)
 {
   // Check if the event is a left button click.
   if (event->button == 1)
@@ -562,7 +571,7 @@ bool MyArea::on_button_press_event(GdkEventButton *event)
   return false;
 }
 
-void MyArea::actualizarPosicionAMoprh(int id, int posX, int posY){
+void AreaDeMorphs::actualizarPosicionAMoprh(int id, int posX, int posY){
   for (int i =0; i < morphs.size() ; ++i){      
     if((morphs[i])->get_id() == id){
       morphs[i]->actualizar_posicion(posX,posY);       
@@ -571,7 +580,7 @@ void MyArea::actualizarPosicionAMoprh(int id, int posX, int posY){
   queue_draw();
 }
 
-bool MyArea::on_motion_notify_event(GdkEventMotion*event)
+bool AreaDeMorphs::on_motion_notify_event(GdkEventMotion*event)
 {
   if (moveFlag){
     if(morphSeleccionado != nullptr){
@@ -598,7 +607,7 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
   return false;
 }
 
-bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
+bool AreaDeMorphs::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {  
   for (int i =0; i < morphs.size() ; ++i){
     morphs[i]->draw(cr);

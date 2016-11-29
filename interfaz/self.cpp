@@ -1,10 +1,11 @@
 //#include "examplewindow.h"
 #include <gtkmm.h>
-#include "myarea.h"
+#include "areaDeMorphs.h"
 #include "ventanaPrincipal.h"
 #include "dialogoInicial.h"
 #include "dialogoNombreLobby.h"
 #include "cliente.h"
+
 void example();
 
 int main(int argc, char *argv[])
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
 	window->setProxy(&proxy);
 	window->iniciarDialogos();
 
-	MyArea* myArea = nullptr;
+	AreaDeMorphs* myArea = nullptr;
 	refBuilder->Gtk::Builder::get_widget_derived("drawingarea1", myArea);
 	myArea->setProxy(&proxy);
 	myArea->iniciar();
