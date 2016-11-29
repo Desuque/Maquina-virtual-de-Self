@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <regex>
+#include <exception>
 #include "server_parser.h"
 #include "server_linker.h"
 #include "server_null_linker.h"
@@ -862,6 +863,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 					if(remove_slots(codigo, posicion, &slot_expCP)) {
 						*slot = process_keyword_message(slot_receiver, lower_key, slot_expCP);
 						setFlag(lower_key);
+						std::cout<<"Sale por aca"<<std::endl;
 						return true;
 					} else {
 						//Si no hay coincidencia, vuelvo el puntero a su posicion original
@@ -1154,6 +1156,14 @@ Slot* Parser::process_error(std::string msg_error) {
 	return linker->create_error(msg_error);
 }
 
+void Parser::set_error(std::vector<int>& flags) {
+	std::cout<<"Error al procesar el script."<<std::endl;
+	Slot* error = process_error("Error");
+	setFlag("Error");
+	flags.push_back(getFlag());
+	this->slots_to_process.push_back(error);
+}
+
 void Parser::parsear(std::string codigo, std::vector<int>& flags) {
 	std::stringstream scripts(codigo);
 	int posicion = scripts.tellg();
@@ -1189,11 +1199,7 @@ void Parser::parsear(std::string codigo, std::vector<int>& flags) {
 			scripts.get();
 		}
 	} else {
-		std::cout<<"Error al procesar el script."<<std::endl;
-		Slot* error = process_error("Sintax error.");
-		setFlag("Error");
-		flags.push_back(getFlag());
-		this->slots_to_process.push_back(error);
+		set_error(flags);
 	}
 }
 
@@ -1209,8 +1215,14 @@ std::vector<Slot*> Parser::parsear(std::string codigo, std::string id, std::vect
 	//Seteo el ID del contexto donde se va a trabajar
 	linker.setID(id);
 	linker.setVM(vm);
-	//Parseo como un script comun
-	parsear(codigo, flags);
+
+	try {
+		//Parseo como un script comun
+		parsear(codigo, flags);
+	} catch (const std::exception& e) {
+		std::cout<<"Entre aca o no?"<<std::endl;
+		set_error(flags);
+	}
 
 	//Se envia una copia y se eliminan los slots a procesar
 	std::vector<Slot*> ret = slots_to_process;

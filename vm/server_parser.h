@@ -84,8 +84,9 @@ private:
 	bool get_parent_flag();
 	void set_arg_flag(bool value);
 	bool get_arg_flag();
+	void set_error(std::vector<int>& flags);
 	void erase_white_spaces(std::stringstream* codigo, int* posicion);
-	
+
 	void clean_flag();
 };
 
