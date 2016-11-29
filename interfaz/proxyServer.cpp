@@ -1,17 +1,18 @@
-#include "common_proxyServer.h"
+#include "proxyServer.h"
 #include "common_socket.h"
 #include <arpa/inet.h>
 #include <strings.h>
 #include <string.h>
 #include "server_json_writer.h"
 
-#define PEDIR_SLOTS 2
-#define GENERIC 5
-#define AGREGAR_SLOT 3
-#define PEDIR_MORPH 11
-#define BORRAR_MORPH 12
 #define TAM_CODIGO_MENSAJE 1
 #define TAM_INT_MENSAJE 4
+/* codigos de comunicacion */
+#define PEDIR_SLOTS 2
+#define AGREGAR_SLOT 3
+#define GENERIC 5
+#define PEDIR_MORPH 11
+#define BORRAR_MORPH 12
 
 
 ProxyServer::ProxyServer(const char* hostname, const unsigned int puerto){

@@ -139,19 +139,16 @@ void MyArea::iniciar(){
   }
 }
 
-/*void MyArea::setProxy(ProxyServer* proxy){
-  this->proxyServer = proxy;
-}*/
+void MyArea::setProxy(ProxyServer* proxy){
+  this->proxyServer=proxy;
+}
+
 
 void MyArea::liberarMemoria(){
   for (int i=0; i < morphs.size(); ++i){  
     delete morphs[i];
   }
 }
-
-/*void MyArea::enviarMorphAlobby(){
-  proxyServer->enviarCodigoMensaje(PEDIR_LISTA_LOBBYS);
-}*/
 
 MyArea::~MyArea(){}
 
@@ -204,11 +201,6 @@ void MyArea::agregarSlot_event(){
 
 
 void MyArea::crearMorphs(std::vector<InterfaceSlot*> i_slots){
-  /*if(i_slots.size()){
-    Morph* nuevoMorph = new Morph(i_slots[0]->get_name(),i_slots[0]->get_id(),250.,550.,textoShell, textoCodigoAsociado);
-    morphs.push_back(nuevoMorph);
-    queue_draw();
-  }*/
   if(i_slots.size()){
     Morph* morph = obtenerMorphPorId(i_slots[0]->get_id());
     if (!morph){
@@ -246,7 +238,7 @@ void MyArea::do_it_event(){
 
   std::string textoAEnviar = morphSeleccionado -> do_it();
 
-  if (textoAEnviar==""){
+  if (textoAEnviar == ""){
     std::cout << "Error ingresar Codigo" << std::endl;
     return;
   }
@@ -480,7 +472,6 @@ void MyArea::mostrarEsteSlotComoMorph(int id_morph, std::string nombreSlot){
   }
   if(!morph) return;
   
-  //Slot* slot = morph->obtenerSlotConId(id_slot);
   Slot* slot = morph->obtenerSlotConEsteNombre(nombreSlot);
   if(!slot) return;
   if(slot->estaDibujadoComoMorph()) return;
@@ -576,10 +567,7 @@ void MyArea::actualizarPosicionAMoprh(int id, int posX, int posY){
 
 bool MyArea::on_motion_notify_event(GdkEventMotion*event)
 {
-
-  // If the left button is pressed, move the view
   if (moveFlag){
-    // Get mouse coordinates
     if(morphSeleccionado != nullptr){
       double posXFinal = event->x + offXMouse;
       double posYFinal = event->y + offYMouse;
@@ -598,11 +586,9 @@ bool MyArea::on_motion_notify_event(GdkEventMotion*event)
     if(referenciaSeleccionada != nullptr){
       referenciaSeleccionada->actualizar_posicion((event->x+offXMouse),(event->y+offYMouse));
     }
-    // Update view
     queue_draw();
     return true;
   }
-  // Event has been handled
   return false;
 }
 
@@ -619,4 +605,6 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
   }
   return true;
 }
+
+
 

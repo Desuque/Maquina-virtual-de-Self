@@ -1,7 +1,7 @@
 #ifndef DIALOGONOMBRELOBBY_H
 #define DIALOGONOMBRELOBBY_H
 
-#include "common_proxyServer.h"
+#include "proxyServer.h"
 #include <gtkmm.h>
 
 class DialogoNombreLobby : public Gtk::Dialog {

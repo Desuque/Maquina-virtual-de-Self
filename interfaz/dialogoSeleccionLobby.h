@@ -2,7 +2,7 @@
 #define DIALOGOSELECCIONARLOBBY_H
 
 #include "listaDeLobbys.h"
-#include "common_proxyServer.h"
+#include "proxyServer.h"
 #include <gtkmm.h>
 
 class DialogoSeleccionLobby : public Gtk::Dialog {

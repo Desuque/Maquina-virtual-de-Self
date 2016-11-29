@@ -13,7 +13,7 @@
 
 #include "common_socket.h"
 
-#define CANT_MAX_CLIENT 5
+#define CANT_MAX_CLIENT 20
 #define PAQ_SOBRANTE_LEN 100
 #define ERROR_DE_CONEXION -1
 #define SIN_ERRORES 1

@@ -69,6 +69,6 @@ int main(int argc, char *argv[])
 
 void example(){
 	printf("Ejemplos: \n");;
-	printf("\t ./client_self -ip <direccion ip> -p <port>\n");
-	printf("\t ./client_self -ip 127.0.0.1 -p 8080 \n");
+	printf("\t self_client -ip <direccion ip> -p <port>\n");
+	printf("\t self_server -ip 127.0.0.1 -p 8080 \n");
 }

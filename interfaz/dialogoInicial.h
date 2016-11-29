@@ -1,7 +1,7 @@
 #ifndef DIALOGOINICIAL_H
 #define DIALOGOINICIAL_H
 
-#include "common_proxyServer.h"
+#include "proxyServer.h"
 #include <gtkmm.h>
 
 class DialogoInicial : public Gtk::Dialog {

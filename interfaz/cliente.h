@@ -1,7 +1,7 @@
 #ifndef Cliente_H
 #define Cliente_H
 
-#include "common_proxyServer.h"
+#include "proxyServer.h"
 #include "common_thread.h"
 #include "myarea.h"
 #include "client_json_reader.h"

@@ -3,6 +3,7 @@
 #include "server_json_writer.h"
 #include "dialogoSeleccionLobby.h"
 
+#define ERROR 0
 #define TAM_COD 1
 #define PEDIR_SLOT 2
 #define AGREGAR_SLOT 3
@@ -131,27 +132,7 @@ void Cliente::run() {
 				myArea->actualizarPosicionAMoprh(id, posX, posY);
 				break;
 			}
-			//esto para compartir objetos.
-			// no anda
-			case PEDIR_LISTA_LOBBYS:{
-				std::string json = proxy.recibirJson();
-				std::cout << json << std::endl;
-				std::vector<string> names;
-				JsonReader reader;
-				reader.read_names(json, names);
-				for (int i = 0; i < names.size(); ++i){  
-			    	std::cout << names[i] << std::endl;
-			  	}
-			  	JsonWriter writer;
-			  	json = writer.write_share_obj(0,"nicolas");
-
-			  	proxy.enviarCodigoMensaje(13);
-			  	proxy.enviarJson(json);
-			  	//myArea->mostarListaLobbys(names);
-				break;				
-			}
-			case 0 :{
-				std::cout << "Error" << std::endl;
+			case ERROR :{
 				std::string json = proxy.recibirJson();
 				std::vector<InterfaceSlot*> i_slots;
 				JsonReader slots_reader;

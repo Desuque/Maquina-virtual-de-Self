@@ -5,7 +5,7 @@ class Referencia;
 #include <iostream>
 #include <gtkmm.h>
 #include "client_interface_slot.h"
-#include "common_proxyServer.h"
+#include "proxyServer.h"
 
 class Morph : public Gtk::DrawingArea{	
 	private:

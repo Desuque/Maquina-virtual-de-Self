@@ -2,7 +2,7 @@
 #define VENTANAPRINCIPAL_H
 
 #include <gtkmm.h>
-#include "common_proxyServer.h"
+#include "proxyServer.h"
 
 class VentanaPrincipal : public Gtk::Window {
 
@@ -17,6 +17,8 @@ class VentanaPrincipal : public Gtk::Window {
 						const Glib::RefPtr<Gtk::Builder>& refGlade);
 		VentanaPrincipal();
 		void iniciarDialogos();
+		// para detectar el click de la ventana principal
+		// y asi poder liberar recursos.
 		bool onWindowDelete(GdkEventAny*);
 		void on_button_close();
 		void setProxy(ProxyServer* proxy);

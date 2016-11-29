@@ -204,7 +204,6 @@ void Morph::actualizarAlturaMorph(size_t alturaDeSlot){
 void Morph::agregarSlot(InterfaceSlot* interface_slot){
 	for(int i=0 ; i < slots.size() ; ++i){
 		if(slots[i]->get_name()==interface_slot->get_name()){
-			
 			return;
 		}
 	}
@@ -309,26 +308,7 @@ void Morph::mostrarDescripcionMorph(){
 }
 
 void Morph::actualizar_posicion(double x, double y){
-	
-	// para no dibujar fuera de la ventana
-	/*if (x + width > 400 || y + height > 800){
-		if (x + width > 400 ){
-			this->posX = 400;
-		} 
-		if (y + height > 800 ){
-			this -> posY = 800;
-		}
-		return;
-	}
-	if (x < 0 || y < 0){
-		if (x < 0){
-			this->posX = 0;
-		}
-		if (y < 0){
-			this -> posY = 0;
-		}
-		return;
-	}*/
+
 	for (int i=0; i < slots.size(); ++i){
 		slots[i] -> posX = x;
 		slots[i] -> posY = y + (slots[i]->posY - this->posY);
