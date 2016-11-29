@@ -905,7 +905,7 @@ bool Parser::keyword_message(std::stringstream* codigo, int* posicion, Slot** sl
 							}
 						}
 					
-						*slot = process_keyword_message(slot_receiver, args, method, true);
+						*slot = process_keyword_message(slot_receiver, args, method, false);
 						return true;
 					}
 				}		
