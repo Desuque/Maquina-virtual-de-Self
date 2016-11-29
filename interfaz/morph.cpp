@@ -182,13 +182,17 @@ int Morph::getHeight(){
 }
 
 std::string Morph::get_it(){
-	if (!m_TextView) std::cout << "error" << std::endl;
+	if (!m_TextView){
+		throw new std::exception();
+	}	
 	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
 	return textoAEnviar;
 }
 
 std::string Morph::do_it(){
-	if (!m_TextView) std::cout << "error" << std::endl;
+	if (!m_TextView){
+		throw new std::exception();
+	}
 	std::string textoAEnviar = m_TextView->get_buffer()->get_text();
 	return textoAEnviar;
 }
@@ -224,8 +228,8 @@ void Morph::draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	//cr ->fill();
 	cr-> stroke();
 	
-	// solo para dibujar los errores.
-	if(this->nombreObjeto=="Sintax error." ){	
+	// solo para resaltar los errores.
+	if(this->nombreObjeto == "Error" ){	
 		cr->set_source_rgba(0.5, 0, 0,0.5);
 		cr -> rectangle(this->posX, this -> posY,this->width, this->height);
 		cr-> fill();
