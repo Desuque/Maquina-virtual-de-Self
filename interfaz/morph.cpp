@@ -200,6 +200,7 @@ void Morph::actualizarAlturaMorph(size_t alturaDeSlot){
 void Morph::agregarSlot(InterfaceSlot* interface_slot){
 	for(int i=0 ; i < slots.size() ; ++i){
 		if(slots[i]->get_name()==interface_slot->get_name()){
+			
 			return;
 		}
 	}
@@ -342,17 +343,14 @@ void Morph::agregarReferencia(Referencia* unaReferencia){
 
 // borro la referencia de la lista.
 void Morph::borrarEstaReferencia(Referencia* referencia){
-	std::cout << referencias.size() << std::endl;
 	for (std::vector<Referencia*>::iterator it = referencias.begin(); it != referencias.end();){  
 		if(*it == referencia){	
-			//delete* it;  
+			delete* it;  
 			it = referencias.erase(it);
 		} else {
 			++it;
 		}
 	}	
-	std::cout << referencias.size() << std::endl;
-
 }
 
 Morph::~Morph(){

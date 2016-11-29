@@ -72,7 +72,7 @@ protected:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
 
 private:
-  void borrarSlot(int idSlot);
+  void borrarSlotDeEsteMorph(Morph* morph, int idSlot);
   Morph* obtenerMorphPorId(int id_morph);
   void borrarReferenciasDeMorph(Morph* morph);
   void borrarReferenciasDeLosSlotsDeMorph(Morph* morph);

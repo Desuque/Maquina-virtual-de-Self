@@ -397,9 +397,6 @@ void MyArea::actualizarVisualizacionDeSlot(Morph* morph, Slot* slot){
 }
 
 void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
-  /*if(i_slots.size() == 0){
-    return;
-  }*/
   for (int i = 0; i < i_slots.size() ; i++){
     Morph* morphAux = obtenerMorphPorId(i_slots[i]->get_id_base());
     if(morphAux){
@@ -427,62 +424,31 @@ void MyArea::agregarSlots(std::vector<InterfaceSlot*> i_slots){
       }
     }  
   }
-  /*Morph* aux = nullptr;
-  for (int i =0; i < morphs.size() ; ++i){
-    if((morphs[i]->get_id() == i_slots[0]->get_id_base())){
-      aux = morphs[i];
-    }
-  }
-  if(aux){
-    int size = i_slots.size();
-    for (int i = 0; i < size ; i++){
-      i_slots[i] -> print_attr();
-      // me fijo si hay un slot con ese nombre, lo debo modificar.
-      Slot* slot = aux->obtenerSlotConEsteNombre(i_slots[i]->get_name());
-      if(slot){
-        slot->actualizarSlot(i_slots[i]);
-        if(slot->estaDibujadoComoMorph()){
-          slot->borrarReferenciaAlMorphApuntado();
-          for (int j=0; j < referencias.size(); ++j){
-            if (slot->tieneEstaReferencia(referencias[j])){
-              slot->setEstaDibujadoComoMorph(false);
-              referencias.erase(referencias.begin()+j);
-              --j;
-            }
-          }
-          mostrarEsteSlotComoMorph(aux->get_id(), slot->get_name());
-        }
-        continue;
-      }
-      aux->agregarSlot(i_slots[i]);
-    }
-  }*/
   queue_draw();
 }
 
-void MyArea::borrarSlot(int idSlot){
-  if (morphSeleccionado!= nullptr){
-    // pido una referencia a lista de slots por que necesito
-    // eliminarlas las coincidencias.
-    std::vector<Slot*> slotsDeMorph = morphSeleccionado->getSlots();
-    for (int i = 0; i < (slotsDeMorph).size(); ++i){
-      if ((slotsDeMorph)[i]->get_id() == idSlot){         
-        if ((slotsDeMorph)[i]->estaDibujadoComoMorph()){
-          // si esta dibujado borro la referencia al morph que apunta
-          for (int j = 0; j < referencias.size(); ++j){
-              if ((slotsDeMorph)[i]->tieneEstaReferencia(referencias[j])){
-                referencias.erase(referencias.begin()+j);
-                --j;
-              }
-          }
-          (slotsDeMorph)[i]->borrarReferenciaAlMorphApuntado();
+void MyArea::borrarSlotDeEsteMorph(Morph* morph, int idSlot){
+  // pido una referencia a lista de slots por que necesito
+  // eliminarlas las coincidencias.
+  std::vector<Slot*> slotsDeMorph = morphSeleccionado->getSlots();
+  for (int i = 0; i < (slotsDeMorph).size(); ++i){
+    if ((slotsDeMorph)[i]->get_id() == idSlot){         
+      if ((slotsDeMorph)[i]->estaDibujadoComoMorph()){
+        // si esta dibujado borro la referencia al morph que apunta
+        for (int j = 0; j < referencias.size(); ++j){
+            if ((slotsDeMorph)[i]->tieneEstaReferencia(referencias[j])){
+              referencias.erase(referencias.begin()+j);
+              --j;
+            }
         }
-        delete (slotsDeMorph)[i];
-        (slotsDeMorph).erase((slotsDeMorph).begin()+i);
-        --i;
+        (slotsDeMorph)[i]->borrarReferenciaAlMorphApuntado();
       }
+      delete (slotsDeMorph)[i];
+      (slotsDeMorph).erase((slotsDeMorph).begin()+i);
+      --i;
     }
   }
+
 }
 
 void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
@@ -499,7 +465,7 @@ void MyArea::borrarSlots(std::vector<InterfaceSlot*> i_slots){
     int size = i_slots.size();
     for (int i = 0; i < size ; i++){
       i_slots[i] -> print_attr();
-      borrarSlot(i_slots[i]->get_id());
+      borrarSlotDeEsteMorph(aux, i_slots[i]->get_id());
     }
   }
   queue_draw();
