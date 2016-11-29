@@ -137,8 +137,7 @@ void Cliente::run() {
 			  	}				break;
 			}
 			default: {
-				/*std::cout << "recibi comando desconocido\n";
-				std::cout << "recibi comando desconocido: " << codigo << std::endl;*/
+				// recibi un comando desconocido;
 				break;
 			}
 		}

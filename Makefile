@@ -17,3 +17,7 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/self_client
 	rm -f $(DESTDIR)$(PREFIX)/bin/self_server
 	rm -f $(DESTDIR)$(PREFIX)/bin/dGlade
+	rm -r ~/Documents/data
+
+cleanData:
+	rm -r ~/Documents/data
